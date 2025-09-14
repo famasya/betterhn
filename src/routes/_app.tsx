@@ -1,15 +1,17 @@
 import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import AppLayout from "../components/app-layout";
 import { fetchTopStories } from "../lib/top-stories";
-import AppLayout from "./app-layout";
 
 export const Route = createFileRoute("/_app")({
 	loader: () => fetchTopStories(),
+	staleTime: 5 * 60 * 1000, // 5 minutes
+	gcTime: 10 * 60 * 1000, // 10 minutes
 	component: RouteComponent,
 });
 
 function RouteComponent() {
-	const posts = Route.useLoaderData();
+	const initialData = Route.useLoaderData();
 	const location = useLocation();
 	const [activePath, setActivePath] = useState<string>("/");
 
@@ -34,7 +36,11 @@ function RouteComponent() {
 	}, [location.pathname]);
 
 	return (
-		<AppLayout activePath={activePath} posts={posts}>
+		<AppLayout
+			activePath={activePath}
+			posts={initialData.first10}
+			remainingSlices={initialData.slices}
+		>
 			<Outlet />
 		</AppLayout>
 	);

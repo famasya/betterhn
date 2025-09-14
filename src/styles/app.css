@@ -140,4 +140,8 @@
 	body {
 		@apply bg-background text-foreground;
 	}
+
+	body #post-content a {
+		@apply text-orange-600 hover:text-orange-700 underline;
+	}
 }

@@ -1,9 +1,9 @@
 import { Menu01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
+import { navLinks } from "~/components/app-layout";
 import PostList from "~/components/post-list";
 import type { FirebasePostDetail } from "~/lib/types";
 import { cn } from "~/lib/utils";
-import { navLinks } from "~/routes/app-layout";
 import { ScrollArea } from "../components/ui/scroll-area";
 
 type MobileMenuProps = {
@@ -11,12 +11,20 @@ type MobileMenuProps = {
 	isMobileMenuOpen: boolean;
 	setIsMobileMenuOpen: (open: boolean) => void;
 	activePath: string;
+	hasNextPage?: boolean;
+	isFetchingNextPage?: boolean;
+	fetchNextPage?: () => void;
+	error?: Error | null;
 };
 export default function MobileMenu({
 	posts,
 	isMobileMenuOpen,
 	setIsMobileMenuOpen,
 	activePath,
+	hasNextPage,
+	isFetchingNextPage,
+	fetchNextPage,
+	error,
 }: MobileMenuProps) {
 	return (
 		<div
@@ -83,7 +91,13 @@ export default function MobileMenu({
 							onClick={() => setIsMobileMenuOpen(false)}
 							onKeyDown={() => setIsMobileMenuOpen(false)}
 						>
-							<PostList posts={posts} />
+							<PostList
+								error={error}
+								fetchNextPage={fetchNextPage}
+								hasNextPage={hasNextPage}
+								isFetchingNextPage={isFetchingNextPage}
+								posts={posts}
+							/>
 						</div>
 					</ScrollArea>
 				</div>

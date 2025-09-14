@@ -10,7 +10,8 @@
       "src/**/*",
       "!src/routeTree.gen.ts",
       "!src/**/*.css",
-      "!src/components/ui/**/*"
+      "!src/components/ui/**/*",
+      "!.nitro"
     ],
     "ignoreUnknown": true
   },
