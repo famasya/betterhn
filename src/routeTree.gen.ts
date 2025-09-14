@@ -8,91 +8,94 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createServerRootRoute } from '@tanstack/react-start/server'
-
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/_app'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppIndexRouteImport } from './routes/_app.index'
+import { Route as AppShowRouteImport } from './routes/_app.show'
+import { Route as AppNewRouteImport } from './routes/_app.new'
+import { Route as AppBestRouteImport } from './routes/_app.best'
+import { Route as AppAskRouteImport } from './routes/_app.ask'
 import { Route as AppPostPostIdRouteImport } from './routes/_app.post.$postId'
-import { ServerRoute as ApiUsersServerRouteImport } from './routes/api/users'
-import { ServerRoute as ApiUsersUserIdServerRouteImport } from './routes/api/users.$userId'
-
-const rootServerRouteImport = createServerRootRoute()
 
 const AppRoute = AppRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
+const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AppRoute,
+} as any)
+const AppShowRoute = AppShowRouteImport.update({
+  id: '/show',
+  path: '/show',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppNewRoute = AppNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppBestRoute = AppBestRouteImport.update({
+  id: '/best',
+  path: '/best',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAskRoute = AppAskRouteImport.update({
+  id: '/ask',
+  path: '/ask',
+  getParentRoute: () => AppRoute,
 } as any)
 const AppPostPostIdRoute = AppPostPostIdRouteImport.update({
   id: '/post/$postId',
   path: '/post/$postId',
   getParentRoute: () => AppRoute,
 } as any)
-const ApiUsersServerRoute = ApiUsersServerRouteImport.update({
-  id: '/api/users',
-  path: '/api/users',
-  getParentRoute: () => rootServerRouteImport,
-} as any)
-const ApiUsersUserIdServerRoute = ApiUsersUserIdServerRouteImport.update({
-  id: '/$userId',
-  path: '/$userId',
-  getParentRoute: () => ApiUsersServerRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/ask': typeof AppAskRoute
+  '/best': typeof AppBestRoute
+  '/new': typeof AppNewRoute
+  '/show': typeof AppShowRoute
+  '/': typeof AppIndexRoute
   '/post/$postId': typeof AppPostPostIdRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/ask': typeof AppAskRoute
+  '/best': typeof AppBestRoute
+  '/new': typeof AppNewRoute
+  '/show': typeof AppShowRoute
+  '/': typeof AppIndexRoute
   '/post/$postId': typeof AppPostPostIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
   '/_app': typeof AppRouteWithChildren
+  '/_app/ask': typeof AppAskRoute
+  '/_app/best': typeof AppBestRoute
+  '/_app/new': typeof AppNewRoute
+  '/_app/show': typeof AppShowRoute
+  '/_app/': typeof AppIndexRoute
   '/_app/post/$postId': typeof AppPostPostIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/post/$postId'
+  fullPaths: '/ask' | '/best' | '/new' | '/show' | '/' | '/post/$postId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/post/$postId'
-  id: '__root__' | '/' | '/_app' | '/_app/post/$postId'
+  to: '/ask' | '/best' | '/new' | '/show' | '/' | '/post/$postId'
+  id:
+    | '__root__'
+    | '/_app'
+    | '/_app/ask'
+    | '/_app/best'
+    | '/_app/new'
+    | '/_app/show'
+    | '/_app/'
+    | '/_app/post/$postId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
-}
-export interface FileServerRoutesByFullPath {
-  '/api/users': typeof ApiUsersServerRouteWithChildren
-  '/api/users/$userId': typeof ApiUsersUserIdServerRoute
-}
-export interface FileServerRoutesByTo {
-  '/api/users': typeof ApiUsersServerRouteWithChildren
-  '/api/users/$userId': typeof ApiUsersUserIdServerRoute
-}
-export interface FileServerRoutesById {
-  __root__: typeof rootServerRouteImport
-  '/api/users': typeof ApiUsersServerRouteWithChildren
-  '/api/users/$userId': typeof ApiUsersUserIdServerRoute
-}
-export interface FileServerRouteTypes {
-  fileServerRoutesByFullPath: FileServerRoutesByFullPath
-  fullPaths: '/api/users' | '/api/users/$userId'
-  fileServerRoutesByTo: FileServerRoutesByTo
-  to: '/api/users' | '/api/users/$userId'
-  id: '__root__' | '/api/users' | '/api/users/$userId'
-  fileServerRoutesById: FileServerRoutesById
-}
-export interface RootServerRouteChildren {
-  ApiUsersServerRoute: typeof ApiUsersServerRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -104,12 +107,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
+    '/_app/': {
+      id: '/_app/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/show': {
+      id: '/_app/show'
+      path: '/show'
+      fullPath: '/show'
+      preLoaderRoute: typeof AppShowRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/new': {
+      id: '/_app/new'
+      path: '/new'
+      fullPath: '/new'
+      preLoaderRoute: typeof AppNewRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/best': {
+      id: '/_app/best'
+      path: '/best'
+      fullPath: '/best'
+      preLoaderRoute: typeof AppBestRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/ask': {
+      id: '/_app/ask'
+      path: '/ask'
+      fullPath: '/ask'
+      preLoaderRoute: typeof AppAskRouteImport
+      parentRoute: typeof AppRoute
     }
     '/_app/post/$postId': {
       id: '/_app/post/$postId'
@@ -120,57 +151,30 @@ declare module '@tanstack/react-router' {
     }
   }
 }
-declare module '@tanstack/react-start/server' {
-  interface ServerFileRoutesByPath {
-    '/api/users': {
-      id: '/api/users'
-      path: '/api/users'
-      fullPath: '/api/users'
-      preLoaderRoute: typeof ApiUsersServerRouteImport
-      parentRoute: typeof rootServerRouteImport
-    }
-    '/api/users/$userId': {
-      id: '/api/users/$userId'
-      path: '/$userId'
-      fullPath: '/api/users/$userId'
-      preLoaderRoute: typeof ApiUsersUserIdServerRouteImport
-      parentRoute: typeof ApiUsersServerRoute
-    }
-  }
-}
 
 interface AppRouteChildren {
+  AppAskRoute: typeof AppAskRoute
+  AppBestRoute: typeof AppBestRoute
+  AppNewRoute: typeof AppNewRoute
+  AppShowRoute: typeof AppShowRoute
+  AppIndexRoute: typeof AppIndexRoute
   AppPostPostIdRoute: typeof AppPostPostIdRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppAskRoute: AppAskRoute,
+  AppBestRoute: AppBestRoute,
+  AppNewRoute: AppNewRoute,
+  AppShowRoute: AppShowRoute,
+  AppIndexRoute: AppIndexRoute,
   AppPostPostIdRoute: AppPostPostIdRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
-interface ApiUsersServerRouteChildren {
-  ApiUsersUserIdServerRoute: typeof ApiUsersUserIdServerRoute
-}
-
-const ApiUsersServerRouteChildren: ApiUsersServerRouteChildren = {
-  ApiUsersUserIdServerRoute: ApiUsersUserIdServerRoute,
-}
-
-const ApiUsersServerRouteWithChildren = ApiUsersServerRoute._addFileChildren(
-  ApiUsersServerRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-const rootServerRouteChildren: RootServerRouteChildren = {
-  ApiUsersServerRoute: ApiUsersServerRouteWithChildren,
-}
-export const serverRouteTree = rootServerRouteImport
-  ._addFileChildren(rootServerRouteChildren)
-  ._addFileTypes<FileServerRouteTypes>()
