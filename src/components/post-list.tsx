@@ -5,8 +5,9 @@ import {
 	Loading03FreeIcons,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Link } from "@tanstack/react-router";
-import type { FirebasePostDetail } from "~/lib/types";
+import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
+import type { CommentItem, FirebasePostDetail } from "~/lib/types";
 
 type Params = {
 	posts: FirebasePostDetail[];
@@ -24,18 +25,115 @@ export default function PostList({
 	error,
 	onPostClick,
 }: Params) {
+	const navigate = useNavigate();
+	const queryClient = useQueryClient();
+
 	// replace all non-alphanumeric characters with a dash
 	const lowerCaseTitle = (title: string) =>
 		title.toLowerCase().replace(/[^a-z0-9]/g, "-");
 
+	const handlePostClick = (
+		post: FirebasePostDetail,
+		event: React.MouseEvent
+	) => {
+		event.preventDefault();
+
+		// Check if we have cached data for this post
+		const cachedPost = queryClient.getQueryData<FirebasePostDetail>([
+			"post",
+			post.id,
+		]);
+		const postId = `${lowerCaseTitle(post.title)}-${post.id}`;
+
+		if (cachedPost || post.preloadedComments !== undefined) {
+			// We have cached data or preloaded data, navigate client-side
+			// Pre-populate the post cache if it's not already there
+			if (!cachedPost && post.preloadedComments !== undefined) {
+				queryClient.setQueryData(["post", post.id], post);
+			}
+
+			// Navigate using client-side routing
+			navigate({
+				to: "/post/$postId",
+				params: { postId },
+			});
+		} else {
+			// No cached data, fall back to server-side navigation
+			// This will trigger the loader in _app.post.$postId.tsx
+			window.location.href = `/post/${postId}`;
+		}
+
+		// Call the optional callback
+		onPostClick?.();
+	};
+
+	const prefetchPostWithComments = async (postId: number) => {
+		const { firebaseFetcher } = await import("~/lib/fetcher");
+		const postData = await firebaseFetcher
+			.get<FirebasePostDetail>(`item/${postId}.json`)
+			.json();
+
+		if (!postData.kids || postData.kids.length === 0) {
+			return postData;
+		}
+
+		const initialCommentIds = postData.kids.slice(0, 10);
+		const remainingCommentIds = postData.kids.slice(10);
+
+		const remainingCommentSlices: number[][] = [];
+		for (let i = 0; i < remainingCommentIds.length; i += 10) {
+			remainingCommentSlices.push(remainingCommentIds.slice(i, i + 10));
+		}
+
+		let preloadedComments: CommentItem[] = [];
+		if (initialCommentIds.length > 0) {
+			try {
+				const { loadComments } = await import("~/functions/load-comments");
+				const commentsResult = await loadComments({
+					data: initialCommentIds,
+				});
+				preloadedComments = commentsResult.comments;
+			} catch (prefetchError) {
+				console.warn(
+					`Failed to prefetch comments for post ${postId}:`,
+					prefetchError
+				);
+			}
+		}
+
+		return {
+			...postData,
+			preloadedComments,
+			remainingCommentSlices,
+		} as FirebasePostDetail;
+	};
+
+	const handlePostHover = (post: FirebasePostDetail) => {
+		const cachedPost = queryClient.getQueryData<FirebasePostDetail>([
+			"post",
+			post.id,
+		]);
+
+		const shouldPrefetch = !cachedPost && post.preloadedComments === undefined;
+
+		if (shouldPrefetch) {
+			queryClient.prefetchQuery({
+				queryKey: ["post", post.id],
+				queryFn: () => prefetchPostWithComments(post.id),
+				staleTime: 10 * 60 * 1000, // 10 minutes
+			});
+		}
+	};
+
 	return (
 		<>
 			{posts.map((post) => (
-				<Link
+				<button
+					className="w-full text-left"
 					key={post.id}
-					onClick={onPostClick}
-					params={{ postId: `${lowerCaseTitle(post.title)}-${post.id}` }}
-					to="/post/$postId"
+					onClick={(event) => handlePostClick(post, event)}
+					onMouseEnter={() => handlePostHover(post)}
+					type="button"
 				>
 					<div className="border-gray-200 border-b p-3 text-sm hover:bg-gray-100">
 						{post.title}
@@ -51,7 +149,7 @@ export default function PostList({
 							</div>
 						</div>
 					</div>
-				</Link>
+				</button>
 			))}
 
 			{hasNextPage && (

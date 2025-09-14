@@ -1,23 +1,30 @@
-import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
+import {
+	createFileRoute,
+	Outlet,
+	useLocation,
+	useMatches,
+} from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import AppLayout, { navLinks } from "../components/app-layout";
-import { fetchPosts } from "../lib/fetch-posts";
+import type { FirebasePostDetail } from "../lib/types";
 
 export const Route = createFileRoute("/_app")({
-	loader: async ({ location }) => {
-		const type = location.pathname.split("/").pop();
-		const { first10, slices } = await fetchPosts(type || "top");
-		return { first10, slices };
-	},
-	staleTime: 5 * 60 * 1000, // 5 minutes
-	gcTime: 10 * 60 * 1000, // 10 minutes
 	component: RouteComponent,
 });
 
 function RouteComponent() {
-	const initialData = Route.useLoaderData();
 	const location = useLocation();
+	const matches = useMatches();
 	const [activePath, setActivePath] = useState<string>("/");
+	const [postsData, setPostsData] = useState<{
+		first10: FirebasePostDetail[];
+		slices: number[][];
+	}>({ first10: [], slices: [] });
+
+	// Get data from the currently active child route
+	const activeRouteData = matches.at(-1)?.loaderData as
+		| { first10?: FirebasePostDetail[]; slices?: number[][] }
+		| undefined;
 
 	useEffect(() => {
 		// Only update activePath if we're on a main navigation route
@@ -39,11 +46,44 @@ function RouteComponent() {
 		}
 	}, [location.pathname]);
 
+	// Separate effect for posts data to ensure it always updates when activeRouteData changes
+	useEffect(() => {
+		const currentPath = location.pathname;
+
+		// Update posts data if we have valid data from a main route
+		if (activeRouteData?.first10 && activeRouteData?.slices) {
+			// Always update posts data when new route data is available
+			setPostsData({
+				first10: activeRouteData.first10,
+				slices: activeRouteData.slices,
+			});
+			// Store posts data for when we navigate to post details
+			localStorage.setItem(
+				"lastPostsData",
+				JSON.stringify({
+					first10: activeRouteData.first10,
+					slices: activeRouteData.slices,
+				})
+			);
+		} else if (currentPath.includes("/post/")) {
+			// If we're on a post route and don't have current posts data, try to restore from localStorage
+			const storedPostsData = localStorage.getItem("lastPostsData");
+			if (storedPostsData) {
+				try {
+					const parsedData = JSON.parse(storedPostsData);
+					setPostsData(parsedData);
+				} catch (e) {
+					console.warn("Failed to parse stored posts data:", e);
+				}
+			}
+		}
+	}, [activeRouteData, location.pathname]);
+
 	return (
 		<AppLayout
 			activePath={activePath}
-			posts={initialData.first10}
-			remainingSlices={initialData.slices}
+			posts={postsData.first10}
+			remainingSlices={postsData.slices}
 		>
 			<Outlet />
 		</AppLayout>

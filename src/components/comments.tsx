@@ -5,11 +5,11 @@ import {
 	UserSquareIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { useQuery } from "@tanstack/react-query";
 import { formatRelative } from "date-fns";
 import { useState } from "react";
-import type { CommentItem as CommentItemType } from "~/functions/load-comments";
-import { useInfiniteComments } from "~/lib/hooks/use-infinite-comments";
+import sanitizeHtml from "sanitize-html";
+import { useComments, useInfiniteComments } from "~/lib/hooks/use-comments";
+import type { CommentItem as CommentItemType } from "~/lib/types";
 
 type CommentsProps = {
 	postId: number;
@@ -25,16 +25,10 @@ function CommentReplies({
 	commentIds: number[];
 	depth: number;
 }) {
-	// Keep existing pattern for nested replies - they load all at once since they're typically smaller
-	const { data, isLoading, error } = useQuery({
-		queryKey: ["comment-replies", commentIds.sort().join(",")],
-		queryFn: async () => {
-			const { loadComments } = await import("~/functions/load-comments");
-			const result = await loadComments({ data: commentIds });
-			return result;
-		},
-		staleTime: 5 * 60 * 1000, // 5 minutes
-		gcTime: 30 * 60 * 1000, // 30 minutes
+	// Use the new useComments hook for better caching
+	const { data, isLoading, error } = useComments({
+		commentIds,
+		enabled: commentIds.length > 0,
 	});
 
 	if (isLoading) {
@@ -108,9 +102,9 @@ function CommentItem({
 					)}
 				</div>
 				<div
-					className="overflow-hidden break-words break-all text-gray-800 text-sm leading-relaxed [&_*]:break-words [&_a]:break-words [&_a]:text-orange-600 [&_a]:underline [&_a]:hover:text-orange-700 [&_code]:break-all [&_code]:rounded [&_code]:bg-gray-100 [&_code]:px-1 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-xs [&_p:last-child]:mb-0 [&_p]:mb-2 [&_pre]:mt-2 [&_pre]:overflow-x-auto [&_pre]:break-all [&_pre]:rounded [&_pre]:bg-gray-100 [&_pre]:p-2 [&_pre]:font-mono [&_pre]:text-xs"
-					// biome-ignore lint/security/noDangerouslySetInnerHtml: ignored
-					dangerouslySetInnerHTML={{ __html: comment.text }}
+					// biome-ignore lint/security/noDangerouslySetInnerHtml: contains html
+					dangerouslySetInnerHTML={{ __html: sanitizeHtml(comment.text) }}
+					id="hn-content"
 				/>
 			</div>
 

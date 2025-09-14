@@ -1,15 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { firebaseFetcher } from "~/lib/fetcher";
-
-export type CommentItem = {
-	by: string;
-	id: number;
-	kids: number[];
-	parent: number;
-	text: string;
-	time: number;
-	type: string;
-};
+import type { CommentItem } from "~/lib/types";
 
 export const loadComments = createServerFn({
 	method: "GET",
