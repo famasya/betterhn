@@ -1,10 +1,14 @@
 import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import AppLayout from "../components/app-layout";
-import { fetchTopStories } from "../lib/top-stories";
+import AppLayout, { navLinks } from "../components/app-layout";
+import { fetchPosts } from "../lib/fetch-posts";
 
 export const Route = createFileRoute("/_app")({
-	loader: () => fetchTopStories(),
+	loader: async ({ location }) => {
+		const type = location.pathname.split("/").pop();
+		const { first10, slices } = await fetchPosts(type || "top");
+		return { first10, slices };
+	},
 	staleTime: 5 * 60 * 1000, // 5 minutes
 	gcTime: 10 * 60 * 1000, // 10 minutes
 	component: RouteComponent,
@@ -17,7 +21,7 @@ function RouteComponent() {
 
 	useEffect(() => {
 		// Only update activePath if we're on a main navigation route
-		const mainRoutes = ["/", "/best", "/new", "/ask", "/show"];
+		const mainRoutes = navLinks.map((link) => link.href);
 		const currentPath = location.pathname;
 
 		// Check if current path matches a main route

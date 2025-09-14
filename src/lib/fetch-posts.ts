@@ -1,11 +1,27 @@
 import { firebaseFetcher } from "./fetcher";
 import type { FirebasePostDetail } from "./types";
 
-export const fetchTopStories = async () => {
+export const fetchPosts = async (type: string) => {
 	// fetch post lists
-	const topStories = await firebaseFetcher
-		.get("topstories.json")
-		.json<number[]>();
+	let url = "topstories.json";
+	switch (type) {
+		case "best":
+			url = "beststories.json";
+			break;
+		case "new":
+			url = "newstories.json";
+			break;
+		case "ask":
+			url = "askstories.json";
+			break;
+		case "show":
+			url = "showstories.json";
+			break;
+		default:
+			url = "topstories.json";
+			break;
+	}
+	const topStories = await firebaseFetcher.get(url).json<number[]>();
 
 	// slices every 10 items
 	const slices: number[][] = [];
