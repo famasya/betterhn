@@ -7,6 +7,7 @@ import {
 	TargetIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
+import { Link } from "@tanstack/react-router";
 import { type ReactNode, useEffect, useState } from "react";
 import MobileMenu from "~/components/mobile-menu";
 import PostList from "~/components/post-list";
@@ -31,8 +32,8 @@ export const navLinks = [
 
 type Props = {
 	children: ReactNode;
-	posts: FirebasePostDetail[];
-	remainingSlices: number[][];
+	posts?: FirebasePostDetail[];
+	remainingSlices?: number[][];
 	activePath: string;
 };
 export default function AppLayout({
@@ -50,8 +51,8 @@ export default function AppLayout({
 		isFetchingNextPage,
 		error,
 	} = useInfinitePosts({
-		initialPosts: posts,
-		remainingSlices,
+		initialPosts: posts || [],
+		remainingSlices: remainingSlices || [],
 	});
 
 	// Prevent body scroll when mobile menu is open
@@ -90,16 +91,16 @@ export default function AppLayout({
 						{navLinks.map((link) => (
 							<Tooltip delayDuration={0} key={link.href}>
 								<TooltipTrigger asChild>
-									<a
+									<Link
 										className={cn(
 											"flex items-center gap-3 rounded-lg p-2 text-gray-700 transition-colors hover:bg-gray-100",
 											activePath === link.href &&
 												"bg-orange-200 text-orange-700 hover:bg-orange-200"
 										)}
-										href={link.href}
+										to={link.href}
 									>
 										<HugeiconsIcon className="h-5 w-5" icon={link.icon} />
-									</a>
+									</Link>
 								</TooltipTrigger>
 								<TooltipContent side="right">
 									<p>{link.label}</p>

@@ -4,13 +4,13 @@ import { loadMorePosts } from "~/functions/load-more-posts";
 import type { FirebasePostDetail } from "../types";
 
 type UseInfinitePostsParams = {
-	initialPosts: FirebasePostDetail[];
-	remainingSlices: number[][];
+	initialPosts?: FirebasePostDetail[];
+	remainingSlices?: number[][];
 };
 
 export const useInfinitePosts = ({
-	initialPosts,
-	remainingSlices,
+	initialPosts = [],
+	remainingSlices = [],
 }: UseInfinitePostsParams) => {
 	const [failedIds, setFailedIds] = useState<Set<number>>(new Set());
 

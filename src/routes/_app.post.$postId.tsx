@@ -4,7 +4,7 @@ import {
 	Time04Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { formatRelative } from "date-fns";
 import Comments from "~/components/comments";
 import { ScrollArea } from "~/components/ui/scroll-area";
@@ -99,14 +99,14 @@ function RouteComponent() {
 				</div>
 				{post.url && (
 					<div className="mt-3">
-						<a
+						<Link
 							className="text-orange-600 text-sm hover:text-orange-700"
-							href={post.url}
 							rel="noopener noreferrer"
 							target="_blank"
+							to={post.url}
 						>
 							{new URL(post.url).hostname}
-						</a>
+						</Link>
 					</div>
 				)}
 
