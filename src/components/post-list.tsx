@@ -14,6 +14,7 @@ type Params = {
 	isFetchingNextPage?: boolean;
 	fetchNextPage?: () => void;
 	error?: Error | null;
+	onPostClick?: () => void;
 };
 export default function PostList({
 	posts,
@@ -21,6 +22,7 @@ export default function PostList({
 	isFetchingNextPage,
 	fetchNextPage,
 	error,
+	onPostClick,
 }: Params) {
 	// replace all non-alphanumeric characters with a dash
 	const lowerCaseTitle = (title: string) =>
@@ -31,6 +33,7 @@ export default function PostList({
 			{posts.map((post) => (
 				<Link
 					key={post.id}
+					onClick={onPostClick}
 					params={{ postId: `${lowerCaseTitle(post.title)}-${post.id}` }}
 					to="/post/$postId"
 				>

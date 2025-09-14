@@ -52,7 +52,7 @@ export default function MobileMenu({
 				)}
 			>
 				{/* Sidebar Header */}
-				<div className="flex items-center justify-between border-gray-200 border-b p-4">
+				<div className="flex items-center justify-between border-gray-200 border-b p-2">
 					<h2 className="font-semibold text-lg">hn.fd</h2>
 					<button
 						className="rounded-lg p-2 hover:bg-gray-100"
@@ -85,20 +85,14 @@ export default function MobileMenu({
 				{/* Post List in Sidebar */}
 				<div className="flex-1 overflow-hidden">
 					<ScrollArea className="h-full">
-						{/** biome-ignore lint/a11y/noNoninteractiveElementInteractions: hover element */}
-						{/** biome-ignore lint/a11y/noStaticElementInteractions: hover element */}
-						<div
-							onClick={() => setIsMobileMenuOpen(false)}
-							onKeyDown={() => setIsMobileMenuOpen(false)}
-						>
-							<PostList
-								error={error}
-								fetchNextPage={fetchNextPage}
-								hasNextPage={hasNextPage}
-								isFetchingNextPage={isFetchingNextPage}
-								posts={posts}
-							/>
-						</div>
+						<PostList
+							error={error}
+							fetchNextPage={fetchNextPage}
+							hasNextPage={hasNextPage}
+							isFetchingNextPage={isFetchingNextPage}
+							onPostClick={() => setIsMobileMenuOpen(false)}
+							posts={posts}
+						/>
 					</ScrollArea>
 				</div>
 			</div>

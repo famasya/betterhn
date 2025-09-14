@@ -1,3 +1,9 @@
+import {
+	AppleStocksIcon,
+	Comment01Icon,
+	Time04Icon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { createFileRoute } from "@tanstack/react-router";
 import { formatRelative } from "date-fns";
 import Comments from "~/components/comments";
@@ -65,21 +71,30 @@ function RouteComponent() {
 	return (
 		<ScrollArea className="h-screen bg-gray-50" id="post-content">
 			{/* Post Header */}
-			<div className="border-gray-200 border-b bg-white p-6">
-				<h1 className="mb-3 font-medium text-gray-900 text-xl">{post.title}</h1>
-				<div className="flex items-center gap-4 text-gray-600 text-sm">
+			<div className="border-gray-200 border-b bg-white p-4 sm:p-6">
+				<h1
+					className="mb-3 hyphens-auto break-words font-medium text-gray-900 text-lg sm:text-xl"
+					style={{ wordBreak: "break-word", overflowWrap: "anywhere" }}
+				>
+					{post.title}
+				</h1>
+				<div className="flex flex-wrap items-center gap-3 text-gray-600 text-sm sm:gap-4">
 					<span>
 						by <span className="font-medium">{post.by}</span>
 					</span>
-					<span>•</span>
-					<span>{formatRelative(post.time * 1000, Date.now())}</span>
-					<span>•</span>
-					<span>{post.score} points</span>
+					<div className="flex items-center gap-1">
+						<HugeiconsIcon icon={Time04Icon} size={16} />
+						{formatRelative(post.time * 1000, Date.now())}
+					</div>
+					<div className="flex items-center gap-1">
+						<HugeiconsIcon icon={AppleStocksIcon} size={16} />
+						{post.score} points
+					</div>
 					{post.descendants > 0 && (
-						<>
-							<span>•</span>
-							<span>{post.descendants} comments</span>
-						</>
+						<div className="flex items-center gap-1">
+							<HugeiconsIcon icon={Comment01Icon} size={16} />
+							{post.descendants} comments
+						</div>
 					)}
 				</div>
 				{post.url && (
@@ -96,11 +111,12 @@ function RouteComponent() {
 				)}
 
 				{post.text && (
-					<div className="mt-4 border-gray-200 border-t pt-4">
-						{/** biome-ignore lint/security/noDangerouslySetInnerHtml: content is in html */}
+					<div className="mt-4 border-gray-200 border-t border-dashed pt-4">
 						<div
-							className="text-gray-800 text-sm leading-relaxed"
+							className="overflow-hidden hyphens-auto break-words text-gray-800 text-sm leading-relaxed [&_*]:hyphens-auto [&_*]:break-words [&_a]:text-orange-600 [&_a]:underline [&_a]:hover:text-orange-700 [&_code]:break-all [&_code]:rounded [&_code]:bg-gray-100 [&_code]:px-2 [&_code]:py-1 [&_code]:font-mono [&_code]:text-xs [&_p:last-child]:mb-0 [&_p]:mb-3 [&_pre]:mt-2 [&_pre]:overflow-x-auto [&_pre]:break-all [&_pre]:rounded [&_pre]:bg-gray-100 [&_pre]:p-3 [&_pre]:font-mono [&_pre]:text-xs"
+							// biome-ignore lint/security/noDangerouslySetInnerHtml: contentis in html
 							dangerouslySetInnerHTML={{ __html: post.text }}
+							style={{ wordBreak: "break-word", overflowWrap: "anywhere" }}
 						/>
 					</div>
 				)}

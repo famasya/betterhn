@@ -71,7 +71,7 @@ export default function AppLayout({
 	return (
 		<div className="flex h-screen flex-col overflow-hidden bg-gray-50 md:flex-row">
 			{/* Mobile Header */}
-			<div className="flex items-center justify-between border-gray-200 border-b bg-white p-4 md:hidden">
+			<div className="flex items-center justify-between border-gray-200 border-b bg-white p-2 md:hidden">
 				<button
 					className="rounded-lg p-2 transition-colors hover:bg-gray-100"
 					onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}

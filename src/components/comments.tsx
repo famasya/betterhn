@@ -112,7 +112,7 @@ function CommentItem({
 					)}
 				</div>
 				<div
-					className="text-gray-800 text-sm leading-relaxed [&_a]:break-words [&_a]:text-orange-600 [&_a]:underline [&_a]:hover:text-orange-700 [&_code]:rounded [&_code]:bg-gray-100 [&_code]:px-1 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-xs [&_p:last-child]:mb-0 [&_p]:mb-2 [&_pre]:mt-2 [&_pre]:overflow-x-auto [&_pre]:rounded [&_pre]:bg-gray-100 [&_pre]:p-2 [&_pre]:font-mono [&_pre]:text-xs"
+					className="overflow-hidden break-words break-all text-gray-800 text-sm leading-relaxed [&_*]:break-words [&_a]:break-words [&_a]:text-orange-600 [&_a]:underline [&_a]:hover:text-orange-700 [&_code]:break-all [&_code]:rounded [&_code]:bg-gray-100 [&_code]:px-1 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-xs [&_p:last-child]:mb-0 [&_p]:mb-2 [&_pre]:mt-2 [&_pre]:overflow-x-auto [&_pre]:break-all [&_pre]:rounded [&_pre]:bg-gray-100 [&_pre]:p-2 [&_pre]:font-mono [&_pre]:text-xs"
 					// biome-ignore lint/security/noDangerouslySetInnerHtml: ignored
 					dangerouslySetInnerHTML={{ __html: comment.text }}
 				/>
@@ -155,8 +155,8 @@ export default function Comments({
 
 	if (error && comments.length === 0) {
 		return (
-			<div className="p-4">
-				<div className="mb-4 font-medium text-lg">Comments</div>
+			<div className="p-3 sm:p-4">
+				<div className="mb-4 font-medium text-base sm:text-lg">Comments</div>
 				<div className="text-red-600">Failed to load comments</div>
 			</div>
 		);
@@ -164,8 +164,8 @@ export default function Comments({
 
 	if (isLoading && comments.length === 0) {
 		return (
-			<div className="p-4">
-				<div className="mb-4 font-medium text-lg">Comments</div>
+			<div className="p-3 sm:p-4">
+				<div className="mb-4 font-medium text-base sm:text-lg">Comments</div>
 				<div className="flex items-center gap-2 text-gray-500">
 					<HugeiconsIcon
 						className="animate-spin"
@@ -180,16 +180,16 @@ export default function Comments({
 
 	if (comments.length === 0) {
 		return (
-			<div className="p-4">
-				<div className="mb-4 font-medium text-lg">Comments</div>
+			<div className="p-3 sm:p-4">
+				<div className="mb-4 font-medium text-base sm:text-lg">Comments</div>
 				<div className="text-gray-500">No comments yet.</div>
 			</div>
 		);
 	}
 
 	return (
-		<div className="p-4">
-			<div className="mb-4 font-medium text-lg">
+		<div className="p-3 sm:p-4">
+			<div className="mb-4 font-medium text-base sm:text-lg">
 				Comments ({totalComments})
 				{failedCount > 0 && (
 					<span className="ml-2 text-orange-600 text-sm">
