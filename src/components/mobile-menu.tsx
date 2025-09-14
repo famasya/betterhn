@@ -1,5 +1,6 @@
 import { Menu01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
+import { Link } from "@tanstack/react-router";
 import { navLinks } from "~/components/app-layout";
 import PostList from "~/components/post-list";
 import type { FirebasePostDetail } from "~/lib/types";
@@ -67,17 +68,16 @@ export default function MobileMenu({
 				<div className="border-gray-200 border-b p-1">
 					<nav className="flex items-center justify-around gap-2">
 						{navLinks.map((link) => (
-							<a
+							<Link
 								className={cn(
 									"flex items-center justify-center rounded-lg p-3 text-gray-700 transition-colors hover:bg-gray-100",
 									activePath === link.href && "bg-orange-200 text-orange-700"
 								)}
-								href={link.href}
 								key={link.href}
-								onClick={() => setIsMobileMenuOpen(false)}
+								to={link.href}
 							>
 								<HugeiconsIcon className="h-5 w-5" icon={link.icon} />
-							</a>
+							</Link>
 						))}
 					</nav>
 				</div>

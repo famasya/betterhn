@@ -6,15 +6,22 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import { createFileRoute } from "@tanstack/react-router";
 import { formatRelative } from "date-fns";
+import sanitizeHtml from "sanitize-html";
 import Comments from "~/components/comments";
+import PostSkeleton from "~/components/post-skeleton";
 import { ScrollArea } from "~/components/ui/scroll-area";
-import { type CommentItem, loadComments } from "~/functions/load-comments";
+import { loadComments } from "~/functions/load-comments";
+import { usePost } from "~/lib/hooks/use-post";
+import type { CommentItem } from "~/lib/types";
 import { firebaseFetcher } from "../lib/fetcher";
 import type { FirebasePostDetail } from "../lib/types";
 
 export const Route = createFileRoute("/_app/post/$postId")({
 	loader: async ({ params: { postId } }) => {
-		const postIdNum = postId.split("-").pop();
+		const postIdNum = Number.parseInt(postId.split("-").pop() || "0", 10);
+
+		// This loader now serves as a fallback for when data isn't cached
+		// The component will use the usePost hook which checks cache first
 		const post = await firebaseFetcher
 			.get<FirebasePostDetail>(`item/${postIdNum}.json`)
 			.json();
@@ -46,7 +53,11 @@ export const Route = createFileRoute("/_app/post/$postId")({
 		}
 
 		return {
-			post,
+			post: {
+				...post,
+				preloadedComments: initialComments,
+				remainingCommentSlices,
+			} as FirebasePostDetail,
 			initialComments,
 			remainingCommentSlices,
 		};
@@ -65,8 +76,52 @@ export const Route = createFileRoute("/_app/post/$postId")({
 });
 
 function RouteComponent() {
-	const { post, initialComments, remainingCommentSlices } =
-		Route.useLoaderData();
+	const loaderData = Route.useLoaderData();
+
+	// Use the post ID directly from the loader data instead of parsing from params
+	// This avoids SSR issues with Route.useParams()
+	const postIdNum = loaderData.post.id;
+
+	// Use the usePost hook to check cache first, with loader data as fallback
+	const {
+		data: post,
+		isLoading,
+		error,
+	} = usePost({
+		postId: postIdNum,
+		initialData: loaderData.post,
+	});
+
+	if (isLoading) {
+		return <PostSkeleton />;
+	}
+
+	if (error || !post) {
+		return (
+			<div className="flex h-screen items-center justify-center bg-gray-50">
+				<div className="text-center">
+					<div className="mb-2 font-medium text-lg text-red-600">
+						Failed to load post
+					</div>
+					<p className="mb-4 text-gray-600">
+						There was an error loading this post. Please try again.
+					</p>
+					<button
+						className="rounded bg-orange-600 px-4 py-2 text-white hover:bg-orange-700"
+						onClick={() => window.location.reload()}
+						type="button"
+					>
+						Retry
+					</button>
+				</div>
+			</div>
+		);
+	}
+
+	// Use cached comments if available, otherwise fall back to loader data
+	const initialComments = post.preloadedComments || loaderData.initialComments;
+	const remainingCommentSlices =
+		post.remainingCommentSlices || loaderData.remainingCommentSlices;
 
 	return (
 		<ScrollArea className="h-screen bg-gray-50" id="post-content">
@@ -113,10 +168,9 @@ function RouteComponent() {
 				{post.text && (
 					<div className="mt-4 border-gray-200 border-t border-dashed pt-4">
 						<div
-							className="overflow-hidden hyphens-auto break-words text-gray-800 text-sm leading-relaxed [&_*]:hyphens-auto [&_*]:break-words [&_a]:text-orange-600 [&_a]:underline [&_a]:hover:text-orange-700 [&_code]:break-all [&_code]:rounded [&_code]:bg-gray-100 [&_code]:px-2 [&_code]:py-1 [&_code]:font-mono [&_code]:text-xs [&_p:last-child]:mb-0 [&_p]:mb-3 [&_pre]:mt-2 [&_pre]:overflow-x-auto [&_pre]:break-all [&_pre]:rounded [&_pre]:bg-gray-100 [&_pre]:p-3 [&_pre]:font-mono [&_pre]:text-xs"
-							// biome-ignore lint/security/noDangerouslySetInnerHtml: contentis in html
-							dangerouslySetInnerHTML={{ __html: post.text }}
-							style={{ wordBreak: "break-word", overflowWrap: "anywhere" }}
+							// biome-ignore lint/security/noDangerouslySetInnerHtml: contains html
+							dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.text) }}
+							id="hn-content"
 						/>
 					</div>
 				)}

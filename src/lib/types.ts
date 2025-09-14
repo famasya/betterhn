@@ -127,4 +127,17 @@ export type FirebasePostDetail = {
 	type: string;
 	url?: string;
 	text?: string;
+	// Optional preloaded data for performance optimization
+	preloadedComments?: CommentItem[];
+	remainingCommentSlices?: number[][];
+};
+
+export type CommentItem = {
+	by: string;
+	id: number;
+	kids: number[];
+	parent: number;
+	text: string;
+	time: number;
+	type: string;
 };
