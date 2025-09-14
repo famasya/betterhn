@@ -92,23 +92,19 @@ function CommentItem({
 				<div className="mb-2 flex items-center gap-2 text-gray-600 text-xs">
 					<HugeiconsIcon icon={UserSquareIcon} size={14} />
 					<span className="font-medium">{comment.by}</span>
-					<span>•</span>
-					<span>{formatRelative(comment.time * 1000, Date.now())}</span>
+					<span>[ {formatRelative(comment.time * 1000, Date.now())} ]</span>
 					{hasReplies && (
-						<>
-							<span>•</span>
-							<button
-								className="flex items-center gap-1 text-orange-600 hover:text-orange-700"
-								onClick={handleToggleReplies}
-								type="button"
-							>
-								<HugeiconsIcon icon={Comment01FreeIcons} size={14} />
-								<span>
-									{comment.kids?.length}{" "}
-									{comment.kids?.length === 1 ? "reply" : "replies"}
-								</span>
-							</button>
-						</>
+						<button
+							className="flex items-center gap-1 text-orange-600 hover:text-orange-700"
+							onClick={handleToggleReplies}
+							type="button"
+						>
+							<HugeiconsIcon icon={Comment01FreeIcons} size={14} />
+							<span>
+								{comment.kids?.length}{" "}
+								{comment.kids?.length === 1 ? "reply" : "replies"}
+							</span>
+						</button>
 					)}
 				</div>
 				<div
