@@ -1,6 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { fetchPosts } from "~/lib/fetch-posts";
 
 export const Route = createFileRoute("/_app/new")({
+	loader: async () => {
+		const { first10, slices } = await fetchPosts("new");
+		return { first10, slices };
+	},
+	staleTime: 5 * 60 * 1000, // 5 minutes
+	gcTime: 10 * 60 * 1000, // 10 minutes
 	component: Home,
 });
 

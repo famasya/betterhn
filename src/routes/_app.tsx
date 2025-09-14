@@ -1,23 +1,26 @@
-import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
+import {
+	createFileRoute,
+	Outlet,
+	useLocation,
+	useMatches,
+} from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import AppLayout, { navLinks } from "../components/app-layout";
-import { fetchPosts } from "../lib/fetch-posts";
 
 export const Route = createFileRoute("/_app")({
-	loader: async ({ location }) => {
-		const type = location.pathname.split("/").pop();
-		const { first10, slices } = await fetchPosts(type || "top");
-		return { first10, slices };
-	},
-	staleTime: 5 * 60 * 1000, // 5 minutes
-	gcTime: 10 * 60 * 1000, // 10 minutes
 	component: RouteComponent,
 });
 
 function RouteComponent() {
-	const initialData = Route.useLoaderData();
 	const location = useLocation();
 	const [activePath, setActivePath] = useState<string>("/");
+	const matches = useMatches();
+
+	// Get the current route's loader data
+	// Find the deepest match (leaf route) that has loader data
+	const matchesWithData = matches.filter((match) => match.loaderData);
+	const currentMatch = matchesWithData.at(-1);
+	const loaderData = currentMatch?.loaderData || { first10: [], slices: [] };
 
 	useEffect(() => {
 		// Only update activePath if we're on a main navigation route
@@ -42,8 +45,8 @@ function RouteComponent() {
 	return (
 		<AppLayout
 			activePath={activePath}
-			posts={initialData.first10}
-			remainingSlices={initialData.slices}
+			posts={loaderData?.first10}
+			remainingSlices={loaderData?.slices}
 		>
 			<Outlet />
 		</AppLayout>
