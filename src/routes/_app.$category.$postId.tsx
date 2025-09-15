@@ -12,12 +12,12 @@ import { type CommentItem, loadComments } from "~/functions/load-comments";
 import { firebaseFetcher } from "../lib/fetcher";
 import type { FirebasePostDetail } from "../lib/types";
 
-export const Route = createFileRoute("/_app/post/$postId")({
-	loader: async ({ params: { postId } }) => {
+export const Route = createFileRoute("/_app/$category/$postId")({
+	loader: async ({ params: { postId, category } }) => {
 		const postIdNum = postId.split("-").pop();
 		const post = await firebaseFetcher
 			.get<FirebasePostDetail>(`item/${postIdNum}.json`)
-			.json();
+			.json()
 
 		let initialComments: CommentItem[] = [];
 		const remainingCommentSlices: number[][] = [];
@@ -37,7 +37,7 @@ export const Route = createFileRoute("/_app/post/$postId")({
 				try {
 					const commentsResult = await loadComments({
 						data: initialCommentIds,
-					});
+					})
 					initialComments = commentsResult.comments;
 				} catch (error) {
 					console.warn("Failed to load initial comments:", error);
@@ -49,7 +49,7 @@ export const Route = createFileRoute("/_app/post/$postId")({
 			post,
 			initialComments,
 			remainingCommentSlices,
-		};
+		}
 	},
 	component: RouteComponent,
 	head: ({ loaderData }) => ({
@@ -130,5 +130,5 @@ function RouteComponent() {
 				totalComments={post.descendants}
 			/>
 		</ScrollArea>
-	);
+	)
 }
