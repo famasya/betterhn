@@ -7,6 +7,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Link } from "@tanstack/react-router";
 import type { FirebasePostDetail } from "~/lib/types";
+import { cn } from "~/lib/utils";
 
 type Params = {
 	posts: FirebasePostDetail[];
@@ -42,10 +43,13 @@ export default function PostList({
 					}}
 					to={"/$category/$postId"}
 				>
-					<div className="border-gray-200 border-b p-3 text-sm hover:bg-gray-100">
+					<div className={"border-gray-200 border-b p-3 text-sm hover:bg-gray"}>
 						{post.title}
-
-						<div className="mt-1 flex items-center justify-between gap-2 text-gray-500 text-xs">
+						<div
+							className={cn(
+								"mt-1 flex items-center justify-between gap-2 text-gray-500 text-xs"
+							)}
+						>
 							<div className="flex items-center gap-1">
 								<HugeiconsIcon icon={AppleStocksIcon} size={16} /> {post.score}{" "}
 								points
