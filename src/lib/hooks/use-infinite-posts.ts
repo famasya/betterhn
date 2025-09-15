@@ -1,23 +1,36 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { loadMorePosts } from "~/functions/load-more-posts";
+import { fetchPosts } from "~/lib/fetch-posts";
 import type { FirebasePostDetail } from "../types";
 
 type UseInfinitePostsParams = {
+	category: string;
 	initialPosts?: FirebasePostDetail[];
 	remainingItems?: number[][];
 };
 
 export const useInfinitePosts = ({
+	category,
 	initialPosts = [],
 	remainingItems = [],
 }: UseInfinitePostsParams) => {
 	const [failedIds, setFailedIds] = useState<Set<number>>(new Set());
+	const freshRemainingItemsRef = useRef<number[][]>([]);
+
+	// If no initial data is provided, we'll fetch it in the query
+	const hasInitialData = initialPosts.length > 0 || remainingItems.length > 0;
 
 	// Memoized slices with failed IDs re-added to the front
 	const enhancedSlices = useMemo(() => {
+		// Use fresh remaining items if available, otherwise use props
+		const actualRemainingItems =
+			freshRemainingItemsRef.current.length > 0
+				? freshRemainingItemsRef.current
+				: remainingItems;
+
 		if (failedIds.size === 0) {
-			return remainingItems;
+			return actualRemainingItems;
 		}
 
 		const failedIdsArray = Array.from(failedIds);
@@ -28,7 +41,7 @@ export const useInfinitePosts = ({
 			failedSlices.push(failedIdsArray.slice(i, i + 10));
 		}
 
-		return [...failedSlices, ...remainingItems];
+		return [...failedSlices, ...actualRemainingItems];
 	}, [remainingItems, failedIds]);
 
 	const {
@@ -39,10 +52,27 @@ export const useInfinitePosts = ({
 		isLoading,
 		error,
 	} = useInfiniteQuery({
-		queryKey: ["infinite-posts", remainingItems.length, failedIds.size],
+		queryKey: [
+			"infinite-posts",
+			category,
+			remainingItems.length,
+			failedIds.size,
+		],
 		queryFn: async ({ pageParam }) => {
 			if (pageParam === 0) {
-				return { posts: initialPosts, sliceIndex: 0, failedIds: [] };
+				// If we have initial posts, use them
+				if (hasInitialData) {
+					return { posts: initialPosts, sliceIndex: 0, failedIds: [] };
+				}
+				// Otherwise, fetch fresh data for this category
+				const freshData = await fetchPosts(category);
+				// Store fresh remaining items in ref
+				freshRemainingItemsRef.current = freshData.remainingItems;
+				return {
+					posts: freshData.first10,
+					sliceIndex: 0,
+					failedIds: [],
+				};
 			}
 
 			const sliceIndex = pageParam - 1;
@@ -87,16 +117,28 @@ export const useInfinitePosts = ({
 				? nextSliceIndex + 1
 				: undefined;
 		},
+		initialData: hasInitialData
+			? {
+					pages: [{ posts: initialPosts, sliceIndex: 0, failedIds: [] }],
+					pageParams: [0],
+				}
+			: undefined,
 		staleTime: 5 * 60 * 1000, // 5 minutes
 		gcTime: 30 * 60 * 1000, // 30 minutes
 	});
 
 	const allPosts = data?.pages.flatMap((page) => page.posts) || initialPosts;
 
+	// Calculate hasNextPage based on fresh data if available
+	const actualHasNextPage =
+		freshRemainingItemsRef.current.length > 0
+			? (data?.pages.length || 0) < freshRemainingItemsRef.current.length
+			: !!hasNextPage;
+
 	return {
 		posts: allPosts,
 		fetchNextPage,
-		hasNextPage: !!hasNextPage,
+		hasNextPage: actualHasNextPage,
 		isFetchingNextPage,
 		isLoading,
 		error,
