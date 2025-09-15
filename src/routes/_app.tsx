@@ -26,6 +26,7 @@ import {
 } from "~/components/ui/tooltip";
 import { fetchPosts } from "~/lib/fetch-posts";
 import { useInfinitePosts } from "~/lib/hooks/use-infinite-posts";
+import { queryClient } from "~/lib/query-client";
 import { cn } from "~/lib/utils";
 
 const navLinks = [
@@ -38,14 +39,34 @@ const navLinks = [
 
 export const Route = createFileRoute("/_app")({
 	loader: async ({ location }) => {
-		const currentPath = location.pathname;
-		const category = currentPath.split("/")[1] || "top";
-		const { first10, remainingItems } = await fetchPosts(category);
-		return {
-			first10,
-			remainingItems,
-			category,
-		};
+		const category = location.pathname.split("/")[1] || "top";
+
+		return await queryClient.ensureQueryData({
+			queryKey: ["posts", category],
+			queryFn: async () => {
+				const { first10, remainingItems } = await fetchPosts(category);
+
+				for (const post of first10) {
+					queryClient.setQueryData(
+						[
+							"post",
+							`${post.title.toLowerCase().replace(/[^a-z0-9]/g, "-")}-${post.id}`,
+						],
+						{
+							post,
+							initialComments: [],
+							remainingCommentSlices: [],
+						}
+					);
+				}
+
+				return {
+					first10,
+					remainingItems,
+					category,
+				};
+			},
+		});
 	},
 	component: RouteComponent,
 	staleTime: 5 * 60 * 1000, // 5 minutes

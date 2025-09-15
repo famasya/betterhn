@@ -8,7 +8,10 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { useQuery } from "@tanstack/react-query";
 import { formatRelative } from "date-fns";
 import { useState } from "react";
-import type { CommentItem as CommentItemType } from "~/functions/load-comments";
+import {
+	type CommentItem as CommentItemType,
+	loadComments,
+} from "~/functions/load-comments";
 import { useInfiniteComments } from "~/lib/hooks/use-infinite-comments";
 
 type CommentsProps = {
@@ -29,7 +32,6 @@ function CommentReplies({
 	const { data, isLoading, error } = useQuery({
 		queryKey: ["comment-replies", commentIds.sort().join(",")],
 		queryFn: async () => {
-			const { loadComments } = await import("~/functions/load-comments");
 			const result = await loadComments({ data: commentIds });
 			return result;
 		},
