@@ -55,3 +55,11 @@ export const fetchPosts = async (type: string) => {
 		remainingItems,
 	};
 };
+
+export const fetchPost = async (
+	postId: number
+): Promise<FirebasePostDetail> => {
+	return await firebaseFetcher
+		.get<FirebasePostDetail>(`item/${postId}.json`)
+		.json();
+};
