@@ -27,7 +27,7 @@ import {
 import { fetchPosts } from "~/lib/fetch-posts";
 import { useInfinitePosts } from "~/lib/hooks/use-infinite-posts";
 import { queryClient } from "~/lib/query-client";
-import { cn } from "~/lib/utils";
+import { cn, lowerCaseTitle } from "~/lib/utils";
 
 const navLinks = [
 	{ label: "Front Page", href: "/top", icon: FireIcon },
@@ -48,10 +48,7 @@ export const Route = createFileRoute("/_app")({
 
 				for (const post of first10) {
 					queryClient.setQueryData(
-						[
-							"post",
-							`${post.title.toLowerCase().replace(/[^a-z0-9]/g, "-")}-${post.id}`,
-						],
+						["post", `${lowerCaseTitle(post.title)}-${post.id}`],
 						{
 							post,
 							initialComments: [],
@@ -77,6 +74,7 @@ function RouteComponent() {
 	const { pathname } = useLocation();
 	const paths = pathname.split("/");
 	const category = paths[1];
+	const activePostId = pathname.split("-").pop();
 	const loaderData = Route.useLoaderData();
 
 	// Use loader data as initial data only if it matches current category
@@ -188,6 +186,7 @@ function RouteComponent() {
 											</div>
 										) : (
 											<PostList
+												activePostId={Number(activePostId)}
 												category={category}
 												error={error}
 												fetchNextPage={fetchNextPage}
@@ -248,6 +247,7 @@ function RouteComponent() {
 						</div>
 					) : (
 						<PostList
+							activePostId={Number(activePostId)}
 							category={category}
 							error={error}
 							fetchNextPage={fetchNextPage}

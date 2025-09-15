@@ -7,7 +7,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Link } from "@tanstack/react-router";
 import type { FirebasePostDetail } from "~/lib/types";
-import { cn } from "~/lib/utils";
+import { cn, lowerCaseTitle } from "~/lib/utils";
 
 type Params = {
 	posts: FirebasePostDetail[];
@@ -16,21 +16,19 @@ type Params = {
 	isFetchingNextPage?: boolean;
 	fetchNextPage?: () => void;
 	error?: Error | null;
+	activePostId?: number;
 	onPostClick?: () => void;
 };
 export default function PostList({
 	posts,
 	category,
 	hasNextPage,
+	activePostId,
 	isFetchingNextPage,
 	fetchNextPage,
 	error,
 	onPostClick,
 }: Params) {
-	// replace all non-alphanumeric characters with a dash
-	const lowerCaseTitle = (title: string) =>
-		title.toLowerCase().replace(/[^a-z0-9]/g, "-");
-
 	return (
 		<>
 			{posts.map((post) => (
@@ -43,7 +41,12 @@ export default function PostList({
 					}}
 					to={"/$category/$postId"}
 				>
-					<div className={"border-gray-200 border-b p-3 text-sm hover:bg-gray"}>
+					<div
+						className={cn(
+							"border-gray-200 border-b p-3 text-sm hover:bg-gray",
+							activePostId === post.id && "border-blue-200 bg-blue-50"
+						)}
+					>
 						{post.title}
 						<div
 							className={cn(
