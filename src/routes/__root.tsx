@@ -5,6 +5,7 @@ import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import type * as React from "react";
 import { DefaultCatchBoundary } from "~/components/default-catch-boundary";
 import { NotFound } from "~/components/not-found";
+import { Toaster } from "~/components/ui/sonner";
 import appCss from "~/styles/app.css?url";
 import { seo } from "~/utils/seo";
 
@@ -49,6 +50,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 					{children}
 					<TanStackRouterDevtools position="bottom-right" />
 				</QueryClientProvider>
+				<Toaster />
 				<Scripts />
 			</body>
 		</html>

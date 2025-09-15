@@ -13,11 +13,11 @@ import { firebaseFetcher } from "../lib/fetcher";
 import type { FirebasePostDetail } from "../lib/types";
 
 export const Route = createFileRoute("/_app/$category/$postId")({
-	loader: async ({ params: { postId, category } }) => {
+	loader: async ({ params: { postId } }) => {
 		const postIdNum = postId.split("-").pop();
 		const post = await firebaseFetcher
 			.get<FirebasePostDetail>(`item/${postIdNum}.json`)
-			.json()
+			.json();
 
 		let initialComments: CommentItem[] = [];
 		const remainingCommentSlices: number[][] = [];
@@ -37,7 +37,7 @@ export const Route = createFileRoute("/_app/$category/$postId")({
 				try {
 					const commentsResult = await loadComments({
 						data: initialCommentIds,
-					})
+					});
 					initialComments = commentsResult.comments;
 				} catch (error) {
 					console.warn("Failed to load initial comments:", error);
@@ -49,7 +49,7 @@ export const Route = createFileRoute("/_app/$category/$postId")({
 			post,
 			initialComments,
 			remainingCommentSlices,
-		}
+		};
 	},
 	component: RouteComponent,
 	head: ({ loaderData }) => ({
@@ -60,7 +60,10 @@ export const Route = createFileRoute("/_app/$category/$postId")({
 		],
 	}),
 	pendingComponent: () => (
-		<div className="flex h-64 items-center justify-center">Loading post...</div>
+		<div className="flex h-64 items-center justify-center gap-2">
+			<HugeiconsIcon className="animate-spin" icon={Time04Icon} size={16} />
+			Loading post...
+		</div>
 	),
 });
 
@@ -69,7 +72,7 @@ function RouteComponent() {
 		Route.useLoaderData();
 
 	return (
-		<ScrollArea className="h-screen bg-gray-50" id="post-content">
+		<ScrollArea className="h-screen flex-1 bg-gray-50" id="post-content">
 			{/* Post Header */}
 			<div className="border-gray-200 border-b bg-white p-4 sm:p-6">
 				<h1
@@ -130,5 +133,5 @@ function RouteComponent() {
 				totalComments={post.descendants}
 			/>
 		</ScrollArea>
-	)
+	);
 }

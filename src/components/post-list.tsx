@@ -11,6 +11,7 @@ import type { FirebasePostDetail } from "~/lib/types";
 type Params = {
 	posts: FirebasePostDetail[];
 	hasNextPage?: boolean;
+	category: string;
 	isFetchingNextPage?: boolean;
 	fetchNextPage?: () => void;
 	error?: Error | null;
@@ -18,6 +19,7 @@ type Params = {
 };
 export default function PostList({
 	posts,
+	category,
 	hasNextPage,
 	isFetchingNextPage,
 	fetchNextPage,
@@ -34,8 +36,11 @@ export default function PostList({
 				<Link
 					key={post.id}
 					onClick={onPostClick}
-					params={{ postId: `${lowerCaseTitle(post.title)}-${post.id}` }}
-					to="/post/$postId"
+					params={{
+						category: category || "top",
+						postId: `${lowerCaseTitle(post.title)}-${post.id}`,
+					}}
+					to={"/$category/$postId"}
 				>
 					<div className="border-gray-200 border-b p-3 text-sm hover:bg-gray-100">
 						{post.title}

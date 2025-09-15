@@ -31,9 +31,7 @@ type Props = {
 	remainingItems?: number[][];
 	activePath: string;
 };
-export default function AppLayout({
-	activePath,
-}: Props) {
+export default function AppLayout({ activePath }: Props) {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
 	// Prevent body scroll when mobile menu is open
@@ -76,7 +74,7 @@ export default function AppLayout({
 										className={cn(
 											"flex items-center gap-3 rounded-lg p-2 text-gray-700 transition-colors hover:bg-gray-100",
 											activePath === link.href &&
-											"bg-orange-200 text-orange-700 hover:bg-orange-200"
+												"bg-orange-200 text-orange-700 hover:bg-orange-200"
 										)}
 										to={link.href}
 									>

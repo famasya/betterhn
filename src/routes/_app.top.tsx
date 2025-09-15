@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { cn } from "~/lib/utils";
 
-export const Route = createFileRoute("/_app/best")({
+export const Route = createFileRoute("/_app/top")({
 	component: RouteComponent,
 });
 
@@ -12,7 +12,7 @@ function RouteComponent() {
 				"relative flex-1 bg-gray-50 transition-transform duration-300 md:transform-none"
 			)}
 		>
-			Best
+			Top
 		</main>
 	);
 }
