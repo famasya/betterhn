@@ -4,9 +4,15 @@
       "Bash(bun add:*)",
       "Bash(bun run lint:*)",
       "Bash(bun run:*)",
-      "Bash(bunx tsc:*)"
+      "Bash(bunx tsc:*)",
+      "mcp__browsermcp__browser_navigate",
+      "mcp__browsermcp__browser_click",
+      "mcp__browsermcp__browser_snapshot",
+      "mcp__browsermcp__browser_get_console_logs"
     ],
     "deny": [],
     "ask": []
-  }
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": ["browsermcp"]
 }

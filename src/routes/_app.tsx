@@ -98,7 +98,6 @@ function RouteComponent() {
 					onClick={(e) => {
 						e.preventDefault();
 						e.stopPropagation();
-						console.log("HAMBURGER WORKING!");
 						setIsMobileMenuOpen(!isMobileMenuOpen);
 					}}
 					type="button"

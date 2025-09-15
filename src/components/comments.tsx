@@ -44,7 +44,7 @@ function CommentReplies({
 					<HugeiconsIcon
 						className="animate-spin"
 						icon={Loading03FreeIcons}
-						size={14}
+						size={16}
 					/>
 					Loading replies...
 				</div>
@@ -88,9 +88,9 @@ function CommentItem({
 
 	return (
 		<div>
-			<div className="border-gray-100 border-b py-3">
+			<div className="border-gray-200 border-b py-3">
 				<div className="mb-2 flex items-center gap-2 text-gray-600 text-xs">
-					<HugeiconsIcon icon={UserSquareIcon} size={14} />
+					<HugeiconsIcon icon={UserSquareIcon} size={16} />
 					<span className="font-medium">{comment.by}</span>
 					<span>[ {formatRelative(comment.time * 1000, Date.now())} ]</span>
 					{hasReplies && (
@@ -99,7 +99,7 @@ function CommentItem({
 							onClick={handleToggleReplies}
 							type="button"
 						>
-							<HugeiconsIcon icon={Comment01FreeIcons} size={14} />
+							<HugeiconsIcon icon={Comment01FreeIcons} size={16} />
 							<span>
 								{comment.kids?.length}{" "}
 								{comment.kids?.length === 1 ? "reply" : "replies"}

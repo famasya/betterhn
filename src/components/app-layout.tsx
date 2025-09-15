@@ -69,13 +69,11 @@ export default function AppLayout({ activePath }: Props) {
 					onClick={(e) => {
 						e.preventDefault();
 						e.stopPropagation();
-						console.log("HAMBURGER MAIN CLICKED - 999999999");
 						setIsMobileMenuOpen(!isMobileMenuOpen);
 					}}
 					onTouchStart={(e) => {
 						e.preventDefault();
 						e.stopPropagation();
-						console.log("HAMBURGER TOUCHED - 888888888");
 					}}
 					style={{ touchAction: "manipulation" }}
 					type="button"
@@ -114,7 +112,6 @@ export default function AppLayout({ activePath }: Props) {
 												className="rounded-lg p-2 transition-colors hover:bg-gray-100"
 												onClick={() => {
 													setMobileMenuView("content");
-													console.log(123);
 												}}
 												title="Show Content"
 												type="button"
@@ -125,7 +122,6 @@ export default function AppLayout({ activePath }: Props) {
 												className="rounded-lg p-2 transition-colors hover:bg-gray-100"
 												onClick={() => {
 													setIsMobileMenuOpen(false);
-													console.log(1234);
 												}}
 												title="Close Menu"
 												type="button"
@@ -179,7 +175,6 @@ export default function AppLayout({ activePath }: Props) {
 											className="rounded-lg p-2 transition-colors hover:bg-gray-100"
 											onClick={() => {
 												setMobileMenuView("menu");
-												console.log(12_345);
 											}}
 											title="Show Menu"
 											type="button"
@@ -191,7 +186,6 @@ export default function AppLayout({ activePath }: Props) {
 											className="rounded-lg p-2 transition-colors hover:bg-gray-100"
 											onClick={() => {
 												setIsMobileMenuOpen(false);
-												console.log(12_345_678);
 											}}
 											title="Close Menu"
 											type="button"
