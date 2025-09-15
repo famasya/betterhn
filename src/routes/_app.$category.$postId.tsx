@@ -10,48 +10,53 @@ import Comments from "~/components/comments";
 import { PostDetailSkeleton } from "~/components/skeletons/post-detail-skeleton";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { type CommentItem, loadComments } from "~/functions/load-comments";
+import { queryClient } from "~/lib/query-client";
 import { firebaseFetcher } from "../lib/fetcher";
 import type { FirebasePostDetail } from "../lib/types";
 
 export const Route = createFileRoute("/_app/$category/$postId")({
-	loader: async ({ params: { postId } }) => {
-		const postIdNum = postId.split("-").pop();
-		const post = await firebaseFetcher
-			.get<FirebasePostDetail>(`item/${postIdNum}.json`)
-			.json();
+	loader: ({ params: { postId } }) =>
+		queryClient.ensureQueryData({
+			queryKey: ["post", postId],
+			queryFn: async () => {
+				const postIdNum = postId.split("-").pop();
+				const post = await firebaseFetcher
+					.get<FirebasePostDetail>(`item/${postIdNum}.json`)
+					.json();
 
-		let initialComments: CommentItem[] = [];
-		const remainingCommentSlices: number[][] = [];
+				let initialComments: CommentItem[] = [];
+				const remainingCommentSlices: number[][] = [];
 
-		if (post.kids && post.kids.length > 0) {
-			// Load only first 10 comments server-side for SEO and initial load performance
-			const initialCommentIds = post.kids.slice(0, 10);
-			const remainingCommentIds = post.kids.slice(10);
+				if (post.kids && post.kids.length > 0) {
+					// Load only first 10 comments server-side for SEO and initial load performance
+					const initialCommentIds = post.kids.slice(0, 10);
+					const remainingCommentIds = post.kids.slice(10);
 
-			// Create slices of 10 for remaining comments
-			for (let i = 0; i < remainingCommentIds.length; i += 10) {
-				remainingCommentSlices.push(remainingCommentIds.slice(i, i + 10));
-			}
+					// Create slices of 10 for remaining comments
+					for (let i = 0; i < remainingCommentIds.length; i += 10) {
+						remainingCommentSlices.push(remainingCommentIds.slice(i, i + 10));
+					}
 
-			// Load initial comments server-side
-			if (initialCommentIds.length > 0) {
-				try {
-					const commentsResult = await loadComments({
-						data: initialCommentIds,
-					});
-					initialComments = commentsResult.comments;
-				} catch (error) {
-					console.warn("Failed to load initial comments:", error);
+					// Load initial comments server-side
+					if (initialCommentIds.length > 0) {
+						try {
+							const commentsResult = await loadComments({
+								data: initialCommentIds,
+							});
+							initialComments = commentsResult.comments;
+						} catch (error) {
+							console.warn("Failed to load initial comments:", error);
+						}
+					}
 				}
-			}
-		}
 
-		return {
-			post,
-			initialComments,
-			remainingCommentSlices,
-		};
-	},
+				return {
+					post,
+					initialComments,
+					remainingCommentSlices,
+				};
+			},
+		}),
 	component: RouteComponent,
 	head: ({ loaderData }) => ({
 		meta: [

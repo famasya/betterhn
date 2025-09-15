@@ -31,14 +31,27 @@ export const fetchPosts = async (type: string) => {
 
 	// fetch post details for first 10
 	const [first10Items, ...remainingItems] = slices;
-	const first10 = await Promise.all(
+	const getItems = await Promise.allSettled(
 		first10Items.map((postId) =>
 			firebaseFetcher.get<FirebasePostDetail>(`item/${postId}.json`).json()
 		)
 	);
 
+	const successItems: FirebasePostDetail[] = [];
+	const failedItems: number[] = [];
+	for (const [index, item] of getItems.entries()) {
+		if (item.status === "fulfilled") {
+			successItems.push(item.value);
+		} else {
+			failedItems.push(index);
+		}
+	}
+
+	// re add failed items to remaining items
+	remainingItems.push(failedItems);
+
 	return {
-		first10,
+		first10: successItems,
 		remainingItems,
 	};
 };
