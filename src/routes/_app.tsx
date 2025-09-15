@@ -1,7 +1,60 @@
-import { createFileRoute, useLocation } from "@tanstack/react-router";
-import AppLayout from "../components/app-layout";
+import {
+	FireIcon,
+	Loading03Icon,
+	Menu01Icon,
+	QuestionIcon,
+	RocketIcon,
+	StarIcon,
+	TargetIcon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+	createFileRoute,
+	Link,
+	Outlet,
+	useLocation,
+} from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import PostList from "~/components/post-list";
+import { ScrollArea } from "~/components/ui/scroll-area";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "~/components/ui/tooltip";
+import { fetchPosts } from "~/lib/fetch-posts";
+import { usePosts } from "~/lib/hooks/use-posts";
+import { cn } from "~/lib/utils";
+
+const navLinks = [
+	{ label: "Front Page", href: "/top", icon: FireIcon },
+	{ label: "Best", href: "/best", icon: StarIcon },
+	{ label: "New", href: "/new", icon: TargetIcon },
+	{ label: "Ask", href: "/ask", icon: QuestionIcon },
+	{ label: "Show", href: "/show", icon: RocketIcon },
+];
+
+const categoryMap: Record<string, string> = {
+	"/": "top",
+	"/top": "top",
+	"/new": "new",
+	"/best": "best",
+	"/show": "show",
+	"/ask": "ask",
+};
 
 export const Route = createFileRoute("/_app")({
+	loader: async ({ location }) => {
+		const currentPath = location.pathname;
+		const category = categoryMap[currentPath] || "top";
+		const { first10, remainingItems } = await fetchPosts(category);
+		return {
+			first10,
+			remainingItems,
+			category,
+		};
+	},
 	component: RouteComponent,
 	staleTime: 5 * 60 * 1000, // 5 minutes
 	gcTime: 10 * 60 * 1000, // 10 minutes
@@ -9,11 +62,107 @@ export const Route = createFileRoute("/_app")({
 
 function RouteComponent() {
 	const { pathname } = useLocation();
+	const paths = pathname.split("/");
+	const category = paths[1];
+	const loaderData = Route.useLoaderData();
+
+	// Use loader data as initial data only if it matches current category
+	const initialData =
+		loaderData.category === category
+			? {
+					first10: loaderData.first10,
+					remainingItems: loaderData.remainingItems,
+				}
+			: undefined;
+
+	const { data, isLoading } = usePosts(category, initialData);
+	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+	// Prevent body scroll when mobile menu is open
+	useEffect(() => {
+		if (isMobileMenuOpen) {
+			document.body.style.overflow = "hidden";
+		} else {
+			document.body.style.overflow = "unset";
+		}
+
+		// Cleanup on unmount
+		return () => {
+			document.body.style.overflow = "unset";
+		};
+	}, [isMobileMenuOpen]);
+
 	return (
-		<AppLayout
-			activePath={pathname}
-			posts={[]}
-			remainingItems={[]}
-		/>
+		<div className="flex h-screen flex-col overflow-hidden bg-gray-50 md:flex-row">
+			{/* Mobile Header */}
+			<div className="flex items-center justify-between border-gray-200 border-b bg-white p-2 md:hidden">
+				<button
+					className="rounded-lg p-2 transition-colors hover:bg-gray-100"
+					onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+					type="button"
+				>
+					<HugeiconsIcon className="h-6 w-6" icon={Menu01Icon} />
+				</button>
+				<h1 className="font-semibold text-lg">hn.fd</h1>
+				<div className="w-10" /> {/* Spacer for centering */}
+			</div>
+
+			{/* sidebar navigation */}
+			<div className="hidden border-gray-200 border-r bg-white md:block">
+				<nav className="space-y-2 p-2">
+					<TooltipProvider>
+						{navLinks.map((link) => (
+							<Tooltip delayDuration={0} key={link.href}>
+								<TooltipTrigger asChild>
+									<Link
+										className={cn(
+											"flex items-center gap-3 rounded-lg p-2 text-gray-700 transition-colors hover:bg-gray-100",
+											`/${category}` === link.href &&
+												"bg-orange-200 text-orange-700 hover:bg-orange-200"
+										)}
+										to={link.href}
+									>
+										<HugeiconsIcon className="h-5 w-5" icon={link.icon} />
+									</Link>
+								</TooltipTrigger>
+								<TooltipContent side="right">
+									<p>{link.label}</p>
+								</TooltipContent>
+							</Tooltip>
+						))}
+					</TooltipProvider>
+				</nav>
+			</div>
+
+			{/* Posts sidebar */}
+			<div className="hidden w-1/4 min-w-[300px] border-gray-200 border-r bg-white md:block">
+				<ScrollArea className="h-full">
+					{isLoading ? (
+						<div className="flex items-center justify-center p-4">
+							<div className="flex items-center gap-2 text-gray-500 text-sm">
+								<HugeiconsIcon
+									className="animate-spin"
+									icon={Loading03Icon}
+									size={16}
+								/>
+								Loading posts...
+							</div>
+						</div>
+					) : (
+						<PostList
+							category={category}
+							error={null}
+							fetchNextPage={undefined}
+							hasNextPage={false}
+							isFetchingNextPage={false}
+							posts={data?.first10 || []}
+						/>
+					)}
+				</ScrollArea>
+			</div>
+
+			{/* Main content */}
+			<Outlet />
+		</div>
 	);
 }
