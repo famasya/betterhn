@@ -9,12 +9,8 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Link, Outlet } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import MobileMenu from "~/components/mobile-menu";
-import PostList from "~/components/post-list";
-import { useInfinitePosts } from "~/lib/hooks/use-infinite-posts";
 import type { FirebasePostDetail } from "~/lib/types";
 import { cn } from "~/lib/utils";
-import { ScrollArea } from "./ui/scroll-area";
 import {
 	Tooltip,
 	TooltipContent,
@@ -36,22 +32,9 @@ type Props = {
 	activePath: string;
 };
 export default function AppLayout({
-	posts,
-	remainingItems,
 	activePath,
 }: Props) {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-	const {
-		posts: allPosts,
-		fetchNextPage,
-		hasNextPage,
-		isFetchingNextPage,
-		error,
-	} = useInfinitePosts({
-		initialPosts: posts || [],
-		remainingItems: remainingItems || [],
-	});
 
 	// Prevent body scroll when mobile menu is open
 	useEffect(() => {
@@ -82,7 +65,7 @@ export default function AppLayout({
 				<div className="w-10" /> {/* Spacer for centering */}
 			</div>
 
-			{/* Desktop Sidebar Navigation */}
+			{/* sidebar navigation */}
 			<div className="hidden border-gray-200 border-r bg-white md:block">
 				<nav className="space-y-2 p-2">
 					<TooltipProvider>
@@ -93,7 +76,7 @@ export default function AppLayout({
 										className={cn(
 											"flex items-center gap-3 rounded-lg p-2 text-gray-700 transition-colors hover:bg-gray-100",
 											activePath === link.href &&
-												"bg-orange-200 text-orange-700 hover:bg-orange-200"
+											"bg-orange-200 text-orange-700 hover:bg-orange-200"
 										)}
 										to={link.href}
 									>
@@ -109,38 +92,7 @@ export default function AppLayout({
 				</nav>
 			</div>
 
-			{/* Desktop Post List */}
-			<div className="hidden w-1/4 max-w-[300px] border-gray-200 border-r bg-white md:block">
-				<ScrollArea className="h-full">
-					<PostList
-						error={error}
-						fetchNextPage={fetchNextPage}
-						hasNextPage={hasNextPage}
-						isFetchingNextPage={isFetchingNextPage}
-						posts={allPosts}
-					/>
-				</ScrollArea>
-			</div>
-
-			<main
-				className={cn(
-					"relative flex-1 bg-gray-50 transition-transform duration-300 md:transform-none",
-					isMobileMenuOpen && "translate-x-80 transform"
-				)}
-			>
-				<Outlet />
-			</main>
-
-			<MobileMenu
-				activePath={activePath}
-				error={error}
-				fetchNextPage={fetchNextPage}
-				hasNextPage={hasNextPage}
-				isFetchingNextPage={isFetchingNextPage}
-				isMobileMenuOpen={isMobileMenuOpen}
-				posts={allPosts}
-				setIsMobileMenuOpen={setIsMobileMenuOpen}
-			/>
+			<Outlet />
 		</div>
 	);
 }
