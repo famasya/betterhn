@@ -48,14 +48,6 @@ export const loadComments = createServerFn({
 				);
 			}
 		}
-		console.log(
-			`Loaded ${successfulComments.length}/${data.length} comments successfully`
-		);
-		if (failedCommentIds.length > 0) {
-			console.log(
-				`Failed comment IDs to retry: ${failedCommentIds.join(", ")}`
-			);
-		}
 		return {
 			comments: successfulComments,
 			failedIds: failedCommentIds,

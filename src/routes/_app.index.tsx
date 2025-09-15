@@ -2,19 +2,19 @@ import { createFileRoute } from "@tanstack/react-router";
 import { fetchPosts } from "~/lib/fetch-posts";
 
 export const Route = createFileRoute("/_app/")({
-	loader: async () => {
-		const { first10, slices } = await fetchPosts("top");
-		return { first10, slices };
-	},
-	staleTime: 5 * 60 * 1000, // 5 minutes
-	gcTime: 10 * 60 * 1000, // 10 minutes
-	component: Home,
+  loader: async () => {
+    const { first10, remainingItems } = await fetchPosts("top");
+    return { first10, remainingItems };
+  },
+  staleTime: 5 * 60 * 1000, // 5 minutes
+  gcTime: 10 * 60 * 1000, // 10 minutes
+  component: RouteComponent,
 });
 
-function Home() {
-	return (
-		<div className="p-2">
-			<h3>hn.fd - Top Stories</h3>
-		</div>
-	);
+function RouteComponent() {
+  return (
+    <div className="p-2">
+      <h3>hn.fd - Top</h3>
+    </div>
+  )
 }

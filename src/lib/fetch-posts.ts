@@ -30,7 +30,7 @@ export const fetchPosts = async (type: string) => {
 	}
 
 	// fetch post details for first 10
-	const [first10Items, ...restItems] = slices;
+	const [first10Items, ...remainingItems] = slices;
 	const first10 = await Promise.all(
 		first10Items.map((postId) =>
 			firebaseFetcher.get<FirebasePostDetail>(`item/${postId}.json`).json()
@@ -39,6 +39,6 @@ export const fetchPosts = async (type: string) => {
 
 	return {
 		first10,
-		slices: restItems,
+		remainingItems,
 	};
 };
