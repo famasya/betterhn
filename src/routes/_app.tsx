@@ -24,7 +24,7 @@ import {
 	TooltipTrigger,
 } from "~/components/ui/tooltip";
 import { fetchPosts } from "~/lib/fetch-posts";
-import { usePosts } from "~/lib/hooks/use-posts";
+import { useInfinitePosts } from "~/lib/hooks/use-infinite-posts";
 import { cn } from "~/lib/utils";
 
 const navLinks = [
@@ -67,15 +67,20 @@ function RouteComponent() {
 	const loaderData = Route.useLoaderData();
 
 	// Use loader data as initial data only if it matches current category
-	const initialData =
-		loaderData.category === category
-			? {
-					first10: loaderData.first10,
-					remainingItems: loaderData.remainingItems,
-				}
-			: undefined;
+	const useLoaderData = loaderData.category === category;
 
-	const { data, isLoading } = usePosts(category, initialData);
+	const {
+		posts,
+		fetchNextPage,
+		hasNextPage,
+		isFetchingNextPage,
+		isLoading,
+		error,
+	} = useInfinitePosts({
+		category,
+		initialPosts: useLoaderData ? loaderData.first10 : [],
+		remainingItems: useLoaderData ? loaderData.remainingItems : [],
+	});
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
 	// Prevent body scroll when mobile menu is open
@@ -151,11 +156,11 @@ function RouteComponent() {
 					) : (
 						<PostList
 							category={category}
-							error={null}
-							fetchNextPage={undefined}
-							hasNextPage={false}
-							isFetchingNextPage={false}
-							posts={data?.first10 || []}
+							error={error}
+							fetchNextPage={fetchNextPage}
+							hasNextPage={hasNextPage}
+							isFetchingNextPage={isFetchingNextPage}
+							posts={posts}
 						/>
 					)}
 				</ScrollArea>
