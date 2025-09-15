@@ -7,6 +7,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { formatRelative } from "date-fns";
 import Comments from "~/components/comments";
+import { PostDetailSkeleton } from "~/components/skeletons/post-detail-skeleton";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { type CommentItem, loadComments } from "~/functions/load-comments";
 import { firebaseFetcher } from "../lib/fetcher";
@@ -59,12 +60,7 @@ export const Route = createFileRoute("/_app/$category/$postId")({
 			},
 		],
 	}),
-	pendingComponent: () => (
-		<div className="flex h-64 items-center justify-center gap-2">
-			<HugeiconsIcon className="animate-spin" icon={Time04Icon} size={16} />
-			Loading post...
-		</div>
-	),
+	pendingComponent: () => <PostDetailSkeleton />,
 });
 
 function RouteComponent() {
