@@ -45,7 +45,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 			<head>
 				<HeadContent />
 			</head>
-			<body className="flex min-h-screen flex-col bg-blue-100">
+			<body className="flex min-h-screen flex-col">
 				<QueryClientProvider client={queryClient}>
 					{children}
 					<TanStackRouterDevtools position="bottom-right" />

@@ -8,7 +8,8 @@
       "mcp__browsermcp__browser_navigate",
       "mcp__browsermcp__browser_click",
       "mcp__browsermcp__browser_snapshot",
-      "mcp__browsermcp__browser_get_console_logs"
+      "mcp__browsermcp__browser_get_console_logs",
+      "mcp__browsermcp__browser_screenshot"
     ],
     "deny": [],
     "ask": []
