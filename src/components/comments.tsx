@@ -108,7 +108,7 @@ function CommentItem({
 					)}
 				</div>
 				<div
-					className="overflow-hidden break-words break-all text-gray-800 text-sm leading-relaxed [&_*]:break-words [&_a]:break-words [&_a]:text-orange-600 [&_a]:underline [&_a]:hover:text-orange-700 [&_code]:break-all [&_code]:rounded [&_code]:bg-gray-100 [&_code]:px-1 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-xs [&_p:last-child]:mb-0 [&_p]:mb-2 [&_pre]:mt-2 [&_pre]:overflow-x-auto [&_pre]:break-all [&_pre]:rounded [&_pre]:bg-gray-100 [&_pre]:p-2 [&_pre]:font-mono [&_pre]:text-xs"
+					className="overflow-hidden break-normal break-words text-gray-800 text-sm leading-relaxed [&_*]:break-words [&_a]:break-words [&_a]:text-orange-600 [&_a]:underline [&_a]:hover:text-orange-700 [&_code]:break-normal [&_code]:rounded [&_code]:bg-gray-100 [&_code]:px-1 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-xs [&_p:last-child]:mb-0 [&_p]:mb-2 [&_pre]:mt-2 [&_pre]:overflow-x-auto [&_pre]:break-normal [&_pre]:rounded [&_pre]:bg-gray-100 [&_pre]:p-2 [&_pre]:font-mono [&_pre]:text-xs"
 					// biome-ignore lint/security/noDangerouslySetInnerHtml: ignored
 					dangerouslySetInnerHTML={{ __html: comment.text }}
 				/>

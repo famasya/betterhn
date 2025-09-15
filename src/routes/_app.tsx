@@ -142,7 +142,7 @@ function RouteComponent() {
 
 							{/* Posts Sidebar */}
 							<div className="flex h-full w-80 flex-col bg-white shadow-lg">
-								<div className="flex items-center justify-between border-gray-200 border-b p-4">
+								<div className="flex items-center justify-between border-gray-200 border-b p-2">
 									<h2 className="font-semibold text-lg">Posts</h2>
 									<button
 										className="rounded-lg p-2 transition-colors hover:bg-gray-100"

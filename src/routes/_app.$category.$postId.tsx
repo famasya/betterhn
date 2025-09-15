@@ -116,7 +116,7 @@ function RouteComponent() {
 				{post.text && (
 					<div className="mt-4 border-gray-200 border-t border-dashed pt-4">
 						<div
-							className="overflow-hidden hyphens-auto break-words text-gray-800 text-sm leading-relaxed [&_*]:hyphens-auto [&_*]:break-words [&_a]:text-orange-600 [&_a]:underline [&_a]:hover:text-orange-700 [&_code]:break-all [&_code]:rounded [&_code]:bg-gray-100 [&_code]:px-2 [&_code]:py-1 [&_code]:font-mono [&_code]:text-xs [&_p:last-child]:mb-0 [&_p]:mb-3 [&_pre]:mt-2 [&_pre]:overflow-x-auto [&_pre]:break-all [&_pre]:rounded [&_pre]:bg-gray-100 [&_pre]:p-3 [&_pre]:font-mono [&_pre]:text-xs"
+							className="overflow-hidden hyphens-auto break-words text-gray-800 text-sm leading-relaxed [&_*]:hyphens-auto [&_*]:break-words [&_a]:text-orange-600 [&_a]:underline [&_a]:hover:text-orange-700 [&_code]:break-normal [&_code]:rounded [&_code]:bg-gray-100 [&_code]:px-2 [&_code]:py-1 [&_code]:font-mono [&_code]:text-xs [&_p:last-child]:mb-0 [&_p]:mb-3 [&_pre]:mt-2 [&_pre]:overflow-x-auto [&_pre]:break-normal [&_pre]:rounded [&_pre]:bg-gray-100 [&_pre]:p-3 [&_pre]:font-mono [&_pre]:text-xs"
 							// biome-ignore lint/security/noDangerouslySetInnerHtml: contentis in html
 							dangerouslySetInnerHTML={{ __html: post.text }}
 							style={{ wordBreak: "break-word", overflowWrap: "anywhere" }}
