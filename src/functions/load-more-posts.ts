@@ -43,14 +43,6 @@ export const loadMorePosts = createServerFn({
 			}
 		}
 
-		console.log(
-			`Loaded ${successfulPosts.length}/${data.length} posts successfully`
-		);
-
-		if (failedPostIds.length > 0) {
-			console.log(`Failed post IDs to retry: ${failedPostIds.join(", ")}`);
-		}
-
 		return {
 			posts: successfulPosts,
 			failedIds: failedPostIds,

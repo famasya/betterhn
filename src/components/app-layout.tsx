@@ -7,8 +7,8 @@ import {
 	TargetIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Link } from "@tanstack/react-router";
-import { type ReactNode, useEffect, useState } from "react";
+import { Link, Outlet } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import MobileMenu from "~/components/mobile-menu";
 import PostList from "~/components/post-list";
 import { useInfinitePosts } from "~/lib/hooks/use-infinite-posts";
@@ -31,15 +31,13 @@ export const navLinks = [
 ];
 
 type Props = {
-	children: ReactNode;
 	posts?: FirebasePostDetail[];
-	remainingSlices?: number[][];
+	remainingItems?: number[][];
 	activePath: string;
 };
 export default function AppLayout({
-	children,
 	posts,
-	remainingSlices,
+	remainingItems,
 	activePath,
 }: Props) {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -52,7 +50,7 @@ export default function AppLayout({
 		error,
 	} = useInfinitePosts({
 		initialPosts: posts || [],
-		remainingSlices: remainingSlices || [],
+		remainingItems: remainingItems || [],
 	});
 
 	// Prevent body scroll when mobile menu is open
@@ -95,7 +93,7 @@ export default function AppLayout({
 										className={cn(
 											"flex items-center gap-3 rounded-lg p-2 text-gray-700 transition-colors hover:bg-gray-100",
 											activePath === link.href &&
-												"bg-orange-200 text-orange-700 hover:bg-orange-200"
+											"bg-orange-200 text-orange-700 hover:bg-orange-200"
 										)}
 										to={link.href}
 									>
@@ -130,7 +128,7 @@ export default function AppLayout({
 					isMobileMenuOpen && "translate-x-80 transform"
 				)}
 			>
-				{children}
+				<Outlet />
 			</main>
 
 			<MobileMenu

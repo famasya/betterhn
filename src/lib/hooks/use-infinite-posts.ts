@@ -5,19 +5,19 @@ import type { FirebasePostDetail } from "../types";
 
 type UseInfinitePostsParams = {
 	initialPosts?: FirebasePostDetail[];
-	remainingSlices?: number[][];
+	remainingItems?: number[][];
 };
 
 export const useInfinitePosts = ({
 	initialPosts = [],
-	remainingSlices = [],
+	remainingItems = [],
 }: UseInfinitePostsParams) => {
 	const [failedIds, setFailedIds] = useState<Set<number>>(new Set());
 
 	// Memoized slices with failed IDs re-added to the front
 	const enhancedSlices = useMemo(() => {
 		if (failedIds.size === 0) {
-			return remainingSlices;
+			return remainingItems;
 		}
 
 		const failedIdsArray = Array.from(failedIds);
@@ -28,8 +28,8 @@ export const useInfinitePosts = ({
 			failedSlices.push(failedIdsArray.slice(i, i + 10));
 		}
 
-		return [...failedSlices, ...remainingSlices];
-	}, [remainingSlices, failedIds]);
+		return [...failedSlices, ...remainingItems];
+	}, [remainingItems, failedIds]);
 
 	const {
 		data,
@@ -39,7 +39,7 @@ export const useInfinitePosts = ({
 		isLoading,
 		error,
 	} = useInfiniteQuery({
-		queryKey: ["infinite-posts", remainingSlices.length, failedIds.size],
+		queryKey: ["infinite-posts", remainingItems.length, failedIds.size],
 		queryFn: async ({ pageParam }) => {
 			if (pageParam === 0) {
 				return { posts: initialPosts, sliceIndex: 0, failedIds: [] };
