@@ -9,7 +9,6 @@ import { formatRelative } from "date-fns";
 import DOMPurify from "dompurify";
 import Comments from "~/components/comments";
 import { PostDetailSkeleton } from "~/components/skeletons/post-detail-skeleton";
-import { ScrollArea } from "~/components/ui/scroll-area";
 import { type CommentItem, loadComments } from "~/functions/load-comments";
 import { createQueryClient } from "~/lib/query-client";
 import { firebaseFetcher } from "../lib/fetcher";
@@ -80,8 +79,8 @@ function RouteComponent() {
 		Route.useLoaderData();
 
 	return (
-		<ScrollArea
-			className="h-[100dvh] flex-1 bg-gray-50 pb-14 md:pb-0"
+		<div
+			className="h-[100dvh] flex-1 overflow-y-auto bg-gray-50 pb-14 md:pb-0"
 			id="post-content"
 		>
 			{/* Post Header */}
@@ -152,6 +151,6 @@ function RouteComponent() {
 				remainingCommentSlices={remainingCommentSlices}
 				totalComments={post.descendants}
 			/>
-		</ScrollArea>
+		</div>
 	);
 }

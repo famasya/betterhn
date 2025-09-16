@@ -117,7 +117,7 @@ function RouteComponent() {
 			{/* Mobile Header */}
 			<div className="flex items-center justify-between border-gray-200 border-b bg-white p-2 md:hidden">
 				<button
-					className="ml-2 rounded-lg transition-colors hover:bg-gray-100 active:bg-gray-200"
+					className="ml-2 rounded-sm transition-colors hover:bg-gray-200 active:bg-gray-200"
 					onClick={(e) => {
 						e.preventDefault();
 						e.stopPropagation();
@@ -125,10 +125,7 @@ function RouteComponent() {
 					}}
 					type="button"
 				>
-					<HugeiconsIcon
-						className="pointer-events-none h-6 w-6"
-						icon={Menu01Icon}
-					/>
+					<HugeiconsIcon className="pointer-events-none" icon={Menu01Icon} />
 				</button>
 				<h1 className="font-semibold text-lg">hn.fd</h1>
 				<div className="w-10" /> {/* Spacer for centering */}
@@ -235,7 +232,7 @@ function RouteComponent() {
 								</Link>
 							</TooltipTrigger>
 							<TooltipContent side="right">
-								<p>hn.fd - Clean and Sleek HN Reader</p>
+								<p>hn.fd - Clean and Fast HN Reader</p>
 							</TooltipContent>
 						</Tooltip>
 						{navLinks.map((link) => (
