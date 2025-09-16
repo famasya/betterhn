@@ -1,43 +1,18 @@
 import {
-	BowlingBallIcon,
 	Cancel01Icon,
-	FireIcon,
 	Loading03Icon,
 	Menu01Icon,
-	QuestionIcon,
-	RocketIcon,
-	Search01Icon,
-	StarIcon,
-	TargetIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import {
-	createFileRoute,
-	Link,
-	Outlet,
-	useLocation,
-} from "@tanstack/react-router";
+import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import NavLinks from "~/components/nav-links";
 import PostList from "~/components/post-list";
 import { ScrollArea } from "~/components/ui/scroll-area";
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from "~/components/ui/tooltip";
 import { fetchPosts } from "~/lib/fetch-posts";
 import { useInfinitePosts } from "~/lib/hooks/use-infinite-posts";
 import { createQueryClient } from "~/lib/query-client";
-import { cn, lowerCaseTitle } from "~/lib/utils";
-
-const navLinks = [
-	{ label: "Front Page", href: "/top", icon: FireIcon },
-	{ label: "Best", href: "/best", icon: StarIcon },
-	{ label: "New", href: "/new", icon: TargetIcon },
-	{ label: "Ask", href: "/ask", icon: QuestionIcon },
-	{ label: "Show", href: "/show", icon: RocketIcon },
-];
+import { lowerCaseTitle } from "~/lib/utils";
 
 export const Route = createFileRoute("/_app")({
 	loader: async ({ location }) => {
@@ -141,41 +116,14 @@ function RouteComponent() {
 					<div className="absolute top-0 left-0 h-full w-full">
 						<div className="flex h-full">
 							{/* Navigation Sidebar */}
-							<div className="w-16 border-gray-200 border-r bg-white shadow-lg">
-								<nav className="space-y-2 p-2">
-									{navLinks.map((link) => (
-										<Link
-											className={cn(
-												"flex items-center justify-center rounded-lg p-2 text-gray-700 transition-colors hover:bg-gray-100",
-												`/${category}` === link.href &&
-													"bg-orange-200 text-orange-700 hover:bg-orange-200"
-											)}
-											key={link.href}
-											params={{ category: link.href, postId }}
-											to={"/$category/{-$postId}"}
-										>
-											<HugeiconsIcon className="h-5 w-5" icon={link.icon} />
-										</Link>
-									))}
-									<Link
-										className={cn(
-											"flex items-center justify-center rounded-lg p-2 text-gray-700 transition-colors hover:bg-gray-100",
-											`/${category}` === "search" &&
-												"bg-orange-200 text-orange-700 hover:bg-orange-200"
-										)}
-										key={"search"}
-										params={{ category, postId: "" }}
-										to={"/$category/{-$postId}"}
-									>
-										<HugeiconsIcon className="h-5 w-5" icon={Search01Icon} />
-									</Link>
-								</nav>
+							<div className="border-gray-200 border-r bg-white shadow-md">
+								<NavLinks category={category} postId={postId} />
 							</div>
 
 							{/* Posts Sidebar */}
 							<div className="flex h-full w-80 flex-col bg-white shadow-lg">
 								<div className="flex items-center justify-between border-gray-200 border-b p-2">
-									<h2 className="font-semibold text-lg">Posts</h2>
+									<h2 className="font-medium text-lg">Posts</h2>
 									<button
 										className="ml-2 rounded-lg transition-colors hover:bg-gray-100"
 										onClick={() => setIsMobileMenuOpen(false)}
@@ -220,62 +168,7 @@ function RouteComponent() {
 
 			{/* sidebar navigation */}
 			<div className="hidden border-gray-200 border-r bg-white md:block">
-				<nav className="space-y-2 p-2">
-					<TooltipProvider delayDuration={0}>
-						<Tooltip>
-							<TooltipTrigger asChild>
-								<Link
-									className="flex items-center gap-3 rounded-lg bg-gradient-to-br from-blue-400 to-blue-500 p-2 text-gray-700 text-white transition-colors hover:from-blue-500 hover:to-blue-500"
-									to="/"
-								>
-									<HugeiconsIcon className="h-5 w-5" icon={BowlingBallIcon} />
-								</Link>
-							</TooltipTrigger>
-							<TooltipContent side="right">
-								<p>hn.fd - Clean and Fast HN Reader</p>
-							</TooltipContent>
-						</Tooltip>
-						{navLinks.map((link) => (
-							<Tooltip delayDuration={0} key={link.href}>
-								<TooltipTrigger asChild>
-									<Link
-										className={cn(
-											"flex items-center gap-3 rounded-lg p-2 text-gray-700 transition-colors hover:bg-gray-100",
-											`/${category}` === link.href &&
-												"bg-orange-200 text-orange-700 hover:bg-orange-200"
-										)}
-										params={{ category: link.href.split("/")[1], postId }}
-										to={postId.length > 0 ? "/$category/{-$postId}" : link.href}
-									>
-										<HugeiconsIcon className="h-5 w-5" icon={link.icon} />
-									</Link>
-								</TooltipTrigger>
-								<TooltipContent side="right">
-									<p>{link.label}</p>
-								</TooltipContent>
-							</Tooltip>
-						))}
-						<Tooltip delayDuration={0}>
-							<TooltipTrigger asChild>
-								<Link
-									className={cn(
-										"flex items-center gap-3 rounded-lg p-2 text-gray-700 transition-colors hover:bg-gray-100",
-										`/${category}` === "search" &&
-											"bg-orange-200 text-orange-700 hover:bg-orange-200"
-									)}
-									key={"search"}
-									params={{ category, postId: undefined }}
-									to={"/$category/{-$postId}"}
-								>
-									<HugeiconsIcon className="h-5 w-5" icon={Search01Icon} />
-								</Link>
-							</TooltipTrigger>
-							<TooltipContent side="right">
-								<p>Search</p>
-							</TooltipContent>
-						</Tooltip>
-					</TooltipProvider>
-				</nav>
+				<NavLinks category={category} postId={postId} />
 			</div>
 
 			{/* Desktop Posts sidebar */}
