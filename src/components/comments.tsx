@@ -7,6 +7,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useQuery } from "@tanstack/react-query";
 import { formatRelative } from "date-fns";
+import DOMPurify from "dompurify";
 import { useState } from "react";
 import {
 	type CommentItem as CommentItemType,
@@ -30,11 +31,15 @@ function CommentReplies({
 }) {
 	// Keep existing pattern for nested replies - they load all at once since they're typically smaller
 	const { data, isLoading, error } = useQuery({
-		queryKey: ["comment-replies", commentIds.sort().join(",")],
+		queryKey: [
+			"comment-replies",
+			{ ids: [...commentIds].sort((a, b) => a - b) },
+		],
 		queryFn: async () => {
 			const result = await loadComments({ data: commentIds });
 			return result;
 		},
+		enabled: commentIds.length > 0,
 		staleTime: 5 * 60 * 1000, // 5 minutes
 		gcTime: 30 * 60 * 1000, // 30 minutes
 	});
@@ -112,7 +117,16 @@ function CommentItem({
 				<div
 					className="overflow-hidden break-normal break-words text-gray-800 text-sm leading-relaxed [&_*]:break-words [&_a]:break-words [&_a]:text-orange-600 [&_a]:underline [&_a]:hover:text-orange-700 [&_code]:break-normal [&_code]:rounded [&_code]:bg-gray-100 [&_code]:px-1 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-xs [&_p:last-child]:mb-0 [&_p]:mb-2 [&_pre]:mt-2 [&_pre]:overflow-x-auto [&_pre]:break-normal [&_pre]:rounded [&_pre]:bg-gray-100 [&_pre]:p-2 [&_pre]:font-mono [&_pre]:text-xs"
 					// biome-ignore lint/security/noDangerouslySetInnerHtml: ignored
-					dangerouslySetInnerHTML={{ __html: comment.text }}
+					dangerouslySetInnerHTML={{
+						__html:
+							typeof window !== "undefined"
+								? DOMPurify.sanitize(comment.text, {
+										USE_PROFILES: { html: true },
+										ADD_ATTR: ["target"],
+										ALLOWED_ATTR: ["href", "target", "rel"],
+									})
+								: comment.text, // Server-side: use original text, sanitize on client
+					}}
 				/>
 			</div>
 

@@ -3,9 +3,13 @@ import type { CommentItem } from "~/functions/load-comments";
 import { firebaseFetcher } from "~/lib/fetcher";
 
 export const fetchComment = async (commentId: number): Promise<CommentItem> => {
-	return await firebaseFetcher
-		.get<CommentItem>(`item/${commentId}.json`)
-		.json();
+	const data = await firebaseFetcher
+		.get(`item/${commentId}.json`)
+		.json<CommentItem | null>();
+	if (!data) {
+		throw new Error(`Comment ${commentId} not found or removed`);
+	}
+	return data;
 };
 
 export const useComment = (commentId: number) => {

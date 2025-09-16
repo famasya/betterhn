@@ -74,7 +74,6 @@ function SearchResultItem({
 	category: string;
 	search: string;
 }) {
-	console.log(results, 12);
 	if (search.length === 0) {
 		return (
 			<div className="flex w-full items-center justify-center gap-2 text-center text-gray-500 text-sm">

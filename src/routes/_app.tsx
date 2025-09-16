@@ -26,7 +26,7 @@ import {
 } from "~/components/ui/tooltip";
 import { fetchPosts } from "~/lib/fetch-posts";
 import { useInfinitePosts } from "~/lib/hooks/use-infinite-posts";
-import { queryClient } from "~/lib/query-client";
+import { createQueryClient } from "~/lib/query-client";
 import { cn, lowerCaseTitle } from "~/lib/utils";
 
 const navLinks = [
@@ -40,6 +40,7 @@ const navLinks = [
 export const Route = createFileRoute("/_app")({
 	loader: async ({ location }) => {
 		const category = location.pathname.split("/")[1] || "top";
+		const queryClient = createQueryClient();
 
 		return await queryClient.ensureQueryData({
 			queryKey: ["posts", category],
@@ -74,7 +75,8 @@ function RouteComponent() {
 	const { pathname } = useLocation();
 	const paths = pathname.split("/");
 	const category = paths[1];
-	const activePostId = pathname.split("-").pop();
+	const postId = paths[2] || "";
+	const activePostId = postId?.split("-").pop();
 	const loaderData = Route.useLoaderData();
 
 	// Use loader data as initial data only if it matches current category
@@ -150,7 +152,8 @@ function RouteComponent() {
 													"bg-orange-200 text-orange-700 hover:bg-orange-200"
 											)}
 											key={link.href}
-											to={link.href}
+											params={{ category: link.href, postId }}
+											to={"/$category/$postId"}
 										>
 											<HugeiconsIcon className="h-5 w-5" icon={link.icon} />
 										</Link>
@@ -217,7 +220,8 @@ function RouteComponent() {
 											`/${category}` === link.href &&
 												"bg-orange-200 text-orange-700 hover:bg-orange-200"
 										)}
-										to={link.href}
+										params={{ category: link.href.split("/")[1], postId }}
+										to={"/$category/$postId"}
 									>
 										<HugeiconsIcon className="h-5 w-5" icon={link.icon} />
 									</Link>

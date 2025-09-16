@@ -6,7 +6,7 @@ import type * as React from "react";
 import { DefaultCatchBoundary } from "~/components/default-catch-boundary";
 import { NotFound } from "~/components/not-found";
 import { Toaster } from "~/components/ui/sonner";
-import { queryClient } from "~/lib/query-client";
+import { getBrowserQueryClient } from "~/lib/query-client";
 import appCss from "~/styles/app.css?url";
 import { seo } from "~/utils/seo";
 
@@ -38,7 +38,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 				<HeadContent />
 			</head>
 			<body className="flex min-h-screen flex-col">
-				<QueryClientProvider client={queryClient}>
+				<QueryClientProvider client={getBrowserQueryClient()}>
 					{children}
 					<TanStackRouterDevtools position="bottom-right" />
 				</QueryClientProvider>

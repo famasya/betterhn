@@ -1,6 +1,7 @@
 import { firebaseFetcher } from "./fetcher";
 import type { FirebasePostDetail } from "./types";
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: ignored
 export const fetchPosts = async (type: string) => {
 	// fetch post lists
 	let url = "topstories.json";
@@ -40,15 +41,30 @@ export const fetchPosts = async (type: string) => {
 	const successItems: FirebasePostDetail[] = [];
 	const failedItems: number[] = [];
 	for (const [index, item] of getItems.entries()) {
-		if (item.status === "fulfilled") {
-			successItems.push(item.value);
+		if (item.status === "fulfilled" && item.value) {
+			// Additional null check for Firebase responses
+			if (item.value) {
+				successItems.push(item.value);
+			} else {
+				// Firebase returned null (deleted/missing item)
+				const failedId = first10Items[index];
+				if (typeof failedId === "number") {
+					failedItems.push(failedId);
+				}
+			}
 		} else {
-			failedItems.push(index);
+			// requeue actual postId, not index
+			const failedId = first10Items[index];
+			if (typeof failedId === "number") {
+				failedItems.push(failedId);
+			}
 		}
 	}
 
 	// re add failed items to remaining items
-	remainingItems.push(failedItems);
+	if (failedItems.length > 0) {
+		remainingItems.push(failedItems);
+	}
 
 	return {
 		first10: successItems,
@@ -59,7 +75,11 @@ export const fetchPosts = async (type: string) => {
 export const fetchPost = async (
 	postId: number
 ): Promise<FirebasePostDetail> => {
-	return await firebaseFetcher
-		.get<FirebasePostDetail>(`item/${postId}.json`)
-		.json();
+	const data = await firebaseFetcher
+		.get(`item/${postId}.json`)
+		.json<FirebasePostDetail | null>();
+	if (!data) {
+		throw new Error(`Post ${postId} not found or removed`);
+	}
+	return data;
 };

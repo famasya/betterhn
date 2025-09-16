@@ -6,17 +6,19 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { formatRelative } from "date-fns";
+import DOMPurify from "dompurify";
 import Comments from "~/components/comments";
 import { PostDetailSkeleton } from "~/components/skeletons/post-detail-skeleton";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { type CommentItem, loadComments } from "~/functions/load-comments";
-import { queryClient } from "~/lib/query-client";
+import { createQueryClient } from "~/lib/query-client";
 import { firebaseFetcher } from "../lib/fetcher";
 import type { FirebasePostDetail } from "../lib/types";
 
 export const Route = createFileRoute("/_app/$category/$postId")({
-	loader: ({ params: { postId } }) =>
-		queryClient.ensureQueryData({
+	loader: ({ params: { postId } }) => {
+		const queryClient = createQueryClient();
+		return queryClient.ensureQueryData({
 			queryKey: ["post", postId],
 			queryFn: async () => {
 				const postIdNum = postId.split("-").pop();
@@ -56,7 +58,8 @@ export const Route = createFileRoute("/_app/$category/$postId")({
 					remainingCommentSlices,
 				};
 			},
-		}),
+		});
+	},
 	component: RouteComponent,
 	head: ({ loaderData }) => ({
 		meta: [
@@ -118,8 +121,17 @@ function RouteComponent() {
 					<div className="mt-4 border-gray-200 border-t border-dashed pt-4">
 						<div
 							className="overflow-hidden hyphens-auto break-words text-gray-800 text-sm leading-relaxed [&_*]:hyphens-auto [&_*]:break-words [&_a]:text-orange-600 [&_a]:underline [&_a]:hover:text-orange-700 [&_code]:break-normal [&_code]:rounded [&_code]:bg-gray-100 [&_code]:px-2 [&_code]:py-1 [&_code]:font-mono [&_code]:text-xs [&_p:last-child]:mb-0 [&_p]:mb-3 [&_pre]:mt-2 [&_pre]:overflow-x-auto [&_pre]:break-normal [&_pre]:rounded [&_pre]:bg-gray-100 [&_pre]:p-3 [&_pre]:font-mono [&_pre]:text-xs"
-							// biome-ignore lint/security/noDangerouslySetInnerHtml: contentis in html
-							dangerouslySetInnerHTML={{ __html: post.text }}
+							// biome-ignore lint/security/noDangerouslySetInnerHtml: ignored
+							dangerouslySetInnerHTML={{
+								__html:
+									typeof window !== "undefined"
+										? DOMPurify.sanitize(post.text, {
+												USE_PROFILES: { html: true },
+												ADD_ATTR: ["target"],
+												ALLOWED_ATTR: ["href", "target", "rel"],
+											})
+										: post.text, // Server-side: use original text, sanitize on client
+							}}
 							style={{ wordBreak: "break-word", overflowWrap: "anywhere" }}
 						/>
 					</div>
