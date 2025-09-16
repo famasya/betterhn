@@ -1,13 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
+import SearchSection, { searchSchema } from "~/components/search-section";
 
 export const Route = createFileRoute("/_app/new")({
-	component: Home,
+	component: RouteComponent,
+	validateSearch: (search) => searchSchema.parse(search),
 });
 
-function Home() {
-	return (
-		<div className="p-2">
-			<h3>hn.fd - New Stories</h3>
-		</div>
-	);
+function RouteComponent() {
+	const { search, page } = Route.useSearch();
+	return <SearchSection origin="new" page={page} search={search} />;
 }

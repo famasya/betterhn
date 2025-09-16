@@ -7,8 +7,12 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useQuery } from "@tanstack/react-query";
 import { formatRelative } from "date-fns";
-import { useState } from "react";
-import type { CommentItem as CommentItemType } from "~/functions/load-comments";
+import DOMPurify from "dompurify";
+import { memo, useState } from "react";
+import {
+	type CommentItem as CommentItemType,
+	loadComments,
+} from "~/functions/load-comments";
 import { useInfiniteComments } from "~/lib/hooks/use-infinite-comments";
 
 type CommentsProps = {
@@ -27,12 +31,15 @@ function CommentReplies({
 }) {
 	// Keep existing pattern for nested replies - they load all at once since they're typically smaller
 	const { data, isLoading, error } = useQuery({
-		queryKey: ["comment-replies", commentIds.sort().join(",")],
+		queryKey: [
+			"comment-replies",
+			{ ids: [...commentIds].sort((a, b) => a - b) },
+		],
 		queryFn: async () => {
-			const { loadComments } = await import("~/functions/load-comments");
 			const result = await loadComments({ data: commentIds });
 			return result;
 		},
+		enabled: commentIds.length > 0,
 		staleTime: 5 * 60 * 1000, // 5 minutes
 		gcTime: 30 * 60 * 1000, // 30 minutes
 	});
@@ -44,7 +51,7 @@ function CommentReplies({
 					<HugeiconsIcon
 						className="animate-spin"
 						icon={Loading03FreeIcons}
-						size={14}
+						size={16}
 					/>
 					Loading replies...
 				</div>
@@ -71,7 +78,7 @@ function CommentReplies({
 	);
 }
 
-function CommentItem({
+const CommentItem = memo(function CommentItemComponent({
 	comment,
 	depth = 0,
 }: {
@@ -88,9 +95,9 @@ function CommentItem({
 
 	return (
 		<div>
-			<div className="border-gray-100 border-b py-3">
+			<div className="border-gray-200 border-b py-3">
 				<div className="mb-2 flex items-center gap-2 text-gray-600 text-xs">
-					<HugeiconsIcon icon={UserSquareIcon} size={14} />
+					<HugeiconsIcon icon={UserSquareIcon} size={16} />
 					<span className="font-medium">{comment.by}</span>
 					<span>[ {formatRelative(comment.time * 1000, Date.now())} ]</span>
 					{hasReplies && (
@@ -99,7 +106,7 @@ function CommentItem({
 							onClick={handleToggleReplies}
 							type="button"
 						>
-							<HugeiconsIcon icon={Comment01FreeIcons} size={14} />
+							<HugeiconsIcon icon={Comment01FreeIcons} size={16} />
 							<span>
 								{comment.kids?.length}{" "}
 								{comment.kids?.length === 1 ? "reply" : "replies"}
@@ -108,9 +115,18 @@ function CommentItem({
 					)}
 				</div>
 				<div
-					className="overflow-hidden break-words break-all text-gray-800 text-sm leading-relaxed [&_*]:break-words [&_a]:break-words [&_a]:text-orange-600 [&_a]:underline [&_a]:hover:text-orange-700 [&_code]:break-all [&_code]:rounded [&_code]:bg-gray-100 [&_code]:px-1 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-xs [&_p:last-child]:mb-0 [&_p]:mb-2 [&_pre]:mt-2 [&_pre]:overflow-x-auto [&_pre]:break-all [&_pre]:rounded [&_pre]:bg-gray-100 [&_pre]:p-2 [&_pre]:font-mono [&_pre]:text-xs"
+					className="overflow-hidden break-normal break-words text-gray-800 text-sm leading-relaxed [&_*]:break-words [&_a]:break-words [&_a]:text-orange-600 [&_a]:underline [&_a]:hover:text-orange-700 [&_code]:break-normal [&_code]:rounded [&_code]:bg-gray-100 [&_code]:px-1 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-xs [&_p:last-child]:mb-0 [&_p]:mb-2 [&_pre]:mt-2 [&_pre]:overflow-x-auto [&_pre]:break-normal [&_pre]:rounded [&_pre]:bg-gray-100 [&_pre]:p-2 [&_pre]:font-mono [&_pre]:text-xs"
 					// biome-ignore lint/security/noDangerouslySetInnerHtml: ignored
-					dangerouslySetInnerHTML={{ __html: comment.text }}
+					dangerouslySetInnerHTML={{
+						__html:
+							typeof window !== "undefined"
+								? DOMPurify.sanitize(comment.text, {
+										USE_PROFILES: { html: true },
+										ADD_ATTR: ["target"],
+										ALLOWED_ATTR: ["href", "target", "rel"],
+									})
+								: comment.text, // Server-side: use original text, sanitize on client
+					}}
 				/>
 			</div>
 
@@ -127,7 +143,7 @@ function CommentItem({
 			)}
 		</div>
 	);
-}
+});
 
 export default function Comments({
 	postId,

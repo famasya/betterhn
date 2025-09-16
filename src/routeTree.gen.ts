@@ -11,11 +11,12 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
+import { Route as AppTopRouteImport } from './routes/_app.top'
 import { Route as AppShowRouteImport } from './routes/_app.show'
 import { Route as AppNewRouteImport } from './routes/_app.new'
 import { Route as AppBestRouteImport } from './routes/_app.best'
 import { Route as AppAskRouteImport } from './routes/_app.ask'
-import { Route as AppPostPostIdRouteImport } from './routes/_app.post.$postId'
+import { Route as AppCategoryChar123PostIdChar125RouteImport } from './routes/_app.$category.{-$postId}'
 
 const AppRoute = AppRouteImport.update({
   id: '/_app',
@@ -24,6 +25,11 @@ const AppRoute = AppRouteImport.update({
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppTopRoute = AppTopRouteImport.update({
+  id: '/top',
+  path: '/top',
   getParentRoute: () => AppRoute,
 } as any)
 const AppShowRoute = AppShowRouteImport.update({
@@ -46,27 +52,30 @@ const AppAskRoute = AppAskRouteImport.update({
   path: '/ask',
   getParentRoute: () => AppRoute,
 } as any)
-const AppPostPostIdRoute = AppPostPostIdRouteImport.update({
-  id: '/post/$postId',
-  path: '/post/$postId',
-  getParentRoute: () => AppRoute,
-} as any)
+const AppCategoryChar123PostIdChar125Route =
+  AppCategoryChar123PostIdChar125RouteImport.update({
+    id: '/$category/{-$postId}',
+    path: '/$category/{-$postId}',
+    getParentRoute: () => AppRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/ask': typeof AppAskRoute
   '/best': typeof AppBestRoute
   '/new': typeof AppNewRoute
   '/show': typeof AppShowRoute
+  '/top': typeof AppTopRoute
   '/': typeof AppIndexRoute
-  '/post/$postId': typeof AppPostPostIdRoute
+  '/$category/{-$postId}': typeof AppCategoryChar123PostIdChar125Route
 }
 export interface FileRoutesByTo {
   '/ask': typeof AppAskRoute
   '/best': typeof AppBestRoute
   '/new': typeof AppNewRoute
   '/show': typeof AppShowRoute
+  '/top': typeof AppTopRoute
   '/': typeof AppIndexRoute
-  '/post/$postId': typeof AppPostPostIdRoute
+  '/$category/{-$postId}': typeof AppCategoryChar123PostIdChar125Route
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -75,14 +84,29 @@ export interface FileRoutesById {
   '/_app/best': typeof AppBestRoute
   '/_app/new': typeof AppNewRoute
   '/_app/show': typeof AppShowRoute
+  '/_app/top': typeof AppTopRoute
   '/_app/': typeof AppIndexRoute
-  '/_app/post/$postId': typeof AppPostPostIdRoute
+  '/_app/$category/{-$postId}': typeof AppCategoryChar123PostIdChar125Route
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/ask' | '/best' | '/new' | '/show' | '/' | '/post/$postId'
+  fullPaths:
+    | '/ask'
+    | '/best'
+    | '/new'
+    | '/show'
+    | '/top'
+    | '/'
+    | '/$category/{-$postId}'
   fileRoutesByTo: FileRoutesByTo
-  to: '/ask' | '/best' | '/new' | '/show' | '/' | '/post/$postId'
+  to:
+    | '/ask'
+    | '/best'
+    | '/new'
+    | '/show'
+    | '/top'
+    | '/'
+    | '/$category/{-$postId}'
   id:
     | '__root__'
     | '/_app'
@@ -90,8 +114,9 @@ export interface FileRouteTypes {
     | '/_app/best'
     | '/_app/new'
     | '/_app/show'
+    | '/_app/top'
     | '/_app/'
-    | '/_app/post/$postId'
+    | '/_app/$category/{-$postId}'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -112,6 +137,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/top': {
+      id: '/_app/top'
+      path: '/top'
+      fullPath: '/top'
+      preLoaderRoute: typeof AppTopRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/show': {
@@ -142,11 +174,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAskRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/post/$postId': {
-      id: '/_app/post/$postId'
-      path: '/post/$postId'
-      fullPath: '/post/$postId'
-      preLoaderRoute: typeof AppPostPostIdRouteImport
+    '/_app/$category/{-$postId}': {
+      id: '/_app/$category/{-$postId}'
+      path: '/$category/{-$postId}'
+      fullPath: '/$category/{-$postId}'
+      preLoaderRoute: typeof AppCategoryChar123PostIdChar125RouteImport
       parentRoute: typeof AppRoute
     }
   }
@@ -157,8 +189,9 @@ interface AppRouteChildren {
   AppBestRoute: typeof AppBestRoute
   AppNewRoute: typeof AppNewRoute
   AppShowRoute: typeof AppShowRoute
+  AppTopRoute: typeof AppTopRoute
   AppIndexRoute: typeof AppIndexRoute
-  AppPostPostIdRoute: typeof AppPostPostIdRoute
+  AppCategoryChar123PostIdChar125Route: typeof AppCategoryChar123PostIdChar125Route
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -166,8 +199,9 @@ const AppRouteChildren: AppRouteChildren = {
   AppBestRoute: AppBestRoute,
   AppNewRoute: AppNewRoute,
   AppShowRoute: AppShowRoute,
+  AppTopRoute: AppTopRoute,
   AppIndexRoute: AppIndexRoute,
-  AppPostPostIdRoute: AppPostPostIdRoute,
+  AppCategoryChar123PostIdChar125Route: AppCategoryChar123PostIdChar125Route,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)

@@ -7,40 +7,52 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Link } from "@tanstack/react-router";
 import type { FirebasePostDetail } from "~/lib/types";
+import { cn, lowerCaseTitle } from "~/lib/utils";
 
 type Params = {
 	posts: FirebasePostDetail[];
 	hasNextPage?: boolean;
+	category: string;
 	isFetchingNextPage?: boolean;
 	fetchNextPage?: () => void;
 	error?: Error | null;
+	activePostId?: number;
 	onPostClick?: () => void;
 };
 export default function PostList({
 	posts,
+	category,
 	hasNextPage,
+	activePostId,
 	isFetchingNextPage,
 	fetchNextPage,
 	error,
 	onPostClick,
 }: Params) {
-	// replace all non-alphanumeric characters with a dash
-	const lowerCaseTitle = (title: string) =>
-		title.toLowerCase().replace(/[^a-z0-9]/g, "-");
-
 	return (
 		<>
 			{posts.map((post) => (
 				<Link
 					key={post.id}
 					onClick={onPostClick}
-					params={{ postId: `${lowerCaseTitle(post.title)}-${post.id}` }}
-					to="/post/$postId"
+					params={{
+						category: category || "top",
+						postId: `${lowerCaseTitle(post.title)}-${post.id}`,
+					}}
+					to={"/$category/$postId"}
 				>
-					<div className="border-gray-200 border-b p-3 text-sm hover:bg-gray-100">
+					<div
+						className={cn(
+							"border-gray-200 border-b p-3 text-sm hover:bg-gray",
+							activePostId === post.id && "border-blue-200 bg-blue-50"
+						)}
+					>
 						{post.title}
-
-						<div className="mt-1 flex items-center justify-between gap-2 text-gray-500 text-xs">
+						<div
+							className={cn(
+								"mt-1 flex items-center justify-between gap-2 text-gray-500 text-xs"
+							)}
+						>
 							<div className="flex items-center gap-1">
 								<HugeiconsIcon icon={AppleStocksIcon} size={16} /> {post.score}{" "}
 								points

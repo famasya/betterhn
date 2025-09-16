@@ -144,4 +144,8 @@
 	body #post-content a {
 		@apply text-orange-600 hover:text-orange-700 underline;
 	}
+
+	#category-page {
+		@apply p-4;
+	}
 }
