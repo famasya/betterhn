@@ -1,7 +1,7 @@
 import {
+	BowlingBallIcon,
 	Cancel01Icon,
 	FireIcon,
-	Home01Icon,
 	Loading03Icon,
 	Menu01Icon,
 	QuestionIcon,
@@ -228,7 +228,7 @@ function RouteComponent() {
 									className="flex items-center gap-3 rounded-lg bg-gradient-to-br from-blue-400 to-blue-500 p-2 text-gray-700 text-white transition-colors hover:from-blue-500 hover:to-blue-500"
 									to="/"
 								>
-									<HugeiconsIcon className="h-5 w-5" icon={Home01Icon} />
+									<HugeiconsIcon className="h-5 w-5" icon={BowlingBallIcon} />
 								</Link>
 							</TooltipTrigger>
 							<TooltipContent side="right">

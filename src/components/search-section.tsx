@@ -117,15 +117,11 @@ export default function SearchSection({
 						)}
 					>
 						<Link
-							disabled={page === 1 || !page}
+							disabled={page === 1}
 							search={{ page: (page || 1) - 1, search }}
 							to={"."}
 						>
-							<Button
-								disabled={page === 1 || !page}
-								size={"sm"}
-								variant={"outline"}
-							>
+							<Button disabled={page === 1} size={"sm"} variant={"outline"}>
 								Previous Page
 							</Button>
 						</Link>
