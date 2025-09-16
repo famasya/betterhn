@@ -116,7 +116,7 @@ function RouteComponent() {
 			{/* Mobile Header */}
 			<div className="flex items-center justify-between border-gray-200 border-b bg-white p-2 md:hidden">
 				<button
-					className="rounded-lg p-2 transition-colors hover:bg-gray-100 active:bg-gray-200"
+					className="ml-2 rounded-lg transition-colors hover:bg-gray-100 active:bg-gray-200"
 					onClick={(e) => {
 						e.preventDefault();
 						e.stopPropagation();
@@ -179,7 +179,7 @@ function RouteComponent() {
 								<div className="flex items-center justify-between border-gray-200 border-b p-2">
 									<h2 className="font-semibold text-lg">Posts</h2>
 									<button
-										className="rounded-lg p-2 transition-colors hover:bg-gray-100"
+										className="ml-2 rounded-lg transition-colors hover:bg-gray-100"
 										onClick={() => setIsMobileMenuOpen(false)}
 										title="Close"
 										type="button"

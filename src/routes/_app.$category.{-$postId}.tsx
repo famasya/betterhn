@@ -80,7 +80,10 @@ function RouteComponent() {
 		Route.useLoaderData();
 
 	return (
-		<ScrollArea className="h-screen flex-1 bg-gray-50" id="post-content">
+		<ScrollArea
+			className="h-[100dvh] flex-1 bg-gray-50 pb-14 md:pb-0"
+			id="post-content"
+		>
 			{/* Post Header */}
 			<div className="border-gray-200 border-b bg-white p-4 sm:p-6">
 				<h1
