@@ -14,9 +14,11 @@ type SearchSectionProps = {
 };
 
 export default function SearchSection({ category }: SearchSectionProps) {
-	const [search, setSearch] = useState("");
 	const [searchCategory, setSearchCategory] = useState("story");
-	const { data, isLoading } = useSearch(search, searchCategory);
+	const [search, setSearch] = useState("");
+	const [page, _setPage] = useState(0);
+	const { data, isLoading } = useSearch(search, searchCategory, page);
+
 	return (
 		<ScrollArea className="mt-8 flex h-full w-full flex-col items-center">
 			<div className="flex flex-col items-center">
