@@ -154,7 +154,7 @@ function RouteComponent() {
 											)}
 											key={link.href}
 											params={{ category: link.href, postId }}
-											to={"/$category/$postId"}
+											to={"/$category/{-$postId}"}
 										>
 											<HugeiconsIcon className="h-5 w-5" icon={link.icon} />
 										</Link>
@@ -167,7 +167,7 @@ function RouteComponent() {
 										)}
 										key={"search"}
 										params={{ category, postId: "" }}
-										to={"/$category/$postId"}
+										to={"/$category/{-$postId}"}
 									>
 										<HugeiconsIcon className="h-5 w-5" icon={Search01Icon} />
 									</Link>
@@ -234,7 +234,7 @@ function RouteComponent() {
 												"bg-orange-200 text-orange-700 hover:bg-orange-200"
 										)}
 										params={{ category: link.href.split("/")[1], postId }}
-										to={postId.length > 0 ? "/$category/$postId" : link.href}
+										to={postId.length > 0 ? "/$category/{-$postId}" : link.href}
 									>
 										<HugeiconsIcon className="h-5 w-5" icon={link.icon} />
 									</Link>
@@ -253,8 +253,8 @@ function RouteComponent() {
 											"bg-orange-200 text-orange-700 hover:bg-orange-200"
 									)}
 									key={"search"}
-									params={{ category, postId: "" }}
-									to={"/$category/$postId"}
+									params={{ category, postId: undefined }}
+									to={"/$category/{-$postId}"}
 								>
 									<HugeiconsIcon className="h-5 w-5" icon={Search01Icon} />
 								</Link>

@@ -8,7 +8,7 @@ export function NotFound({ children }: { children?: React.ReactNode }) {
 			</div>
 			<p className="flex flex-wrap items-center gap-2">
 				<Link
-					className="rounded bg-cyan-600 px-2 py-1 font-black text-sm text-white uppercase"
+					className="rounded-sm bg-orange-600 px-2 py-1 font-black text-sm text-white uppercase hover:bg-orange-700"
 					to="/"
 				>
 					Go back to Home

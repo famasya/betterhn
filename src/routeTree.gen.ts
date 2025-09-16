@@ -16,7 +16,7 @@ import { Route as AppShowRouteImport } from './routes/_app.show'
 import { Route as AppNewRouteImport } from './routes/_app.new'
 import { Route as AppBestRouteImport } from './routes/_app.best'
 import { Route as AppAskRouteImport } from './routes/_app.ask'
-import { Route as AppCategoryPostIdRouteImport } from './routes/_app.$category.$postId'
+import { Route as AppCategoryChar123PostIdChar125RouteImport } from './routes/_app.$category.{-$postId}'
 
 const AppRoute = AppRouteImport.update({
   id: '/_app',
@@ -52,11 +52,12 @@ const AppAskRoute = AppAskRouteImport.update({
   path: '/ask',
   getParentRoute: () => AppRoute,
 } as any)
-const AppCategoryPostIdRoute = AppCategoryPostIdRouteImport.update({
-  id: '/$category/$postId',
-  path: '/$category/$postId',
-  getParentRoute: () => AppRoute,
-} as any)
+const AppCategoryChar123PostIdChar125Route =
+  AppCategoryChar123PostIdChar125RouteImport.update({
+    id: '/$category/{-$postId}',
+    path: '/$category/{-$postId}',
+    getParentRoute: () => AppRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/ask': typeof AppAskRoute
@@ -65,7 +66,7 @@ export interface FileRoutesByFullPath {
   '/show': typeof AppShowRoute
   '/top': typeof AppTopRoute
   '/': typeof AppIndexRoute
-  '/$category/$postId': typeof AppCategoryPostIdRoute
+  '/$category/{-$postId}': typeof AppCategoryChar123PostIdChar125Route
 }
 export interface FileRoutesByTo {
   '/ask': typeof AppAskRoute
@@ -74,7 +75,7 @@ export interface FileRoutesByTo {
   '/show': typeof AppShowRoute
   '/top': typeof AppTopRoute
   '/': typeof AppIndexRoute
-  '/$category/$postId': typeof AppCategoryPostIdRoute
+  '/$category/{-$postId}': typeof AppCategoryChar123PostIdChar125Route
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -85,7 +86,7 @@ export interface FileRoutesById {
   '/_app/show': typeof AppShowRoute
   '/_app/top': typeof AppTopRoute
   '/_app/': typeof AppIndexRoute
-  '/_app/$category/$postId': typeof AppCategoryPostIdRoute
+  '/_app/$category/{-$postId}': typeof AppCategoryChar123PostIdChar125Route
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -96,9 +97,16 @@ export interface FileRouteTypes {
     | '/show'
     | '/top'
     | '/'
-    | '/$category/$postId'
+    | '/$category/{-$postId}'
   fileRoutesByTo: FileRoutesByTo
-  to: '/ask' | '/best' | '/new' | '/show' | '/top' | '/' | '/$category/$postId'
+  to:
+    | '/ask'
+    | '/best'
+    | '/new'
+    | '/show'
+    | '/top'
+    | '/'
+    | '/$category/{-$postId}'
   id:
     | '__root__'
     | '/_app'
@@ -108,7 +116,7 @@ export interface FileRouteTypes {
     | '/_app/show'
     | '/_app/top'
     | '/_app/'
-    | '/_app/$category/$postId'
+    | '/_app/$category/{-$postId}'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -166,11 +174,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAskRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/$category/$postId': {
-      id: '/_app/$category/$postId'
-      path: '/$category/$postId'
-      fullPath: '/$category/$postId'
-      preLoaderRoute: typeof AppCategoryPostIdRouteImport
+    '/_app/$category/{-$postId}': {
+      id: '/_app/$category/{-$postId}'
+      path: '/$category/{-$postId}'
+      fullPath: '/$category/{-$postId}'
+      preLoaderRoute: typeof AppCategoryChar123PostIdChar125RouteImport
       parentRoute: typeof AppRoute
     }
   }
@@ -183,7 +191,7 @@ interface AppRouteChildren {
   AppShowRoute: typeof AppShowRoute
   AppTopRoute: typeof AppTopRoute
   AppIndexRoute: typeof AppIndexRoute
-  AppCategoryPostIdRoute: typeof AppCategoryPostIdRoute
+  AppCategoryChar123PostIdChar125Route: typeof AppCategoryChar123PostIdChar125Route
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -193,7 +201,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppShowRoute: AppShowRoute,
   AppTopRoute: AppTopRoute,
   AppIndexRoute: AppIndexRoute,
-  AppCategoryPostIdRoute: AppCategoryPostIdRoute,
+  AppCategoryChar123PostIdChar125Route: AppCategoryChar123PostIdChar125Route,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)

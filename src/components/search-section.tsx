@@ -1,39 +1,78 @@
 import { ConfusedIcon, Monocle01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Link } from "@tanstack/react-router";
-import { memo, useState } from "react";
+import { debounce } from "@tanstack/pacer";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { memo, useCallback, useState } from "react";
+import { z } from "zod";
 import { useSearch } from "~/lib/hooks/use-search";
 import type { AlgoliaPostApiResponse } from "~/lib/types";
-import { lowerCaseTitle } from "~/lib/utils";
+import { cn, lowerCaseTitle } from "~/lib/utils";
+import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { ScrollArea } from "./ui/scroll-area";
 import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
 
 type SearchSectionProps = {
-	category: string;
+	origin: string;
+	search?: string;
+	page?: number;
 };
 
-export default function SearchSection({ category }: SearchSectionProps) {
+export const searchSchema = z.object({
+	search: z.string().optional(),
+	page: z.number().optional(),
+});
+
+export default function SearchSection({
+	origin,
+	search,
+	page,
+}: SearchSectionProps) {
 	const [searchCategory, setSearchCategory] = useState("story");
-	const [search, setSearch] = useState("");
-	const [page, _setPage] = useState(0);
-	const { data, isLoading } = useSearch(search, searchCategory, page);
+	const [inputValue, setInputValue] = useState(search || "");
+	const { data, isLoading } = useSearch(
+		search || "",
+		searchCategory,
+		page || 1
+	);
+	const navigate = useNavigate();
+
+	const debouncedSearch = useCallback(
+		debounce(
+			(term: string) => {
+				navigate({
+					to: `/${origin}`,
+					search: {
+						search: term,
+						page,
+					},
+				});
+			},
+			{
+				wait: 1000,
+			}
+		),
+		[]
+	);
 
 	return (
-		<ScrollArea className="mt-8 flex h-full w-full flex-col items-center">
-			<div className="flex flex-col items-center">
+		<ScrollArea className="flex h-full w-full flex-col items-center">
+			<div className="flex flex-col items-center pt-12">
 				<h1 className="font-medium text-2xl">Search</h1>
 				<p className="text-gray-500 text-sm">Powered by Algolia</p>
 			</div>
 			<div className="mx-auto w-full max-w-[800px] p-6 md:px-16">
 				<Input
 					className="bg-white"
-					onChange={(e) => setSearch(e.target.value)}
+					onChange={(e) => {
+						setInputValue(e.target.value);
+						debouncedSearch(e.target.value);
+					}}
 					placeholder="Search..."
-					value={search}
+					value={inputValue}
 				/>
 
-				<div className="mt-4">
+				<div className="mt-4" id="search-results">
 					<div className="mb-2 flex flex-col items-center justify-between md:flex-row">
 						<div className="font-medium text-lg">Search results</div>
 						<div>
@@ -64,12 +103,41 @@ export default function SearchSection({ category }: SearchSectionProps) {
 					) : (
 						<div className="space-y-2">
 							<SearchResultItem
-								category={category}
+								origin={origin}
 								results={data}
-								search={search}
+								search={search || ""}
 							/>
 						</div>
 					)}
+					<div
+						className={cn(
+							"mt-4 flex w-full items-center justify-end gap-2 text-center",
+							search?.length === 0 && "hidden"
+						)}
+					>
+						<Link
+							disabled={page === 1}
+							search={{ page: (page || 1) - 1, search }}
+							to={"."}
+						>
+							<Button disabled={page === 1} size={"sm"} variant={"outline"}>
+								Previous Page
+							</Button>
+						</Link>
+						<Link
+							disabled={page === data?.nbPages}
+							search={{ page: (page || 1) + 1, search }}
+							to={"."}
+						>
+							<Button
+								disabled={page === data?.nbPages}
+								size={"sm"}
+								variant={"outline"}
+							>
+								Next Page
+							</Button>
+						</Link>
+					</div>
 				</div>
 			</div>
 		</ScrollArea>
@@ -87,11 +155,11 @@ function LoadingSkeleton() {
 
 const SearchResultItem = memo(function SearchResultItemComponent({
 	results,
-	category,
+	origin,
 	search,
 }: {
 	results?: AlgoliaPostApiResponse;
-	category: string;
+	origin: string;
 	search: string;
 }) {
 	if (search.length === 0) {
@@ -118,10 +186,10 @@ const SearchResultItem = memo(function SearchResultItemComponent({
 					>
 						<Link
 							params={{
-								category,
+								category: origin,
 								postId: `${lowerCaseTitle(post.title)}-${post.objectID}`,
 							}}
-							to={"/$category/$postId"}
+							to={"/$category/{-$postId}"}
 						>
 							<p className="font-medium text-lg">{post.title}</p>
 							<p className="mt-2 text-gray-500 text-sm">{`${post.points} points by ${post.author} ${post.created_at_i}`}</p>

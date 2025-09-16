@@ -4,7 +4,7 @@ import {
 	Time04Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { formatRelative } from "date-fns";
 import DOMPurify from "dompurify";
 import Comments from "~/components/comments";
@@ -15,19 +15,23 @@ import { createQueryClient } from "~/lib/query-client";
 import { firebaseFetcher } from "../lib/fetcher";
 import type { FirebasePostDetail } from "../lib/types";
 
-export const Route = createFileRoute("/_app/$category/$postId")({
+export const Route = createFileRoute("/_app/$category/{-$postId}")({
 	loader: ({ params: { postId } }) => {
 		const queryClient = createQueryClient();
 		return queryClient.ensureQueryData({
 			queryKey: ["post", postId],
 			queryFn: async () => {
-				const postIdNum = postId.split("-").pop();
+				const postIdNum = postId?.split("-").pop();
 				const post = await firebaseFetcher
 					.get<FirebasePostDetail>(`item/${postIdNum}.json`)
 					.json();
 
 				let initialComments: CommentItem[] = [];
 				const remainingCommentSlices: number[][] = [];
+
+				if (!post) {
+					throw notFound();
+				}
 
 				if (post.kids && post.kids.length > 0) {
 					// Load only first 10 comments server-side for SEO and initial load performance

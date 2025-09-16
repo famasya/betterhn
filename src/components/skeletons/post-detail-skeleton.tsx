@@ -19,7 +19,6 @@ export function PostDetailSkeleton() {
 				<div className="flex flex-wrap items-center gap-3 sm:gap-4">
 					{/* Author */}
 					<div className="flex items-center gap-1">
-						<span className="text-gray-600 text-sm">by</span>
 						<Skeleton className="h-4 w-16" />
 					</div>
 					{/* Time */}
@@ -59,7 +58,7 @@ export function PostDetailSkeleton() {
 			{/* Comments Section Skeleton */}
 			<div className="p-3 sm:p-4">
 				{/* Comments Header */}
-				<div className="mb-4">
+				<div className="mb-4 px-2">
 					<Skeleton className="h-6 w-32" />
 				</div>
 
@@ -81,7 +80,7 @@ export function PostDetailSkeleton() {
 
 const CommentSkeleton = memo(function CommentSkeletonComponent() {
 	return (
-		<div className="border-gray-200 border-b py-3">
+		<div className="border-gray-200 border-b px-2 py-3">
 			{/* Comment Header */}
 			<div className="mb-2 flex items-center gap-2">
 				<Skeleton className="h-4 w-4" />
