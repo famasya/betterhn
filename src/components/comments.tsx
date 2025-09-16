@@ -1,5 +1,4 @@
 import {
-	Clock01Icon,
 	Comment01FreeIcons,
 	InformationCircleIcon,
 	Loading03FreeIcons,
@@ -97,14 +96,20 @@ const CommentItem = memo(function CommentItemComponent({
 	return (
 		<div>
 			<div className="border-gray-200 border-b py-3">
-				<div className="mb-2 flex items-center gap-3 text-gray-600 text-xs">
+				<div className="mb-2 flex items-center gap-3 text-gray-600 text-sm">
 					<div className="flex items-center gap-1 font-medium">
-						<HugeiconsIcon icon={UserSquareIcon} size={14} />
-						{comment.by}
+						<HugeiconsIcon icon={UserSquareIcon} size={16} />
+						<a
+							className="text-blue-600 no-underline hover:text-blue-700"
+							href={`https://news.ycombinator.com/user?id=${comment.by}`}
+							target="_blank"
+							title={comment.by}
+						>
+							{comment.by}
+						</a>
 					</div>
 					<div className="flex items-center gap-1">
-						<HugeiconsIcon icon={Clock01Icon} size={14} />
-						{formatRelative(comment.time * 1000, Date.now())}
+						[ {formatRelative(comment.time * 1000, Date.now())} ]
 					</div>
 				</div>
 				<div

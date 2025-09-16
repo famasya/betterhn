@@ -118,7 +118,13 @@ function RouteComponent() {
 							target="_blank"
 							to={post.url}
 						>
-							{new URL(post.url).hostname}
+							{(() => {
+								try {
+									return new URL(post.url).hostname;
+								} catch {
+									return post.url;
+								}
+							})()}
 						</Link>
 					</div>
 				)}

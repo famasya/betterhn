@@ -2,6 +2,7 @@ import { ConfusedIcon, Monocle01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { debounce } from "@tanstack/pacer";
 import { Link, useNavigate } from "@tanstack/react-router";
+import { formatRelative } from "date-fns";
 import { memo, useCallback, useState } from "react";
 import { z } from "zod";
 import { useSearch } from "~/lib/hooks/use-search";
@@ -44,7 +45,7 @@ export default function SearchSection({
 					to: `/${origin}`,
 					search: {
 						search: term,
-						page,
+						page: 1,
 					},
 				});
 			},
@@ -196,7 +197,9 @@ const SearchResultItem = memo(function SearchResultItemComponent({
 							to={"/$category/{-$postId}"}
 						>
 							<p className="font-medium">{post.title}</p>
-							<p className="mt-2 text-gray-500 text-sm">{`${post.points} points by ${post.author} ${post.created_at_i}`}</p>
+							<p className="mt-2 text-gray-500 text-sm">
+								{`${post.points} points by ${post.author} ${formatRelative(post.created_at_i * 1000, Date.now())}`}
+							</p>
 						</Link>
 					</div>
 				);
