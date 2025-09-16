@@ -110,7 +110,13 @@ function RouteComponent() {
 			{isMobileMenuOpen && (
 				<div className="fixed inset-0 z-40 md:hidden">
 					{/* Backdrop */}
-					<div className="absolute inset-0 bg-black/60" />
+					{/** biome-ignore lint/a11y/noNoninteractiveElementInteractions: clickable */}
+					{/** biome-ignore lint/a11y/noStaticElementInteractions: clickable */}
+					<div
+						className="absolute inset-0 bg-black/60"
+						onClick={() => setIsMobileMenuOpen(false)}
+						onKeyUp={() => setIsMobileMenuOpen(false)}
+					/>
 
 					{/* Sidebar Container */}
 					<div className="absolute top-0 left-0 h-full w-full">
@@ -166,12 +172,11 @@ function RouteComponent() {
 				</div>
 			)}
 
-			{/* sidebar navigation */}
+			{/* Desktop Posts sidebar */}
 			<div className="hidden border-gray-200 border-r bg-white md:block">
 				<NavLinks category={category} postId={postId} />
 			</div>
 
-			{/* Desktop Posts sidebar */}
 			<div className="hidden w-1/4 min-w-[300px] border-gray-200 border-r bg-white md:block">
 				<ScrollArea className="h-full">
 					{isLoading ? (
