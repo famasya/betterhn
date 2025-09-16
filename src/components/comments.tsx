@@ -1,4 +1,5 @@
 import {
+	Clock01Icon,
 	Comment01FreeIcons,
 	InformationCircleIcon,
 	Loading03FreeIcons,
@@ -96,9 +97,15 @@ const CommentItem = memo(function CommentItemComponent({
 	return (
 		<div>
 			<div className="border-gray-200 border-b py-3">
-				<div className="mb-2 flex items-center gap-1 text-gray-600 text-xs">
-					<HugeiconsIcon icon={UserSquareIcon} size={14} />
-					<span className="font-medium">{comment.by}</span>
+				<div className="mb-2 flex items-center gap-3 text-gray-600 text-xs">
+					<div className="flex items-center gap-1 font-medium">
+						<HugeiconsIcon icon={UserSquareIcon} size={14} />
+						{comment.by}
+					</div>
+					<div className="flex items-center gap-1">
+						<HugeiconsIcon icon={Clock01Icon} size={14} />
+						{formatRelative(comment.time * 1000, Date.now())}
+					</div>
 				</div>
 				<div
 					className="overflow-x-auto break-words text-gray-800 text-sm leading-relaxed [&_*]:break-words [&_a]:break-words [&_a]:text-orange-600 [&_a]:underline [&_a]:hover:text-orange-700 [&_code]:break-normal [&_code]:rounded [&_code]:bg-gray-100 [&_code]:px-1 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-xs [&_p:last-child]:mb-0 [&_p]:mb-2 [&_pre]:mt-2 [&_pre]:whitespace-pre-wrap [&_pre]:break-words [&_pre]:rounded [&_pre]:bg-gray-100 [&_pre]:p-2 [&_pre]:font-mono [&_pre]:text-xs"
@@ -114,8 +121,7 @@ const CommentItem = memo(function CommentItemComponent({
 								: comment.text, // Server-side: use original text, sanitize on client
 					}}
 				/>
-				<div className="mt-2 flex items-center justify-between gap-1 text-gray-600 text-xs">
-					<span>[ {formatRelative(comment.time * 1000, Date.now())} ]</span>
+				<div className="mt-2 flex items-center justify-end gap-1 text-gray-600 text-xs">
 					{hasReplies && (
 						<button
 							className="flex cursor-pointer items-center gap-1 text-orange-600 hover:text-orange-700"

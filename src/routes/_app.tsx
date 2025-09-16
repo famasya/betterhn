@@ -1,6 +1,7 @@
 import {
 	Cancel01Icon,
 	FireIcon,
+	Home01Icon,
 	Loading03Icon,
 	Menu01Icon,
 	QuestionIcon,
@@ -223,7 +224,20 @@ function RouteComponent() {
 			{/* sidebar navigation */}
 			<div className="hidden border-gray-200 border-r bg-white md:block">
 				<nav className="space-y-2 p-2">
-					<TooltipProvider>
+					<TooltipProvider delayDuration={0}>
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<Link
+									className="flex items-center gap-3 rounded-lg bg-gradient-to-br from-blue-400 to-blue-500 p-2 text-gray-700 text-white transition-colors hover:from-blue-500 hover:to-blue-500"
+									to="/"
+								>
+									<HugeiconsIcon className="h-5 w-5" icon={Home01Icon} />
+								</Link>
+							</TooltipTrigger>
+							<TooltipContent side="right">
+								<p>hn.fd - Clean and Sleek HN Reader</p>
+							</TooltipContent>
+						</Tooltip>
 						{navLinks.map((link) => (
 							<Tooltip delayDuration={0} key={link.href}>
 								<TooltipTrigger asChild>

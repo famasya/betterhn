@@ -2,11 +2,13 @@
 import { QueryClientProvider } from "@tanstack/react-query";
 import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+
 import type * as React from "react";
 import { DefaultCatchBoundary } from "~/components/default-catch-boundary";
 import { NotFound } from "~/components/not-found";
 import { Toaster } from "~/components/ui/sonner";
 import { getBrowserQueryClient } from "~/lib/query-client";
+import { cn } from "~/lib/utils";
 import appCss from "~/styles/app.css?url";
 import { seo } from "~/utils/seo";
 
@@ -24,7 +26,13 @@ export const Route = createRootRoute({
 				title: "hn.fd - Clean and Fast HN Client",
 			}),
 		],
-		links: [{ rel: "stylesheet", href: appCss }],
+		links: [
+			{ rel: "stylesheet", href: appCss },
+			{
+				rel: "stylesheet",
+				href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap",
+			},
+		],
 	}),
 	errorComponent: DefaultCatchBoundary,
 	notFoundComponent: () => <NotFound />,
@@ -37,7 +45,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 			<head>
 				<HeadContent />
 			</head>
-			<body className="flex min-h-screen flex-col">
+			<body className={cn("flex min-h-screen flex-col")}>
 				<QueryClientProvider client={getBrowserQueryClient()}>
 					{children}
 					<TanStackRouterDevtools position="bottom-right" />
