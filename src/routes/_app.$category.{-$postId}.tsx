@@ -1,6 +1,7 @@
 import {
 	AppleStocksIcon,
 	Comment01Icon,
+	LinkSquare02Icon,
 	Time04Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -9,6 +10,7 @@ import { formatRelative } from "date-fns";
 import DOMPurify from "dompurify";
 import Comments from "~/components/comments";
 import { PostDetailSkeleton } from "~/components/skeletons/post-detail-skeleton";
+import { Button } from "~/components/ui/button";
 import { type CommentItem, loadComments } from "~/functions/load-comments";
 import { createQueryClient } from "~/lib/query-client";
 import { firebaseFetcher } from "../lib/fetcher";
@@ -85,12 +87,28 @@ function RouteComponent() {
 		>
 			{/* Post Header */}
 			<div className="border-gray-200 border-b bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-				<h1
-					className="mb-3 hyphens-auto break-words font-medium text-gray-900 text-lg sm:text-xl dark:text-white"
-					style={{ wordBreak: "break-word", overflowWrap: "anywhere" }}
-				>
-					{post.title}
-				</h1>
+				<div className="mb-3 flex items-center justify-between">
+					<h1
+						className="hyphens-auto break-words font-medium text-gray-900 text-lg sm:text-xl dark:text-white"
+						style={{ wordBreak: "break-word", overflowWrap: "anywhere" }}
+					>
+						{post.title}
+					</h1>
+					<a
+						href={`https://news.ycombinator.com/item?id=${post.id}`}
+						rel="noopener noreferrer"
+						target="_blank"
+					>
+						<Button
+							className="flex items-center gap-2 text-xs"
+							size={"sm"}
+							variant={"ghost"}
+						>
+							<HugeiconsIcon icon={LinkSquare02Icon} size={16} />
+							Visit HN
+						</Button>
+					</a>
+				</div>
 				<div className="flex flex-wrap items-center gap-3 text-gray-600 text-sm sm:gap-4 dark:text-zinc-400">
 					<span>
 						by <span className="font-medium">{post.by}</span>

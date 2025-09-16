@@ -1,5 +1,6 @@
 import {
 	Comment01FreeIcons,
+	CommentAdd01Icon,
 	InformationCircleIcon,
 	Loading03FreeIcons,
 	UserSquareIcon,
@@ -128,6 +129,21 @@ const CommentItem = memo(function CommentItemComponent({
 					}}
 				/>
 				<div className="mt-2 flex items-center justify-end gap-1 text-gray-600 text-xs">
+					<a
+						href={`https://news.ycombinator.com/reply?id=${comment.id}&goto=item?id=${comment.parent}#${comment.id}`}
+						rel="noopener noreferrer"
+						target="_blank"
+					>
+						<Button
+							className="flex items-center gap-1 text-xs"
+							size={"sm"}
+							type="button"
+							variant={"ghost"}
+						>
+							<HugeiconsIcon icon={CommentAdd01Icon} size={14} />
+							Reply
+						</Button>
+					</a>
 					{hasReplies && (
 						<Button
 							className="flex cursor-pointer items-center gap-1 text-orange-600 text-xs hover:text-orange-700 dark:text-orange-300 dark:hover:text-orange-200"
