@@ -112,15 +112,19 @@ export default function SearchSection({
 					<div
 						className={cn(
 							"mt-4 flex w-full items-center justify-end gap-2 text-center",
-							search?.length === 0 && "hidden"
+							(!search || search?.length === 0) && "hidden"
 						)}
 					>
 						<Link
-							disabled={page === 1}
+							disabled={page === 1 || !page}
 							search={{ page: (page || 1) - 1, search }}
 							to={"."}
 						>
-							<Button disabled={page === 1} size={"sm"} variant={"outline"}>
+							<Button
+								disabled={page === 1 || !page}
+								size={"sm"}
+								variant={"outline"}
+							>
 								Previous Page
 							</Button>
 						</Link>
@@ -191,7 +195,7 @@ const SearchResultItem = memo(function SearchResultItemComponent({
 							}}
 							to={"/$category/{-$postId}"}
 						>
-							<p className="font-medium text-lg">{post.title}</p>
+							<p className="font-medium">{post.title}</p>
 							<p className="mt-2 text-gray-500 text-sm">{`${post.points} points by ${post.author} ${post.created_at_i}`}</p>
 						</Link>
 					</div>

@@ -96,23 +96,9 @@ const CommentItem = memo(function CommentItemComponent({
 	return (
 		<div>
 			<div className="border-gray-200 border-b py-3">
-				<div className="mb-2 flex items-center gap-2 text-gray-600 text-xs">
-					<HugeiconsIcon icon={UserSquareIcon} size={16} />
+				<div className="mb-2 flex items-center gap-1 text-gray-600 text-xs">
+					<HugeiconsIcon icon={UserSquareIcon} size={14} />
 					<span className="font-medium">{comment.by}</span>
-					<span>[ {formatRelative(comment.time * 1000, Date.now())} ]</span>
-					{hasReplies && (
-						<button
-							className="flex items-center gap-1 text-orange-600 hover:text-orange-700"
-							onClick={handleToggleReplies}
-							type="button"
-						>
-							<HugeiconsIcon icon={Comment01FreeIcons} size={16} />
-							<span>
-								{comment.kids?.length}{" "}
-								{comment.kids?.length === 1 ? "reply" : "replies"}
-							</span>
-						</button>
-					)}
 				</div>
 				<div
 					className="overflow-hidden break-normal break-words text-gray-800 text-sm leading-relaxed [&_*]:break-words [&_a]:break-words [&_a]:text-orange-600 [&_a]:underline [&_a]:hover:text-orange-700 [&_code]:break-normal [&_code]:rounded [&_code]:bg-gray-100 [&_code]:px-1 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-xs [&_p:last-child]:mb-0 [&_p]:mb-2 [&_pre]:mt-2 [&_pre]:overflow-x-auto [&_pre]:break-normal [&_pre]:rounded [&_pre]:bg-gray-100 [&_pre]:p-2 [&_pre]:font-mono [&_pre]:text-xs"
@@ -128,6 +114,22 @@ const CommentItem = memo(function CommentItemComponent({
 								: comment.text, // Server-side: use original text, sanitize on client
 					}}
 				/>
+				<div className="mt-2 flex items-center justify-between gap-1 text-gray-600 text-xs">
+					<span>[ {formatRelative(comment.time * 1000, Date.now())} ]</span>
+					{hasReplies && (
+						<button
+							className="flex cursor-pointer items-center gap-1 text-orange-600 hover:text-orange-700"
+							onClick={handleToggleReplies}
+							type="button"
+						>
+							<HugeiconsIcon icon={Comment01FreeIcons} size={14} />
+							<span>
+								{comment.kids?.length}{" "}
+								{comment.kids?.length === 1 ? "reply" : "replies"}
+							</span>
+						</button>
+					)}
+				</div>
 			</div>
 
 			{showReplies && hasReplies && depth < maxDepth && comment.kids && (
@@ -217,7 +219,7 @@ export default function Comments({
 
 			{/* Load More Button */}
 			{hasNextPage && (
-				<div className="mt-4 border-gray-200 border-t pt-3">
+				<div className="mt-4 pt-3">
 					<button
 						className="flex w-full items-center justify-center rounded-sm border border-orange-200 bg-orange-100 py-2 font-medium text-orange-700 text-sm transition-colors hover:bg-orange-200 disabled:cursor-not-allowed disabled:opacity-50"
 						disabled={isFetchingNextPage}
@@ -239,7 +241,7 @@ export default function Comments({
 
 			{/* Error State */}
 			{error && (
-				<div className="mt-4 border-gray-200 border-t pt-3">
+				<div className="mt-4 pt-3">
 					<div className="flex items-center gap-2 rounded-sm border border-red-200 bg-red-50 p-3 text-red-700 text-sm">
 						<HugeiconsIcon icon={InformationCircleIcon} size={16} />
 						<div>
@@ -263,7 +265,7 @@ export default function Comments({
 
 			{/* That's All State */}
 			{!(hasNextPage || error) && remainingCommentSlices.length > 0 && (
-				<div className="mt-4 border-gray-200 border-t pt-3 text-center text-gray-500 text-sm">
+				<div className="mt-4 pt-3 text-center text-gray-500 text-sm">
 					That's all
 				</div>
 			)}

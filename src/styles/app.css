@@ -148,4 +148,12 @@
 	#category-page {
 		@apply p-4;
 	}
+
+	::selection {
+		@apply bg-blue-100;
+	}
+
+	::-moz-selection {
+		@apply bg-blue-100;
+	}
 }
