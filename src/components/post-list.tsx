@@ -44,7 +44,7 @@ export default function PostList({
 				>
 					<div
 						className={cn(
-							"border-gray-200 border-b p-3 text-sm hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800",
+							"border-gray-200 border-b p-3 text-sm hover:bg-zinc-100 dark:border-gray-700 dark:hover:bg-zinc-800",
 							activePostId === post.id &&
 								"border-blue-200 bg-blue-50 dark:border-blue-700 dark:bg-blue-950/50 dark:hover:bg-blue-950/80"
 						)}

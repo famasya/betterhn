@@ -8,6 +8,7 @@ import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import NavLinks from "~/components/nav-links";
 import PostList from "~/components/post-list";
+import { Button } from "~/components/ui/button";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { fetchPosts } from "~/lib/fetch-posts";
 import { useInfinitePosts } from "~/lib/hooks/use-infinite-posts";
@@ -88,20 +89,20 @@ function RouteComponent() {
 	}, [isMobileMenuOpen]);
 
 	return (
-		<div className="flex h-screen flex-col overflow-hidden bg-gray-50 md:flex-row dark:bg-black">
+		<div className="flex h-screen flex-col overflow-hidden bg-zinc-50 md:flex-row dark:bg-black">
 			{/* Mobile Header */}
 			<div className="flex items-center justify-between border-gray-200 border-b bg-white p-2 md:hidden dark:border-zinc-800 dark:bg-zinc-900">
-				<button
-					className="ml-2 rounded-sm transition-colors hover:bg-gray-200 active:bg-gray-200"
+				<Button
 					onClick={(e) => {
 						e.preventDefault();
 						e.stopPropagation();
 						setIsMobileMenuOpen(!isMobileMenuOpen);
 					}}
 					type="button"
+					variant="outline"
 				>
 					<HugeiconsIcon className="pointer-events-none" icon={Menu01Icon} />
-				</button>
+				</Button>
 				<h1 className="font-semibold text-lg">hn.fd</h1>
 				<div className="w-10" /> {/* Spacer for centering */}
 			</div>
@@ -127,17 +128,18 @@ function RouteComponent() {
 							</div>
 
 							{/* Posts Sidebar */}
-							<div className="flex h-full w-80 flex-col bg-white shadow-lg dark:bg-gray-800">
+							<div className="flex h-full w-80 flex-col bg-white shadow-lg dark:bg-zinc-800">
 								<div className="flex items-center justify-between border-gray-200 border-b p-2 dark:border-zinc-800">
 									<h2 className="font-medium text-lg">Posts</h2>
-									<button
-										className="ml-2 rounded-lg transition-colors hover:bg-gray-100"
+									<Button
 										onClick={() => setIsMobileMenuOpen(false)}
+										size={"icon"}
 										title="Close"
 										type="button"
+										variant={"outline"}
 									>
 										<HugeiconsIcon className="h-5 w-5" icon={Cancel01Icon} />
-									</button>
+									</Button>
 								</div>
 								<div className="flex-1 overflow-hidden">
 									<ScrollArea className="h-full">

@@ -19,13 +19,13 @@ export default function MarkdownRenderer({ content }: { content: string }) {
 					},
 					code: {
 						props: {
-							className: "bg-gray-100 px-2 py-1 rounded text-xs font-mono",
+							className: "bg-zinc-100 px-2 py-1 rounded text-xs font-mono",
 						},
 					},
 					pre: {
 						props: {
 							className:
-								"bg-gray-100 p-3 rounded text-xs font-mono overflow-x-auto mt-2",
+								"bg-zinc-100 p-3 rounded text-xs font-mono overflow-x-auto mt-2",
 						},
 					},
 					h1: {

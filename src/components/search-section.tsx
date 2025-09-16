@@ -148,7 +148,7 @@ export default function SearchSection({
 function LoadingSkeleton() {
 	return Array.from({ length: 10 }).map((_, index) => (
 		<div
-			className="mt-2 h-20 w-full animate-pulse rounded-lg bg-gray-200"
+			className="mt-2 h-20 w-full animate-pulse rounded-lg bg-zinc-200"
 			key={index.toString()}
 		/>
 	));

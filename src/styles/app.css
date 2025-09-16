@@ -152,8 +152,8 @@
 		font-family: "Inter", system-ui, sans-serif;
 	}
 
-	body #post-content a {
-		@apply text-orange-600 hover:text-orange-700 underline dark:text-orange-300 dark:hover:text-orange-200;
+	body .comment-item {
+		@apply overflow-x-auto break-words text-gray-800 text-sm leading-relaxed dark:text-gray-300 [&_*]:break-words [&_*]:text-gray-800 [&_*]:dark:text-gray-300 [&_a]:break-words [&_a]:text-orange-600 [&_a]:underline [&_a]:hover:text-orange-700 [&_a]:dark:text-orange-200 [&_a]:dark:hover:text-orange-300 [&_code]:break-normal [&_code]:rounded [&_code]:bg-zinc-100 [&_code]:px-1 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-xs [&_code]:dark:bg-zinc-800 [&_p:last-child]:mb-0 [&_p]:mb-2 [&_pre]:mt-2 [&_pre]:whitespace-pre-wrap [&_pre]:break-words [&_pre]:rounded [&_pre]:bg-zinc-100 [&_pre]:p-2 [&_pre]:font-mono [&_pre]:text-xs [&_pre]:dark:bg-zinc-800;
 	}
 
 	#category-page {
@@ -166,6 +166,16 @@
 
 	::-moz-selection {
 		@apply bg-blue-100;
+	}
+
+	.dark ::selection {
+		background-color: #fed7aa; /* orange-200 */
+		color: #9a3412; /* orange-800 */
+	}
+
+	.dark ::-moz-selection {
+		background-color: #fed7aa; /* orange-200 */
+		color: #9a3412; /* orange-800 */
 	}
 
 	::-webkit-scrollbar {

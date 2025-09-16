@@ -20,7 +20,6 @@ import { cn } from "~/lib/utils";
 import {
 	Dialog,
 	DialogContent,
-	DialogDescription,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
@@ -59,7 +58,7 @@ export default function NavLinks({
 						<TooltipTrigger asChild>
 							<Link
 								className={cn(
-									"flex items-center gap-3 rounded-lg p-2 text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:bg-orange-800/50",
+									"flex items-center gap-3 rounded-lg p-2 text-gray-700 transition-colors hover:bg-zinc-100 dark:text-gray-200 dark:hover:bg-orange-800/50 dark:hover:bg-zinc-800",
 									`/${category}` === link.href &&
 										"bg-orange-200 text-orange-700 hover:bg-orange-200 dark:bg-orange-800/30 dark:text-orange-300 dark:hover:bg-orange-800/50"
 								)}
@@ -78,7 +77,7 @@ export default function NavLinks({
 					<TooltipTrigger asChild>
 						<Link
 							className={cn(
-								"flex items-center gap-3 rounded-lg p-2 text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800",
+								"flex items-center gap-3 rounded-lg p-2 text-gray-700 transition-colors hover:bg-zinc-100 dark:text-gray-200 dark:hover:bg-zinc-800",
 								`/${category}` === "search" &&
 									"bg-orange-200 text-orange-700 hover:bg-orange-200 dark:bg-orange-800 dark:text-orange-300"
 							)}
@@ -111,27 +110,24 @@ function SettingsDialog() {
 				<HugeiconsIcon className={cn("h-5 w-5")} icon={BowlingBallIcon} />
 			</DialogTrigger>
 			<DialogContent className="duration-0">
-				<DialogHeader>
-					<DialogTitle>About hn.fd</DialogTitle>
-					<DialogDescription className="mt-2">
-						<div className="flex flex-row items-center justify-between">
-							<div>Color Schema</div>
-							<div>
-								<div className="flex items-center space-x-2">
-									<Label className="text-xs" htmlFor="color-mode">
-										{isDark ? "Dark" : "Light"}
-									</Label>
-									<Switch
-										checked={isDark}
-										className="data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700"
-										id="color-mode"
-										onCheckedChange={toggleTheme}
-									/>
-								</div>
-							</div>
+				<DialogHeader />
+				<DialogTitle>About hn.fd</DialogTitle>
+				<div className="flex flex-row items-center justify-between">
+					<div>Color Schema</div>
+					<div>
+						<div className="flex items-center space-x-2">
+							<Label className="text-xs" htmlFor="color-mode">
+								{isDark ? "Dark" : "Light"}
+							</Label>
+							<Switch
+								checked={isDark}
+								className="data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700"
+								id="color-mode"
+								onCheckedChange={toggleTheme}
+							/>
 						</div>
-					</DialogDescription>
-				</DialogHeader>
+					</div>
+				</div>
 			</DialogContent>
 		</Dialog>
 	);
