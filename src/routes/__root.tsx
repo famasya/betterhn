@@ -2,6 +2,7 @@
 import { QueryClientProvider } from "@tanstack/react-query";
 import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { ThemeProvider } from "next-themes";
 
 import type * as React from "react";
 import { DefaultCatchBoundary } from "~/components/default-catch-boundary";
@@ -43,14 +44,23 @@ export const Route = createRootRoute({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
 	return (
-		<html lang="en">
+		<html lang="en" suppressHydrationWarning>
 			<head>
 				<HeadContent />
 			</head>
 			<body className={cn("flex min-h-screen flex-col")}>
 				<QueryClientProvider client={getBrowserQueryClient()}>
-					{children}
-					<TanStackRouterDevtools position="bottom-right" />
+					<ThemeProvider
+						attribute="class"
+						defaultTheme="system"
+						disableTransitionOnChange
+						enableColorScheme={false}
+						enableSystem
+						storageKey="theme"
+					>
+						{children}
+						<TanStackRouterDevtools position="bottom-right" />
+					</ThemeProvider>
 				</QueryClientProvider>
 				<Toaster />
 				<Scripts />

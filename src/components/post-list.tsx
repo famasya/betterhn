@@ -43,8 +43,9 @@ export default function PostList({
 				>
 					<div
 						className={cn(
-							"border-gray-200 border-b p-3 text-sm hover:bg-gray",
-							activePostId === post.id && "border-blue-200 bg-blue-50"
+							"border-gray-200 border-b p-3 text-sm hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800",
+							activePostId === post.id &&
+								"border-blue-200 bg-blue-50 dark:border-blue-700 dark:bg-blue-950/50 dark:hover:bg-blue-950/80"
 						)}
 					>
 						{post.title}
@@ -67,9 +68,9 @@ export default function PostList({
 			))}
 
 			{hasNextPage && (
-				<div className="border-gray-200 border-b p-3">
+				<div className="border-gray-200 border-b p-3 dark:border-gray-700">
 					<button
-						className="flex w-full items-center justify-center rounded-sm border border-orange-200 bg-orange-100 py-1 font-medium text-orange-700 text-sm transition-colors hover:bg-orange-200 disabled:cursor-not-allowed disabled:opacity-50"
+						className="flex w-full items-center justify-center rounded-sm border border-orange-200 bg-orange-100 py-1 font-medium text-orange-700 text-sm transition-colors hover:bg-orange-200 disabled:cursor-not-allowed disabled:opacity-50 dark:border-orange-500 dark:bg-orange-800/30 dark:text-orange-200 dark:hover:bg-orange-800/50"
 						disabled={isFetchingNextPage}
 						onClick={fetchNextPage}
 						type="button"
@@ -88,8 +89,8 @@ export default function PostList({
 			)}
 
 			{error && (
-				<div className="border-gray-200 border-b p-3">
-					<div className="flex items-center gap-2 rounded-sm border border-red-200 bg-red-50 p-3 text-red-700 text-sm">
+				<div className="border-gray-200 border-b p-3 dark:border-gray-700">
+					<div className="flex items-center gap-2 rounded-sm border border-red-200 bg-red-50 p-3 text-red-700 text-sm dark:border-red-700 dark:bg-red-950 dark:text-red-300">
 						<HugeiconsIcon icon={InformationCircleIcon} size={16} />
 						<div>
 							<div className="font-medium">Failed to load more posts</div>
@@ -99,7 +100,7 @@ export default function PostList({
 						</div>
 						{fetchNextPage && (
 							<button
-								className="ml-auto rounded border border-red-300 bg-red-100 px-2 py-1 text-xs hover:bg-red-200"
+								className="ml-auto rounded border border-red-300 bg-red-100 px-2 py-1 text-xs hover:bg-red-200 dark:border-red-700 dark:bg-red-900 dark:text-red-300 dark:hover:bg-red-800"
 								onClick={fetchNextPage}
 								type="button"
 							>

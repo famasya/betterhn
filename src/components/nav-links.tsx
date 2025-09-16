@@ -9,7 +9,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useTheme } from "next-themes";
 import {
 	Tooltip,
 	TooltipContent,
@@ -59,9 +59,9 @@ export default function NavLinks({
 						<TooltipTrigger asChild>
 							<Link
 								className={cn(
-									"flex items-center gap-3 rounded-lg p-2 text-gray-700 transition-colors hover:bg-gray-100",
+									"flex items-center gap-3 rounded-lg p-2 text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:bg-orange-800/50",
 									`/${category}` === link.href &&
-										"bg-orange-200 text-orange-700 hover:bg-orange-200"
+										"bg-orange-200 text-orange-700 hover:bg-orange-200 dark:bg-orange-800/30 dark:text-orange-300 dark:hover:bg-orange-800/50"
 								)}
 								params={{ category: link.href.split("/")[1], postId }}
 								to={postId.length > 0 ? "/$category/{-$postId}" : link.href}
@@ -78,9 +78,9 @@ export default function NavLinks({
 					<TooltipTrigger asChild>
 						<Link
 							className={cn(
-								"flex items-center gap-3 rounded-lg p-2 text-gray-700 transition-colors hover:bg-gray-100",
+								"flex items-center gap-3 rounded-lg p-2 text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800",
 								`/${category}` === "search" &&
-									"bg-orange-200 text-orange-700 hover:bg-orange-200"
+									"bg-orange-200 text-orange-700 hover:bg-orange-200 dark:bg-orange-800 dark:text-orange-300"
 							)}
 							key={"search"}
 							params={{ category, postId: undefined }}
@@ -99,7 +99,12 @@ export default function NavLinks({
 }
 
 function SettingsDialog() {
-	const [darkMode, setDarkMode] = useState(false);
+	const { theme, setTheme } = useTheme();
+	const isDark = theme === "dark";
+
+	const toggleTheme = () => {
+		setTheme(isDark ? "light" : "dark");
+	};
 	return (
 		<Dialog>
 			<DialogTrigger className="flex items-center gap-3 rounded-lg bg-gradient-to-br from-blue-400 to-blue-500 p-2 text-gray-700 text-white transition-colors hover:from-blue-500 hover:to-blue-500">
@@ -114,13 +119,13 @@ function SettingsDialog() {
 							<div>
 								<div className="flex items-center space-x-2">
 									<Label className="text-xs" htmlFor="color-mode">
-										{darkMode ? "Dark" : "Light"}
+										{isDark ? "Dark" : "Light"}
 									</Label>
 									<Switch
-										checked={darkMode}
+										checked={isDark}
 										className="data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700"
 										id="color-mode"
-										onCheckedChange={setDarkMode}
+										onCheckedChange={toggleTheme}
 									/>
 								</div>
 							</div>

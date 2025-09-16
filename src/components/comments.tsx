@@ -95,12 +95,12 @@ const CommentItem = memo(function CommentItemComponent({
 
 	return (
 		<div>
-			<div className="border-gray-200 border-b py-3">
+			<div className="border-gray-200 border-b py-3 dark:border-white/10">
 				<div className="mb-2 flex items-center gap-3 text-gray-600 text-sm">
 					<div className="flex items-center gap-1 font-medium">
 						<HugeiconsIcon icon={UserSquareIcon} size={16} />
 						<a
-							className="text-blue-600 no-underline hover:text-blue-700"
+							className="text-blue-600 no-underline hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-200"
 							href={`https://news.ycombinator.com/user?id=${comment.by}`}
 							target="_blank"
 							title={comment.by}
@@ -108,12 +108,12 @@ const CommentItem = memo(function CommentItemComponent({
 							{comment.by}
 						</a>
 					</div>
-					<div className="flex items-center gap-1">
+					<div className="flex items-center gap-1 dark:text-gray-400">
 						[ {formatRelative(comment.time * 1000, Date.now())} ]
 					</div>
 				</div>
 				<div
-					className="overflow-x-auto break-words text-gray-800 text-sm leading-relaxed [&_*]:break-words [&_a]:break-words [&_a]:text-orange-600 [&_a]:underline [&_a]:hover:text-orange-700 [&_code]:break-normal [&_code]:rounded [&_code]:bg-gray-100 [&_code]:px-1 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-xs [&_p:last-child]:mb-0 [&_p]:mb-2 [&_pre]:mt-2 [&_pre]:whitespace-pre-wrap [&_pre]:break-words [&_pre]:rounded [&_pre]:bg-gray-100 [&_pre]:p-2 [&_pre]:font-mono [&_pre]:text-xs"
+					className="overflow-x-auto break-words text-gray-800 text-sm leading-relaxed dark:text-gray-300 [&_*]:break-words [&_*]:text-gray-800 [&_*]:dark:text-gray-300 [&_a]:break-words [&_a]:text-orange-600 [&_a]:underline [&_a]:hover:text-orange-700 [&_code]:break-normal [&_code]:rounded [&_code]:bg-gray-100 [&_code]:px-1 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-xs [&_code]:dark:bg-gray-800 [&_p:last-child]:mb-0 [&_p]:mb-2 [&_pre]:mt-2 [&_pre]:whitespace-pre-wrap [&_pre]:break-words [&_pre]:rounded [&_pre]:bg-gray-100 [&_pre]:p-2 [&_pre]:font-mono [&_pre]:text-xs [&_pre]:dark:bg-gray-800"
 					// biome-ignore lint/security/noDangerouslySetInnerHtml: ignored
 					dangerouslySetInnerHTML={{
 						__html:
@@ -129,7 +129,7 @@ const CommentItem = memo(function CommentItemComponent({
 				<div className="mt-2 flex items-center justify-end gap-1 text-gray-600 text-xs">
 					{hasReplies && (
 						<button
-							className="flex cursor-pointer items-center gap-1 text-orange-600 hover:text-orange-700"
+							className="flex cursor-pointer items-center gap-1 text-orange-600 hover:text-orange-700 dark:text-orange-300 dark:hover:text-orange-200"
 							onClick={handleToggleReplies}
 							type="button"
 						>
