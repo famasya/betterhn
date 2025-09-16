@@ -1,6 +1,6 @@
 import {
-	AppleStocksIcon,
-	Comment01FreeIcons,
+	AnalyticsUpIcon,
+	Comment01Icon,
 	InformationCircleIcon,
 	Loading03FreeIcons,
 } from "@hugeicons/core-free-icons";
@@ -35,7 +35,11 @@ export default function PostList({
 			{posts.map((post) => (
 				<Link
 					key={post.id}
-					onClick={onPostClick}
+					onClick={() => {
+						onPostClick?.();
+						// also open link in new tab
+						window.open(post.url, "_blank");
+					}}
 					params={{
 						category: category || "top",
 						postId: `${lowerCaseTitle(post.title)}-${post.id}`,
@@ -46,7 +50,7 @@ export default function PostList({
 						className={cn(
 							"border-gray-200 border-b p-3 text-sm hover:bg-zinc-100 dark:border-gray-700 dark:hover:bg-zinc-800",
 							activePostId === post.id &&
-								"border-blue-200 bg-blue-50 dark:border-blue-700 dark:bg-blue-950/50 dark:hover:bg-blue-950/80"
+								"border-orange-700/70 bg-orange-50 hover:bg-orange-50 dark:border-orange-700/70 dark:bg-orange-50/10 dark:hover:bg-orange-50/10"
 						)}
 					>
 						{post.title}
@@ -56,12 +60,14 @@ export default function PostList({
 							)}
 						>
 							<div className="flex items-center gap-1">
-								<HugeiconsIcon icon={AppleStocksIcon} size={16} /> {post.score}{" "}
+								<HugeiconsIcon icon={AnalyticsUpIcon} size={16} /> {post.score}{" "}
 								points
 							</div>
-							<div className="flex items-center gap-1">
-								<HugeiconsIcon icon={Comment01FreeIcons} size={16} />{" "}
-								{post.descendants}
+							<div className="flex items-center gap-2">
+								<div className="flex items-center gap-1">
+									<HugeiconsIcon icon={Comment01Icon} size={16} />{" "}
+									{post.descendants}
+								</div>
 							</div>
 						</div>
 					</div>
@@ -76,7 +82,7 @@ export default function PostList({
 						onClick={fetchNextPage}
 						size={"sm"}
 						type="button"
-						variant={"outline"}
+						variant={"orange"}
 					>
 						{isFetchingNextPage ? (
 							<HugeiconsIcon
@@ -85,7 +91,7 @@ export default function PostList({
 								size={16}
 							/>
 						) : (
-							"Load More"
+							"Load More Posts"
 						)}
 					</Button>
 				</div>

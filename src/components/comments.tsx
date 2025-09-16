@@ -48,7 +48,7 @@ function CommentReplies({
 
 	if (isLoading) {
 		return (
-			<div className="ml-4 border-gray-200 border-l py-2 pl-4">
+			<div className="ml-4 border-white/20 border-l py-2 pl-4">
 				<div className="flex items-center gap-2 text-gray-500 text-sm">
 					<HugeiconsIcon
 						className="animate-spin"
@@ -63,7 +63,7 @@ function CommentReplies({
 
 	if (error) {
 		return (
-			<div className="ml-4 border-gray-200 border-l py-2 pl-4">
+			<div className="ml-4 border-white/20 border-l py-2 pl-4">
 				<div className="text-red-600 text-sm">Failed to load replies</div>
 			</div>
 		);
@@ -72,7 +72,7 @@ function CommentReplies({
 	const comments = data?.comments || [];
 
 	return (
-		<div className="ml-4 border-gray-200 border-l pl-4">
+		<div className="ml-4 border-white/20 border-l pl-4">
 			{comments.map((comment) => (
 				<CommentItem comment={comment} depth={depth + 1} key={comment.id} />
 			))}
@@ -89,7 +89,6 @@ const CommentItem = memo(function CommentItemComponent({
 }) {
 	const [showReplies, setShowReplies] = useState(false);
 	const hasReplies = comment.kids && comment.kids.length > 0;
-	const maxDepth = 4;
 
 	const handleToggleReplies = () => {
 		setShowReplies(!showReplies);
@@ -97,7 +96,7 @@ const CommentItem = memo(function CommentItemComponent({
 
 	return (
 		<div>
-			<div className="border-gray-200 border-b py-3 dark:border-white/20">
+			<div className="border-gray-200 border-b pt-3 pb-1 dark:border-white/20">
 				<div className="mb-2 flex items-center gap-3 text-gray-600 text-sm">
 					<div className="flex items-center gap-1 font-medium">
 						<HugeiconsIcon icon={UserSquareIcon} size={18} />
@@ -164,16 +163,8 @@ const CommentItem = memo(function CommentItemComponent({
 				</div>
 			</div>
 
-			{showReplies && hasReplies && depth < maxDepth && comment.kids && (
+			{showReplies && hasReplies && comment.kids && (
 				<CommentReplies commentIds={comment.kids} depth={depth} />
-			)}
-
-			{showReplies && depth >= maxDepth && hasReplies && (
-				<div className="ml-4 border-gray-200 border-l py-2 pl-4">
-					<div className="text-gray-500 text-sm">
-						Thread continues... ({comment.kids?.length} more replies)
-					</div>
-				</div>
 			)}
 		</div>
 	);
