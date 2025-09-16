@@ -88,18 +88,18 @@ function RouteComponent() {
 
 	return (
 		<div
-			className="h-[100dvh] flex-1 overflow-y-auto bg-gray-50 pb-14 md:pb-0 dark:bg-gray-900"
+			className="h-[100dvh] flex-1 overflow-y-auto bg-gray-50 pb-14 md:pb-0 dark:bg-black"
 			id="post-content"
 		>
 			{/* Post Header */}
-			<div className="border-gray-200 border-b bg-white p-4 sm:p-6 dark:border-gray-700 dark:bg-gray-800">
+			<div className="border-gray-200 border-b bg-white p-4 sm:p-6 dark:border-zinc-800 dark:bg-zinc-900">
 				<h1
-					className="mb-3 hyphens-auto break-words font-medium text-gray-900 text-lg sm:text-xl dark:text-gray-100"
+					className="mb-3 hyphens-auto break-words font-medium text-gray-900 text-lg sm:text-xl dark:text-white"
 					style={{ wordBreak: "break-word", overflowWrap: "anywhere" }}
 				>
 					{post.title}
 				</h1>
-				<div className="flex flex-wrap items-center gap-3 text-gray-600 text-sm sm:gap-4 dark:text-gray-400">
+				<div className="flex flex-wrap items-center gap-3 text-gray-600 text-sm sm:gap-4 dark:text-zinc-400">
 					<span>
 						by <span className="font-medium">{post.by}</span>
 					</span>
@@ -138,9 +138,9 @@ function RouteComponent() {
 				)}
 
 				{post.text && (
-					<div className="mt-4 border-gray-200 border-t border-dashed pt-4 dark:border-gray-700">
+					<div className="mt-4 border-gray-200 border-t border-dashed pt-4 dark:border-zinc-800">
 						<div
-							className="overflow-hidden hyphens-auto break-words text-gray-800 text-sm leading-relaxed dark:text-gray-200 [&_*]:hyphens-auto [&_*]:break-words [&_*]:text-gray-800 [&_*]:dark:text-gray-200 [&_a]:text-orange-600 [&_a]:underline [&_a]:hover:text-orange-700 [&_code]:break-normal [&_code]:rounded [&_code]:bg-gray-100 [&_code]:px-2 [&_code]:py-1 [&_code]:font-mono [&_code]:text-xs [&_code]:dark:bg-gray-800 [&_p:last-child]:mb-0 [&_p]:mb-3 [&_pre]:mt-2 [&_pre]:overflow-x-auto [&_pre]:break-normal [&_pre]:rounded [&_pre]:bg-gray-100 [&_pre]:p-3 [&_pre]:font-mono [&_pre]:text-xs [&_pre]:dark:bg-gray-800"
+							className="overflow-hidden hyphens-auto break-words text-gray-800 text-sm leading-relaxed dark:text-zinc-200 [&_*]:hyphens-auto [&_*]:break-words [&_*]:text-gray-800 [&_*]:dark:text-zinc-200 [&_a]:text-orange-600 [&_a]:underline [&_a]:hover:text-orange-700 [&_code]:break-normal [&_code]:rounded [&_code]:bg-gray-100 [&_code]:px-2 [&_code]:py-1 [&_code]:font-mono [&_code]:text-xs [&_code]:dark:bg-zinc-900 [&_p:last-child]:mb-0 [&_p]:mb-3 [&_pre]:mt-2 [&_pre]:overflow-x-auto [&_pre]:break-normal [&_pre]:rounded [&_pre]:bg-gray-100 [&_pre]:p-3 [&_pre]:font-mono [&_pre]:text-xs [&_pre]:dark:bg-zinc-900"
 							// biome-ignore lint/security/noDangerouslySetInnerHtml: ignored
 							dangerouslySetInnerHTML={{
 								__html:

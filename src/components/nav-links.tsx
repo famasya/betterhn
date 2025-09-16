@@ -114,8 +114,8 @@ function SettingsDialog() {
 				<DialogHeader>
 					<DialogTitle>About hn.fd</DialogTitle>
 					<DialogDescription className="mt-2">
-						<div className="flex flex-row justify-between">
-							<div>Color Mode</div>
+						<div className="flex flex-row items-center justify-between">
+							<div>Color Schema</div>
 							<div>
 								<div className="flex items-center space-x-2">
 									<Label className="text-xs" htmlFor="color-mode">

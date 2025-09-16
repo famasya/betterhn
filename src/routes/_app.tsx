@@ -88,9 +88,9 @@ function RouteComponent() {
 	}, [isMobileMenuOpen]);
 
 	return (
-		<div className="flex h-screen flex-col overflow-hidden bg-gray-50 md:flex-row dark:bg-gray-900">
+		<div className="flex h-screen flex-col overflow-hidden bg-gray-50 md:flex-row dark:bg-black">
 			{/* Mobile Header */}
-			<div className="flex items-center justify-between border-gray-200 border-b bg-white p-2 md:hidden dark:border-gray-700 dark:bg-gray-800">
+			<div className="flex items-center justify-between border-gray-200 border-b bg-white p-2 md:hidden dark:border-zinc-800 dark:bg-zinc-900">
 				<button
 					className="ml-2 rounded-sm transition-colors hover:bg-gray-200 active:bg-gray-200"
 					onClick={(e) => {
@@ -113,7 +113,7 @@ function RouteComponent() {
 					{/** biome-ignore lint/a11y/noNoninteractiveElementInteractions: clickable */}
 					{/** biome-ignore lint/a11y/noStaticElementInteractions: clickable */}
 					<div
-						className="absolute inset-0 bg-black/60 dark:bg-black/70"
+						className="absolute inset-0 bg-black/60 dark:bg-black/80"
 						onClick={() => setIsMobileMenuOpen(false)}
 						onKeyUp={() => setIsMobileMenuOpen(false)}
 					/>
@@ -122,13 +122,13 @@ function RouteComponent() {
 					<div className="absolute top-0 left-0 h-full w-full">
 						<div className="flex h-full">
 							{/* Navigation Sidebar */}
-							<div className="border-gray-200 border-r bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
+							<div className="border-gray-200 border-r bg-white shadow-md dark:border-zinc-800 dark:bg-zinc-900">
 								<NavLinks category={category} postId={postId} />
 							</div>
 
 							{/* Posts Sidebar */}
 							<div className="flex h-full w-80 flex-col bg-white shadow-lg dark:bg-gray-800">
-								<div className="flex items-center justify-between border-gray-200 border-b p-2 dark:border-gray-700">
+								<div className="flex items-center justify-between border-gray-200 border-b p-2 dark:border-zinc-800">
 									<h2 className="font-medium text-lg">Posts</h2>
 									<button
 										className="ml-2 rounded-lg transition-colors hover:bg-gray-100"
@@ -173,11 +173,11 @@ function RouteComponent() {
 			)}
 
 			{/* Desktop Posts sidebar */}
-			<div className="hidden border-gray-200 border-r bg-white md:block dark:border-gray-700 dark:bg-gray-800">
+			<div className="hidden border-gray-200 border-r bg-white md:block dark:border-zinc-800 dark:bg-zinc-900">
 				<NavLinks category={category} postId={postId} />
 			</div>
 
-			<div className="hidden w-1/4 min-w-[300px] border-gray-200 border-r bg-white md:block dark:border-gray-700 dark:bg-gray-800">
+			<div className="hidden w-1/4 min-w-[300px] border-gray-200 border-r bg-white md:block dark:border-zinc-800 dark:bg-zinc-900">
 				<ScrollArea className="h-full">
 					{isLoading ? (
 						<div className="flex items-center justify-center p-4">

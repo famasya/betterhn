@@ -8,6 +8,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { Link } from "@tanstack/react-router";
 import type { FirebasePostDetail } from "~/lib/types";
 import { cn, lowerCaseTitle } from "~/lib/utils";
+import { Button } from "./ui/button";
 
 type Params = {
 	posts: FirebasePostDetail[];
@@ -69,11 +70,13 @@ export default function PostList({
 
 			{hasNextPage && (
 				<div className="border-gray-200 border-b p-3 dark:border-gray-700">
-					<button
-						className="flex w-full items-center justify-center rounded-sm border border-orange-200 bg-orange-100 py-1 font-medium text-orange-700 text-sm transition-colors hover:bg-orange-200 disabled:cursor-not-allowed disabled:opacity-50 dark:border-orange-500 dark:bg-orange-800/30 dark:text-orange-200 dark:hover:bg-orange-800/50"
+					<Button
+						className="w-full"
 						disabled={isFetchingNextPage}
 						onClick={fetchNextPage}
+						size={"sm"}
 						type="button"
+						variant={"outline"}
 					>
 						{isFetchingNextPage ? (
 							<HugeiconsIcon
@@ -84,7 +87,7 @@ export default function PostList({
 						) : (
 							"Load More"
 						)}
-					</button>
+					</Button>
 				</div>
 			)}
 
@@ -99,13 +102,14 @@ export default function PostList({
 							</div>
 						</div>
 						{fetchNextPage && (
-							<button
-								className="ml-auto rounded border border-red-300 bg-red-100 px-2 py-1 text-xs hover:bg-red-200 dark:border-red-700 dark:bg-red-900 dark:text-red-300 dark:hover:bg-red-800"
+							<Button
 								onClick={fetchNextPage}
+								size={"sm"}
 								type="button"
+								variant={"outline"}
 							>
 								Retry
-							</button>
+							</Button>
 						)}
 					</div>
 				</div>

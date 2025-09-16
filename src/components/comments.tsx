@@ -14,6 +14,7 @@ import {
 	loadComments,
 } from "~/functions/load-comments";
 import { useInfiniteComments } from "~/lib/hooks/use-infinite-comments";
+import { Button } from "./ui/button";
 
 type CommentsProps = {
 	postId: number;
@@ -95,12 +96,12 @@ const CommentItem = memo(function CommentItemComponent({
 
 	return (
 		<div>
-			<div className="border-gray-200 border-b py-3 dark:border-white/10">
+			<div className="border-gray-200 border-b py-3 dark:border-white/20">
 				<div className="mb-2 flex items-center gap-3 text-gray-600 text-sm">
 					<div className="flex items-center gap-1 font-medium">
 						<HugeiconsIcon icon={UserSquareIcon} size={16} />
 						<a
-							className="text-blue-600 no-underline hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-200"
+							className="text-blue-600 no-underline hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
 							href={`https://news.ycombinator.com/user?id=${comment.by}`}
 							target="_blank"
 							title={comment.by}
@@ -231,11 +232,13 @@ export default function Comments({
 			{/* Load More Button */}
 			{hasNextPage && (
 				<div className="mt-4 pt-3">
-					<button
-						className="flex w-full items-center justify-center rounded-sm border border-orange-200 bg-orange-100 py-2 font-medium text-orange-700 text-sm transition-colors hover:bg-orange-200 disabled:cursor-not-allowed disabled:opacity-50"
+					<Button
+						className="w-full"
 						disabled={isFetchingNextPage}
 						onClick={() => fetchNextPage()}
+						size={"sm"}
 						type="button"
+						variant={"outline"}
 					>
 						{isFetchingNextPage ? (
 							<HugeiconsIcon
@@ -246,14 +249,14 @@ export default function Comments({
 						) : (
 							"Load More Comments"
 						)}
-					</button>
+					</Button>
 				</div>
 			)}
 
 			{/* Error State */}
 			{error && (
 				<div className="mt-4 pt-3">
-					<div className="flex items-center gap-2 rounded-sm border border-red-200 bg-red-50 p-3 text-red-700 text-sm">
+					<div className="flex items-center gap-2 rounded-sm border border-red-200 bg-red-50 p-3 text-red-700 text-sm dark:border-orange-800/50 dark:bg-orange-800/50 dark:hover:bg-orange-800/50 dark:hover:text-orange-200">
 						<HugeiconsIcon icon={InformationCircleIcon} size={16} />
 						<div>
 							<div className="font-medium">Failed to load more comments</div>
