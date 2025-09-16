@@ -88,7 +88,7 @@ function RouteComponent() {
 	}, [isMobileMenuOpen]);
 
 	return (
-		<div className="flex h-screen flex-col overflow-hidden bg-zinc-50 md:flex-row dark:bg-black">
+		<div className="flex h-dvh flex-col overflow-hidden bg-zinc-50 md:flex-row dark:bg-black">
 			{/* Mobile Header */}
 			<div className="flex items-center justify-between border-gray-200 border-b bg-white p-2 md:hidden dark:border-zinc-800 dark:bg-zinc-900">
 				<Button

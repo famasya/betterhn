@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 
 export function NotFound({ children }: { children?: React.ReactNode }) {
 	return (
-		<div className="flex h-screen flex-col items-center justify-center gap-2">
+		<div className="flex h-dvh flex-col items-center justify-center gap-2">
 			<div className="text-gray-600">
 				{children || <p>The page you are looking for does not exist.</p>}
 			</div>

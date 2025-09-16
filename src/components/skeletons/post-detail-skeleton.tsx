@@ -5,7 +5,7 @@ import { Skeleton } from "~/components/ui/skeleton";
 
 export function PostDetailSkeleton() {
 	return (
-		<ScrollArea className="h-screen flex-1 bg-zinc-50" id="post-content">
+		<ScrollArea className="h-dvh flex-1 bg-zinc-50" id="post-content">
 			{/* Post Header Skeleton */}
 			<div className="border-gray-200 border-b bg-white p-4 sm:p-6">
 				{/* Title Skeleton - 2-3 lines */}

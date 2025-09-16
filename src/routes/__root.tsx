@@ -48,7 +48,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 			<head>
 				<HeadContent />
 			</head>
-			<body className={cn("flex min-h-screen flex-col")}>
+			<body className={cn("flex min-h-dvh flex-col")}>
 				<QueryClientProvider client={getBrowserQueryClient()}>
 					<ThemeProvider
 						attribute="class"
