@@ -7,6 +7,7 @@ export type CommentItem = {
 	kids: number[];
 	parent: number;
 	text: string;
+	deleted?: boolean;
 	time: number;
 	type: string;
 };

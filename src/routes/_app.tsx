@@ -9,7 +9,6 @@ import { useEffect, useState } from "react";
 import NavLinks from "~/components/nav-links";
 import PostList from "~/components/post-list";
 import { Button } from "~/components/ui/button";
-import { ScrollArea } from "~/components/ui/scroll-area";
 import { fetchPosts } from "~/lib/fetch-posts";
 import { useInfinitePosts } from "~/lib/hooks/use-infinite-posts";
 import { createQueryClient } from "~/lib/query-client";
@@ -141,32 +140,30 @@ function RouteComponent() {
 										<HugeiconsIcon className="h-5 w-5" icon={Cancel01Icon} />
 									</Button>
 								</div>
-								<div className="flex-1 overflow-hidden">
-									<ScrollArea className="h-full">
-										{isLoading ? (
-											<div className="flex items-center justify-center p-4">
-												<div className="flex items-center gap-2 text-gray-500 text-sm">
-													<HugeiconsIcon
-														className="animate-spin"
-														icon={Loading03Icon}
-														size={16}
-													/>
-													Loading posts...
-												</div>
+								<div className="flex-1 overflow-y-auto">
+									{isLoading ? (
+										<div className="flex items-center justify-center p-4">
+											<div className="flex items-center gap-2 text-gray-500 text-sm">
+												<HugeiconsIcon
+													className="animate-spin"
+													icon={Loading03Icon}
+													size={16}
+												/>
+												Loading posts...
 											</div>
-										) : (
-											<PostList
-												activePostId={Number(activePostId)}
-												category={category}
-												error={error}
-												fetchNextPage={fetchNextPage}
-												hasNextPage={hasNextPage}
-												isFetchingNextPage={isFetchingNextPage}
-												onPostClick={() => setIsMobileMenuOpen(false)}
-												posts={posts}
-											/>
-										)}
-									</ScrollArea>
+										</div>
+									) : (
+										<PostList
+											activePostId={Number(activePostId)}
+											category={category}
+											error={error}
+											fetchNextPage={fetchNextPage}
+											hasNextPage={hasNextPage}
+											isFetchingNextPage={isFetchingNextPage}
+											onPostClick={() => setIsMobileMenuOpen(false)}
+											posts={posts}
+										/>
+									)}
 								</div>
 							</div>
 						</div>
@@ -179,32 +176,30 @@ function RouteComponent() {
 				<NavLinks category={category} postId={postId} />
 			</div>
 
-			<div className="hidden w-1/4 min-w-[300px] border-gray-200 border-r bg-white md:block dark:border-zinc-800 dark:bg-zinc-900">
-				<ScrollArea className="h-full">
-					{isLoading ? (
-						<div className="flex items-center justify-center p-4">
-							<div className="flex items-center gap-2 text-gray-500 text-sm">
-								<HugeiconsIcon
-									className="animate-spin"
-									icon={Loading03Icon}
-									size={16}
-								/>
-								Loading posts...
-							</div>
+			<div className="hidden w-1/4 min-w-[300px] overflow-y-auto border-gray-200 border-r bg-white md:block dark:border-zinc-800 dark:bg-zinc-900">
+				{isLoading ? (
+					<div className="flex items-center justify-center p-4">
+						<div className="flex items-center gap-2 text-gray-500 text-sm">
+							<HugeiconsIcon
+								className="animate-spin"
+								icon={Loading03Icon}
+								size={16}
+							/>
+							Loading posts...
 						</div>
-					) : (
-						<PostList
-							activePostId={Number(activePostId)}
-							category={category}
-							error={error}
-							fetchNextPage={fetchNextPage}
-							hasNextPage={hasNextPage}
-							isFetchingNextPage={isFetchingNextPage}
-							onPostClick={() => setIsMobileMenuOpen(false)}
-							posts={posts}
-						/>
-					)}
-				</ScrollArea>
+					</div>
+				) : (
+					<PostList
+						activePostId={Number(activePostId)}
+						category={category}
+						error={error}
+						fetchNextPage={fetchNextPage}
+						hasNextPage={hasNextPage}
+						isFetchingNextPage={isFetchingNextPage}
+						onPostClick={() => setIsMobileMenuOpen(false)}
+						posts={posts}
+					/>
+				)}
 			</div>
 
 			{/* Main content */}

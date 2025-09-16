@@ -135,7 +135,8 @@ const CommentItem = memo(function CommentItemComponent({
 						target="_blank"
 					>
 						<Button
-							className="flex items-center gap-1 text-xs"
+							className="flex items-center gap-1 text-xs dark:text-gray-400"
+							disabled={comment.deleted}
 							size={"sm"}
 							type="button"
 							variant={"ghost"}
@@ -147,6 +148,7 @@ const CommentItem = memo(function CommentItemComponent({
 					{hasReplies && (
 						<Button
 							className="flex cursor-pointer items-center gap-1 text-orange-600 text-xs hover:text-orange-700 dark:text-orange-300 dark:hover:text-orange-200"
+							disabled={comment.deleted}
 							onClick={handleToggleReplies}
 							size={"sm"}
 							type="button"
@@ -242,21 +244,23 @@ export default function Comments({
 				)}
 			</div>
 			<div className="space-y-1">
-				{comments.map((comment) => (
-					<CommentItem comment={comment} key={comment.id} />
-				))}
+				{comments
+					.filter((comment) => !comment.deleted)
+					.map((comment) => (
+						<CommentItem comment={comment} key={comment.id} />
+					))}
 			</div>
 
 			{/* Load More Button */}
 			{hasNextPage && (
-				<div className="mt-4 pt-3">
+				<div className="mt-4 pt-3 text-center">
 					<Button
-						className="w-full"
+						className="w-full max-w-lg"
 						disabled={isFetchingNextPage}
 						onClick={() => fetchNextPage()}
 						size={"sm"}
 						type="button"
-						variant={"outline"}
+						variant={"orange"}
 					>
 						{isFetchingNextPage ? (
 							<HugeiconsIcon
