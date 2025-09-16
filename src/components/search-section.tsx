@@ -10,7 +10,6 @@ import type { AlgoliaPostApiResponse } from "~/lib/types";
 import { cn, lowerCaseTitle } from "~/lib/utils";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { ScrollArea } from "./ui/scroll-area";
 import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
 
 type SearchSectionProps = {
@@ -57,7 +56,7 @@ export default function SearchSection({
 	);
 
 	return (
-		<ScrollArea className="flex h-full w-full flex-col items-center">
+		<div className="flex h-full w-full flex-col items-center overflow-y-auto">
 			<div className="flex flex-col items-center pt-12">
 				<h1 className="font-medium text-2xl">Search</h1>
 				<p className="text-gray-500 text-sm">Powered by Algolia</p>
@@ -74,7 +73,13 @@ export default function SearchSection({
 				/>
 
 				<div className="mt-4" id="search-results">
-					<div className="mb-2 flex flex-col items-center justify-between md:flex-row">
+					<div
+						className={cn(
+							"mb-2 flex flex-col items-center justify-between md:flex-row",
+							(!search || search?.length === 0 || data?.hits.length === 0) &&
+								"hidden"
+						)}
+					>
 						<div className="font-medium text-lg">Search results</div>
 						<div>
 							<Tabs
@@ -113,7 +118,8 @@ export default function SearchSection({
 					<div
 						className={cn(
 							"mt-4 flex w-full items-center justify-end gap-2 text-center",
-							(!search || search?.length === 0) && "hidden"
+							(!search || search?.length === 0 || data?.hits.length === 0) &&
+								"hidden"
 						)}
 					>
 						<Link
@@ -141,7 +147,7 @@ export default function SearchSection({
 					</div>
 				</div>
 			</div>
-		</ScrollArea>
+		</div>
 	);
 }
 
@@ -165,14 +171,14 @@ const SearchResultItem = memo(function SearchResultItemComponent({
 }) {
 	if (search.length === 0) {
 		return (
-			<div className="flex w-full items-center justify-center gap-2 text-center text-gray-500 text-sm">
+			<div className="mt-8 flex w-full items-center justify-center gap-2 text-center text-gray-500 text-sm">
 				<HugeiconsIcon icon={Monocle01Icon} size={24} /> Search for something
 			</div>
 		);
 	}
 	if (results?.hits.length === 0 && search.length > 0) {
 		return (
-			<div className="flex w-full items-center justify-center gap-2 text-center text-gray-500 text-sm">
+			<div className="mt-8 flex w-full items-center justify-center gap-2 text-center text-gray-500 text-sm">
 				<HugeiconsIcon icon={ConfusedIcon} size={24} /> No results found
 			</div>
 		);
@@ -182,7 +188,7 @@ const SearchResultItem = memo(function SearchResultItemComponent({
 			{results?.hits.map((post) => {
 				return (
 					<div
-						className="rounded-sm border border-gray-200 bg-white p-3"
+						className="rounded-sm border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-black/90"
 						key={post.objectID}
 					>
 						<Link
