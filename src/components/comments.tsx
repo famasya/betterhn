@@ -8,7 +8,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { useQuery } from "@tanstack/react-query";
 import { formatRelative } from "date-fns";
 import DOMPurify from "dompurify";
-import { useState } from "react";
+import { memo, useState } from "react";
 import {
 	type CommentItem as CommentItemType,
 	loadComments,
@@ -78,7 +78,7 @@ function CommentReplies({
 	);
 }
 
-function CommentItem({
+const CommentItem = memo(function CommentItemComponent({
 	comment,
 	depth = 0,
 }: {
@@ -143,7 +143,7 @@ function CommentItem({
 			)}
 		</div>
 	);
-}
+});
 
 export default function Comments({
 	postId,

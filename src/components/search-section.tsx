@@ -1,7 +1,7 @@
 import { ConfusedIcon, Monocle01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { useSearch } from "~/lib/hooks/use-search";
 import type { AlgoliaPostApiResponse } from "~/lib/types";
 import { lowerCaseTitle } from "~/lib/utils";
@@ -23,8 +23,9 @@ export default function SearchSection({ category }: SearchSectionProps) {
 				<h1 className="font-medium text-2xl">Search</h1>
 				<p className="text-gray-500 text-sm">Powered by Algolia</p>
 			</div>
-			<div className="mt-4 w-full px-16 pb-16">
+			<div className="mx-auto w-full max-w-[800px] p-6 md:px-16">
 				<Input
+					className="bg-white"
 					onChange={(e) => setSearch(e.target.value)}
 					placeholder="Search..."
 					value={search}
@@ -39,17 +40,25 @@ export default function SearchSection({ category }: SearchSectionProps) {
 								onValueChange={(value) => setSearchCategory(value)}
 							>
 								<TabsList>
-									<TabsTrigger value="story">All</TabsTrigger>
-									<TabsTrigger value="show_hn">Show</TabsTrigger>
-									<TabsTrigger value="ask_hn">Ask</TabsTrigger>
-									<TabsTrigger value="front_page">Front Page</TabsTrigger>
+									<TabsTrigger className="text-xs" value="story">
+										All
+									</TabsTrigger>
+									<TabsTrigger className="text-xs" value="show_hn">
+										Show
+									</TabsTrigger>
+									<TabsTrigger className="text-xs" value="ask_hn">
+										Ask
+									</TabsTrigger>
+									<TabsTrigger className="text-xs" value="front_page">
+										Front Page
+									</TabsTrigger>
 								</TabsList>
 							</Tabs>
 						</div>
 					</div>
 
 					{isLoading ? (
-						<div className="h-40 w-full animate-pulse rounded-lg bg-gray-200" />
+						<LoadingSkeleton />
 					) : (
 						<div className="space-y-2">
 							<SearchResultItem
@@ -65,7 +74,16 @@ export default function SearchSection({ category }: SearchSectionProps) {
 	);
 }
 
-function SearchResultItem({
+function LoadingSkeleton() {
+	return Array.from({ length: 10 }).map((_, index) => (
+		<div
+			className="mt-2 h-20 w-full animate-pulse rounded-lg bg-gray-200"
+			key={index.toString()}
+		/>
+	));
+}
+
+const SearchResultItem = memo(function SearchResultItemComponent({
 	results,
 	category,
 	search,
@@ -111,4 +129,4 @@ function SearchResultItem({
 			})}
 		</>
 	);
-}
+});

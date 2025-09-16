@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Skeleton } from "~/components/ui/skeleton";
 
@@ -77,7 +78,7 @@ export function PostDetailSkeleton() {
 	);
 }
 
-function CommentSkeleton() {
+const CommentSkeleton = memo(function CommentSkeletonComponent() {
 	return (
 		<div className="border-gray-200 border-b py-3">
 			{/* Comment Header */}
@@ -96,4 +97,4 @@ function CommentSkeleton() {
 			</div>
 		</div>
 	);
-}
+});

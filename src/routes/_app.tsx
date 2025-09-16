@@ -5,6 +5,7 @@ import {
 	Menu01Icon,
 	QuestionIcon,
 	RocketIcon,
+	Search01Icon,
 	StarIcon,
 	TargetIcon,
 } from "@hugeicons/core-free-icons";
@@ -158,6 +159,18 @@ function RouteComponent() {
 											<HugeiconsIcon className="h-5 w-5" icon={link.icon} />
 										</Link>
 									))}
+									<Link
+										className={cn(
+											"flex items-center justify-center rounded-lg p-2 text-gray-700 transition-colors hover:bg-gray-100",
+											`/${category}` === "search" &&
+												"bg-orange-200 text-orange-700 hover:bg-orange-200"
+										)}
+										key={"search"}
+										params={{ category, postId: "" }}
+										to={"/$category/$postId"}
+									>
+										<HugeiconsIcon className="h-5 w-5" icon={Search01Icon} />
+									</Link>
 								</nav>
 							</div>
 
@@ -221,7 +234,7 @@ function RouteComponent() {
 												"bg-orange-200 text-orange-700 hover:bg-orange-200"
 										)}
 										params={{ category: link.href.split("/")[1], postId }}
-										to={"/$category/$postId"}
+										to={postId.length > 0 ? "/$category/$postId" : link.href}
 									>
 										<HugeiconsIcon className="h-5 w-5" icon={link.icon} />
 									</Link>
@@ -231,6 +244,25 @@ function RouteComponent() {
 								</TooltipContent>
 							</Tooltip>
 						))}
+						<Tooltip delayDuration={0}>
+							<TooltipTrigger asChild>
+								<Link
+									className={cn(
+										"flex items-center gap-3 rounded-lg p-2 text-gray-700 transition-colors hover:bg-gray-100",
+										`/${category}` === "search" &&
+											"bg-orange-200 text-orange-700 hover:bg-orange-200"
+									)}
+									key={"search"}
+									params={{ category, postId: "" }}
+									to={"/$category/$postId"}
+								>
+									<HugeiconsIcon className="h-5 w-5" icon={Search01Icon} />
+								</Link>
+							</TooltipTrigger>
+							<TooltipContent side="right">
+								<p>Search</p>
+							</TooltipContent>
+						</Tooltip>
 					</TooltipProvider>
 				</nav>
 			</div>
