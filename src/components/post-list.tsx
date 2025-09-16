@@ -39,7 +39,7 @@ export default function PostList({
 						category: category || "top",
 						postId: `${lowerCaseTitle(post.title)}-${post.id}`,
 					}}
-					to={"/$category/$postId"}
+					to={"/$category/{-$postId}"}
 				>
 					<div
 						className={cn(
