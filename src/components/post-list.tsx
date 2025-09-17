@@ -37,8 +37,6 @@ export default function PostList({
 					key={post.id}
 					onClick={() => {
 						onPostClick?.();
-						// also open link in new tab
-						window.open(post.url, "_blank");
 					}}
 					params={{
 						category: category || "top",
@@ -75,7 +73,7 @@ export default function PostList({
 			))}
 
 			{hasNextPage && (
-				<div className="border-gray-200 border-b p-3 dark:border-gray-700">
+				<div className="p-3">
 					<Button
 						className="w-full"
 						disabled={isFetchingNextPage}

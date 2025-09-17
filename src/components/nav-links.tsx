@@ -23,6 +23,7 @@ const navLinks = [
 	{ label: "New", href: "/new", icon: TargetIcon },
 	{ label: "Ask", href: "/ask", icon: QuestionIcon },
 	{ label: "Show", href: "/show", icon: RocketIcon },
+	{ label: "Search", href: "/search", icon: Search01Icon },
 ];
 
 export default function NavLinks({
@@ -63,25 +64,6 @@ export default function NavLinks({
 						</TooltipContent>
 					</Tooltip>
 				))}
-				<Tooltip delayDuration={0}>
-					<TooltipTrigger asChild>
-						<Link
-							className={cn(
-								"flex items-center gap-3 rounded-lg p-2 text-gray-700 transition-colors hover:bg-zinc-100 dark:text-gray-200 dark:hover:bg-zinc-800",
-								`/${category}` === "search" &&
-									"bg-orange-200 text-orange-700 hover:bg-orange-200 dark:bg-orange-800 dark:text-orange-300"
-							)}
-							key={"search"}
-							params={{ category, postId: undefined }}
-							to={"/$category/{-$postId}"}
-						>
-							<HugeiconsIcon className={cn("h-5 w-5")} icon={Search01Icon} />
-						</Link>
-					</TooltipTrigger>
-					<TooltipContent side="right">
-						<p>Search</p>
-					</TooltipContent>
-				</Tooltip>
 			</TooltipProvider>
 		</nav>
 	);

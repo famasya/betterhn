@@ -15,6 +15,7 @@ import {
 	loadComments,
 } from "~/functions/load-comments";
 import { useInfiniteComments } from "~/lib/hooks/use-infinite-comments";
+import { cn } from "~/lib/utils";
 import { Button } from "./ui/button";
 
 type CommentsProps = {
@@ -22,6 +23,25 @@ type CommentsProps = {
 	initialComments: CommentItemType[];
 	remainingCommentSlices: number[][];
 	totalComments: number;
+};
+
+const borderColorLevel = (level: number) => {
+	switch (level % 6) {
+		case 0:
+			return "dark:border-blue-400/50";
+		case 1:
+			return "dark:border-green-400/50";
+		case 2:
+			return "dark:border-yellow-400/50";
+		case 3:
+			return "dark:border-orange-400/50";
+		case 4:
+			return "dark:border-red-400/50";
+		case 5:
+			return "dark:border-purple-400/50";
+		default:
+			return "dark:border-teal-400/50";
+	}
 };
 
 function CommentReplies({
@@ -48,7 +68,7 @@ function CommentReplies({
 
 	if (isLoading) {
 		return (
-			<div className="ml-4 border-white/20 border-l py-2 pl-4">
+			<div className={cn("ml-4 border-l py-2 pl-4", borderColorLevel(depth))}>
 				<div className="flex items-center gap-2 text-gray-500 text-sm">
 					<HugeiconsIcon
 						className="animate-spin"
@@ -72,7 +92,7 @@ function CommentReplies({
 	const comments = data?.comments || [];
 
 	return (
-		<div className="ml-4 border-white/20 border-l pl-4">
+		<div className={cn("ml-4 border-l pl-4", borderColorLevel(depth))}>
 			{comments.map((comment) => (
 				<CommentItem comment={comment} depth={depth + 1} key={comment.id} />
 			))}
@@ -119,17 +139,24 @@ const CommentItem = memo(function CommentItemComponent({
 					dangerouslySetInnerHTML={{
 						__html:
 							typeof window !== "undefined"
-								? DOMPurify.sanitize(comment.text, {
-										USE_PROFILES: { html: true },
-										ADD_ATTR: ["target"],
-										ALLOWED_ATTR: ["href", "target", "rel"],
-									})
+								? DOMPurify.sanitize(
+										comment.deleted ? "Deleted" : comment.text,
+										{
+											USE_PROFILES: { html: true },
+											ADD_ATTR: ["target"],
+											ALLOWED_ATTR: ["href", "target", "rel"],
+										}
+									)
 								: comment.text, // Server-side: use original text, sanitize on client
 					}}
 				/>
 				<div className="mt-2 flex items-center justify-end gap-1 text-gray-600 text-xs">
 					<a
-						href={`https://news.ycombinator.com/reply?id=${comment.id}&goto=item?id=${comment.parent}#${comment.id}`}
+						href={
+							comment.deleted
+								? "#"
+								: `https://news.ycombinator.com/reply?id=${comment.id}&goto=item?id=${comment.parent}#${comment.id}`
+						}
 						rel="noopener noreferrer"
 						target="_blank"
 					>
@@ -192,7 +219,7 @@ export default function Comments({
 
 	if (error && comments.length === 0) {
 		return (
-			<div className="p-3 sm:p-4">
+			<div className="px-3 sm:px-4">
 				<div className="mb-4 font-medium text-base sm:text-lg">Comments</div>
 				<div className="text-red-600">Failed to load comments</div>
 			</div>
@@ -201,7 +228,7 @@ export default function Comments({
 
 	if (isLoading && comments.length === 0) {
 		return (
-			<div className="p-3 sm:p-4">
+			<div className="px-3 sm:px-4">
 				<div className="mb-4 font-medium text-base sm:text-lg">Comments</div>
 				<div className="flex items-center gap-2 text-gray-500">
 					<HugeiconsIcon
@@ -217,7 +244,7 @@ export default function Comments({
 
 	if (comments.length === 0) {
 		return (
-			<div className="p-3 sm:p-4">
+			<div className="px-3 sm:px-4">
 				<div className="mb-4 font-medium text-base sm:text-lg">Comments</div>
 				<div className="text-gray-500">No comments yet.</div>
 			</div>
@@ -225,7 +252,7 @@ export default function Comments({
 	}
 
 	return (
-		<div className="p-3 sm:p-4">
+		<div className="px-3 sm:px-4">
 			<div className="mb-4 font-medium text-base sm:text-lg">
 				Comments ({totalComments})
 				{failedCount > 0 && (
@@ -244,7 +271,7 @@ export default function Comments({
 
 			{/* Load More Button */}
 			{hasNextPage && (
-				<div className="mt-4 pt-3 text-center">
+				<div className="my-4 text-center">
 					<Button
 						className="w-full max-w-lg"
 						disabled={isFetchingNextPage}

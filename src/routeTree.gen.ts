@@ -13,6 +13,7 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AppTopRouteImport } from './routes/_app.top'
 import { Route as AppShowRouteImport } from './routes/_app.show'
+import { Route as AppSearchRouteImport } from './routes/_app.search'
 import { Route as AppNewRouteImport } from './routes/_app.new'
 import { Route as AppBestRouteImport } from './routes/_app.best'
 import { Route as AppAskRouteImport } from './routes/_app.ask'
@@ -35,6 +36,11 @@ const AppTopRoute = AppTopRouteImport.update({
 const AppShowRoute = AppShowRouteImport.update({
   id: '/show',
   path: '/show',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSearchRoute = AppSearchRouteImport.update({
+  id: '/search',
+  path: '/search',
   getParentRoute: () => AppRoute,
 } as any)
 const AppNewRoute = AppNewRouteImport.update({
@@ -63,6 +69,7 @@ export interface FileRoutesByFullPath {
   '/ask': typeof AppAskRoute
   '/best': typeof AppBestRoute
   '/new': typeof AppNewRoute
+  '/search': typeof AppSearchRoute
   '/show': typeof AppShowRoute
   '/top': typeof AppTopRoute
   '/': typeof AppIndexRoute
@@ -72,6 +79,7 @@ export interface FileRoutesByTo {
   '/ask': typeof AppAskRoute
   '/best': typeof AppBestRoute
   '/new': typeof AppNewRoute
+  '/search': typeof AppSearchRoute
   '/show': typeof AppShowRoute
   '/top': typeof AppTopRoute
   '/': typeof AppIndexRoute
@@ -83,6 +91,7 @@ export interface FileRoutesById {
   '/_app/ask': typeof AppAskRoute
   '/_app/best': typeof AppBestRoute
   '/_app/new': typeof AppNewRoute
+  '/_app/search': typeof AppSearchRoute
   '/_app/show': typeof AppShowRoute
   '/_app/top': typeof AppTopRoute
   '/_app/': typeof AppIndexRoute
@@ -94,6 +103,7 @@ export interface FileRouteTypes {
     | '/ask'
     | '/best'
     | '/new'
+    | '/search'
     | '/show'
     | '/top'
     | '/'
@@ -103,6 +113,7 @@ export interface FileRouteTypes {
     | '/ask'
     | '/best'
     | '/new'
+    | '/search'
     | '/show'
     | '/top'
     | '/'
@@ -113,6 +124,7 @@ export interface FileRouteTypes {
     | '/_app/ask'
     | '/_app/best'
     | '/_app/new'
+    | '/_app/search'
     | '/_app/show'
     | '/_app/top'
     | '/_app/'
@@ -153,6 +165,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppShowRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/search': {
+      id: '/_app/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof AppSearchRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/new': {
       id: '/_app/new'
       path: '/new'
@@ -188,6 +207,7 @@ interface AppRouteChildren {
   AppAskRoute: typeof AppAskRoute
   AppBestRoute: typeof AppBestRoute
   AppNewRoute: typeof AppNewRoute
+  AppSearchRoute: typeof AppSearchRoute
   AppShowRoute: typeof AppShowRoute
   AppTopRoute: typeof AppTopRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -198,6 +218,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppAskRoute: AppAskRoute,
   AppBestRoute: AppBestRoute,
   AppNewRoute: AppNewRoute,
+  AppSearchRoute: AppSearchRoute,
   AppShowRoute: AppShowRoute,
   AppTopRoute: AppTopRoute,
   AppIndexRoute: AppIndexRoute,

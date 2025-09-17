@@ -59,7 +59,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 						storageKey="theme"
 					>
 						{children}
-						<TanStackRouterDevtools position="bottom-right" />
+						<TanStackRouterDevtools position="top-right" />
 					</ThemeProvider>
 				</QueryClientProvider>
 				<Toaster />
