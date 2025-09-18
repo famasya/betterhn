@@ -76,11 +76,11 @@ export default function SearchSection({
 					<div
 						className={cn(
 							"mb-2 flex flex-col items-center justify-between md:flex-row",
-							(!search || search?.length === 0 || data?.hits.length === 0) &&
-								"hidden"
+							(!search || search?.length === 0) &&
+							"hidden"
 						)}
 					>
-						<div className="font-medium text-lg">Search results</div>
+						<div className="font-medium text-base">Search results for <span className="bg-yellow-200 px-1">{search}</span></div>
 						<div>
 							<Tabs
 								defaultValue="story"
@@ -119,7 +119,7 @@ export default function SearchSection({
 						className={cn(
 							"mt-4 flex w-full items-center justify-end gap-2 text-center",
 							(!search || search?.length === 0 || data?.hits.length === 0) &&
-								"hidden"
+							"hidden"
 						)}
 					>
 						<Link

@@ -14,7 +14,7 @@ import { Switch } from "./ui/switch";
 
 export default function SettingsDialog() {
 	const { theme, setTheme } = useTheme();
-	const isDark = theme === "dark";
+	const isDark = theme === "dark" || theme === "system";
 
 	const toggleTheme = () => {
 		setTheme(isDark ? "light" : "dark");

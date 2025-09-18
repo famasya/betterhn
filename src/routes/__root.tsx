@@ -1,7 +1,6 @@
 /// <reference types="vite/client" />
 import { QueryClientProvider } from "@tanstack/react-query";
 import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { ThemeProvider } from "next-themes";
 
 import type * as React from "react";
@@ -59,7 +58,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 						storageKey="theme"
 					>
 						{children}
-						<TanStackRouterDevtools position="top-right" />
 					</ThemeProvider>
 				</QueryClientProvider>
 				<Toaster />

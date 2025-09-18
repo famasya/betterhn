@@ -27,6 +27,7 @@ export default function PostList({
 	activePostId,
 	isFetchingNextPage,
 	fetchNextPage,
+
 	error,
 	onPostClick,
 }: Params) {
@@ -42,13 +43,14 @@ export default function PostList({
 						category: category || "top",
 						postId: `${lowerCaseTitle(post.title)}-${post.id}`,
 					}}
+
 					to={"/$category/{-$postId}"}
 				>
 					<div
 						className={cn(
 							"border-gray-200 border-b p-3 text-sm hover:bg-zinc-100 dark:border-gray-700 dark:hover:bg-zinc-800",
 							activePostId === post.id &&
-								"border-orange-700/70 bg-orange-50 hover:bg-orange-50 dark:border-orange-700/70 dark:bg-orange-50/10 dark:hover:bg-orange-50/10"
+							"border-orange-700/70 bg-orange-50 hover:bg-orange-50 dark:border-orange-700/70 dark:bg-orange-50/10 dark:hover:bg-orange-50/10"
 						)}
 					>
 						{post.title}

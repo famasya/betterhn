@@ -1,37 +1,17 @@
-import {
-	Cancel01Icon,
-	FireIcon,
-	Loading03Icon,
-	QuestionIcon,
-	RocketIcon,
-	SearchIcon,
-	StarIcon,
-	TargetIcon,
-} from "@hugeicons/core-free-icons";
+import { Loading03Icon, SearchIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import {
-	createFileRoute,
-	Link,
-	Outlet,
-	useLocation,
-} from "@tanstack/react-router";
+import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import MobileNav from "~/components/mobile-nav";
 import NavLinks from "~/components/nav-links";
 import PostList from "~/components/post-list";
+import { searchSchema } from "~/components/search-section";
+import SettingsDialog from "~/components/settings";
 import { Button } from "~/components/ui/button";
 import { fetchPosts } from "~/lib/fetch-posts";
 import { useInfinitePosts } from "~/lib/hooks/use-infinite-posts";
 import { createQueryClient } from "~/lib/query-client";
-import { cn, lowerCaseTitle } from "~/lib/utils";
-
-const mobileNavLinks = [
-	{ label: "Top", href: "/top", icon: FireIcon },
-	{ label: "Best", href: "/best", icon: StarIcon },
-	{ label: "New", href: "/new", icon: TargetIcon },
-	{ label: "Ask", href: "/ask", icon: QuestionIcon },
-	{ label: "Show", href: "/show", icon: RocketIcon },
-	{ label: "Search", href: "/search", icon: SearchIcon },
-];
+import { lowerCaseTitle } from "~/lib/utils";
 
 export const Route = createFileRoute("/_app")({
 	loader: async ({ location }) => {
@@ -62,12 +42,14 @@ export const Route = createFileRoute("/_app")({
 			},
 		});
 	},
+	validateSearch: (search) => searchSchema.parse(search),
 	component: RouteComponent,
 	staleTime: 5 * 60 * 1000, // 5 minutes
 	gcTime: 10 * 60 * 1000, // 10 minutes
 });
 
 function RouteComponent() {
+	const { search, page } = Route.useSearch();
 	const { pathname } = useLocation();
 	const paths = pathname.split("/");
 	const category = paths[1];
@@ -118,15 +100,18 @@ function RouteComponent() {
 								<h2 className="px-1 font-medium text-lg">
 									{category.charAt(0).toUpperCase() + category.slice(1)}
 								</h2>
-								<Button
-									onClick={() => setIsMobilePostsOpen(false)}
-									size={"icon"}
-									title="Close"
-									type="button"
-									variant={"outline"}
-								>
-									<HugeiconsIcon className="h-5 w-5" icon={Cancel01Icon} />
-								</Button>
+								<div className="flex items-center gap-2">
+									<Button
+										onClick={() => setIsMobilePostsOpen(false)}
+										size={"icon"}
+										title="Search"
+										type="button"
+										variant={"outline"}
+									>
+										<HugeiconsIcon icon={SearchIcon} size={16} />
+									</Button>
+									<SettingsDialog />
+								</div>
 							</div>
 							<div className="flex-1 overflow-y-auto">
 								{isLoading ? (
@@ -160,7 +145,12 @@ function RouteComponent() {
 
 			{/* Desktop Posts sidebar */}
 			<div className="hidden border-gray-200 border-r bg-white md:block dark:border-zinc-800 dark:bg-zinc-900">
-				<NavLinks category={category} postId={postId} />
+				<NavLinks
+					category={category}
+					page={page}
+					postId={postId}
+					search={search}
+				/>
 			</div>
 
 			<div className="hidden w-1/4 min-w-[300px] overflow-y-auto border-gray-200 border-r bg-white md:block dark:border-zinc-800 dark:bg-zinc-900">
@@ -194,33 +184,10 @@ function RouteComponent() {
 				<Outlet />
 			</div>
 
-			{/* Mobile Bottom Navigation */}
-			<div className="border-gray-200 border-t bg-white md:hidden dark:border-zinc-800 dark:bg-zinc-900">
-				<nav className="flex">
-					{mobileNavLinks.map((link) => (
-						<Link
-							className={
-								"flex flex-1 flex-col items-center justify-center p-2 text-gray-700 transition-colors hover:bg-zinc-100 dark:text-gray-200 dark:hover:bg-zinc-800"
-							}
-							key={link.href}
-							onClick={() => setIsMobilePostsOpen(true)}
-							to={link.href}
-						>
-							<Button
-								className={cn(
-									"flex flex-col items-center justify-center gap-0",
-									`/${category}` === link.href &&
-										"bg-orange-200 text-orange-700 dark:bg-orange-800 dark:text-orange-200"
-								)}
-								variant={"ghost"}
-							>
-								<HugeiconsIcon icon={link.icon} />{" "}
-								<span className="sr-only">{link.label}</span>
-							</Button>
-						</Link>
-					))}
-				</nav>
-			</div>
+			<MobileNav
+				category={category}
+				setIsMobilePostsOpen={setIsMobilePostsOpen}
+			/>
 		</div>
 	);
 }

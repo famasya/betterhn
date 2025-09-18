@@ -86,7 +86,7 @@ function RouteComponent() {
 			id="post-content"
 		>
 			{/* Post Header */}
-			<div className="border-gray-200 border-b bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+			<div className="mb-4 border-gray-200 border-b bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
 				<div className="mb-3 flex items-center justify-between">
 					<h1
 						className="hyphens-auto break-words font-medium text-gray-900 text-lg sm:text-xl dark:text-white"
@@ -136,13 +136,7 @@ function RouteComponent() {
 							rel="noopener noreferrer"
 							target="_blank"
 						>
-							{(() => {
-								try {
-									return new URL(post.url).hostname;
-								} catch {
-									return post.url;
-								}
-							})()}
+							{post.url}
 							<HugeiconsIcon icon={LinkSquare02Icon} size={16} />
 						</a>
 					</div>
@@ -156,10 +150,10 @@ function RouteComponent() {
 								__html:
 									typeof window !== "undefined"
 										? DOMPurify.sanitize(post.text, {
-												USE_PROFILES: { html: true },
-												ADD_ATTR: ["target"],
-												ALLOWED_ATTR: ["href", "target", "rel"],
-											})
+											USE_PROFILES: { html: true },
+											ADD_ATTR: ["target"],
+											ALLOWED_ATTR: ["href", "target", "rel"],
+										})
 										: post.text, // Server-side: use original text, sanitize on client
 							}}
 							id="post-description"
