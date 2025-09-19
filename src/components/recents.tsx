@@ -12,16 +12,18 @@ export default function Recents() {
 	const { data: recentPosts, isLoading } = useQuery({
 		queryKey: ["recents"],
 		queryFn: () =>
-			fetch("http://hn.algolia.com/api/v1/search_by_date?tags=story").then(
+			fetch("https://hn.algolia.com/api/v1/search_by_date?tags=story").then(
 				(res) => res.json() as unknown as AlgoliaPostApiResponse
 			),
 	});
 	const { data: activePosts, isLoading: activePostsLoading } = useQuery({
 		queryKey: ["active-posts"],
-		queryFn: () =>
-			fetch(
-				"https://hn.algolia.com/api/v1/search_by_date?tags=comment&numericFilters=created_at_i>3600"
-			).then((res) => res.json() as unknown as AlgoliaCommentApiResponse),
+		queryFn: async () => {
+			const oneHourAgo = Math.floor(Date.now() / 1000) - 3600;
+			return await fetch(
+				`https://hn.algolia.com/api/v1/search_by_date?tags=comment&numericFilters=created_at_i>${oneHourAgo}`
+			).then((res) => res.json() as unknown as AlgoliaCommentApiResponse);
+		},
 	});
 	return (
 		<div className="mt-8">
@@ -49,7 +51,7 @@ export default function Recents() {
 function RecentsSkeleton() {
 	return Array.from({ length: 6 }).map((_, index) => (
 		<div
-			className="mt-2 h-20 w-full animate-pulse rounded-lg bg-zinc-200"
+			className="mt-2 h-40 w-full animate-pulse rounded-lg bg-zinc-200"
 			key={index.toString()}
 		/>
 	));
@@ -62,9 +64,18 @@ function RecentsList({ posts }: { posts: AlgoliaPostApiResponse["hits"] }) {
 			key={post.objectID}
 		>
 			<div className="mb-2 flex-grow">
-				<Link className="hover:underline" target="_blank" to={post.url}>
+				{post.url ? (
+					<Link
+						className="hover:underline"
+						rel="noopener noreferrer"
+						target="_blank"
+						to={post.url}
+					>
+						<h1>{post.title}</h1>
+					</Link>
+				) : (
 					<h1>{post.title}</h1>
-				</Link>
+				)}
 			</div>
 			<div className="text-xs">
 				<p>
@@ -79,7 +90,7 @@ function RecentsList({ posts }: { posts: AlgoliaPostApiResponse["hits"] }) {
 					to="/$category/{-$postId}"
 				>
 					<Button className="mt-2 w-full" size="sm" variant="outline">
-						View
+						Go to post
 					</Button>
 				</Link>
 			</div>
@@ -98,25 +109,25 @@ function RecentCommentsList({
 			key={comment.objectID}
 		>
 			<div className="mb-2 flex-grow">
-				<Link
-					className="hover:underline"
-					target="_blank"
-					to={comment.story_url}
-				>
-					<h1>{comment.story_title}</h1>
-				</Link>
+				{comment.story_url ? (
+					<Link className="hover:underline" to={comment.story_url}>
+						<h1>{comment.story_title || "HN Discussions"}</h1>
+					</Link>
+				) : (
+					<h1>{comment.story_title || "HN Discussions"}</h1>
+				)}
 			</div>
 			<div className="text-xs">
 				<p>{formatRelative(comment.created_at_i * 1000, Date.now())}</p>
 				<Link
 					params={{
 						category: "new",
-						postId: `${lowerCaseTitle(comment.story_title)}-${comment.parent_id}`,
+						postId: `${lowerCaseTitle(comment.story_title || "")}-${comment.parent_id}`,
 					}}
 					to="/$category/{-$postId}"
 				>
 					<Button className="mt-2 w-full" size="sm" variant="outline">
-						View
+						Go to post
 					</Button>
 				</Link>
 			</div>

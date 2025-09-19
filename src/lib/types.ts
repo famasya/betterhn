@@ -39,7 +39,7 @@ export type AlgoliaPostApiResponse = {
 		story_id: number;
 		title: string;
 		updated_at: string;
-		url: string;
+		url: string | null;
 		story_text?: string;
 	}>;
 	hitsPerPage: number;
@@ -90,14 +90,14 @@ export type AlgoliaCommentApiResponse = {
 		};
 		_tags: string[];
 		author: string;
-		comment_text: string;
+		comment_text: string | null;
 		created_at: string;
 		created_at_i: number;
 		objectID: string;
-		parent_id: number;
+		parent_id: number | null;
 		story_id: number;
-		story_title: string;
-		story_url: string;
+		story_title: string | null;
+		story_url: string | null;
 		updated_at: string;
 	}>;
 	hitsPerPage: number;

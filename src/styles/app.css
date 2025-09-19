@@ -173,13 +173,11 @@
 	}
 
 	.dark ::selection {
-		background-color: #fed7aa; /* orange-200 */
-		color: #9a3412; /* orange-800 */
+		@apply bg-orange-50 text-orange-800;
 	}
 
 	.dark ::-moz-selection {
-		background-color: #fed7aa; /* orange-200 */
-		color: #9a3412; /* orange-800 */
+		@apply bg-orange-50 text-orange-800;
 	}
 
 	::-webkit-scrollbar {
