@@ -7,6 +7,7 @@ import type * as React from "react";
 import { DefaultCatchBoundary } from "~/components/default-catch-boundary";
 import { NotFound } from "~/components/not-found";
 import { Toaster } from "~/components/ui/sonner";
+import { TooltipProvider } from "~/components/ui/tooltip";
 import { getBrowserQueryClient } from "~/lib/query-client";
 import { cn } from "~/lib/utils";
 import appCss from "~/styles/app.css?url";
@@ -57,7 +58,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 						enableSystem
 						storageKey="theme"
 					>
-						{children}
+						<TooltipProvider delayDuration={0}>{children}</TooltipProvider>
 					</ThemeProvider>
 				</QueryClientProvider>
 				<Toaster />

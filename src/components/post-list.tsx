@@ -5,7 +5,7 @@ import {
 	Loading03FreeIcons,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import type { FirebasePostDetail } from "~/lib/types";
 import { cn, lowerCaseTitle } from "~/lib/utils";
 import { Button } from "./ui/button";
@@ -31,47 +31,70 @@ export default function PostList({
 	error,
 	onPostClick,
 }: Params) {
+	const navigate = useNavigate();
 	return (
 		<>
 			{posts.map((post) => (
-				<Link
+				<button
+					className={cn(
+						"w-full border-gray-200 border-b p-3 text-left text-sm hover:bg-zinc-100 dark:border-gray-700 dark:hover:bg-zinc-800",
+						activePostId === post.id &&
+							"border-orange-700/70 bg-orange-50 hover:bg-orange-50 dark:border-orange-700/70 dark:bg-orange-50/10 dark:hover:bg-orange-50/10"
+					)}
 					key={post.id}
 					onClick={() => {
 						onPostClick?.();
+						navigate({
+							params: {
+								category: category || "top",
+								postId: `${lowerCaseTitle(post.title)}-${post.id}`,
+							},
+							to: `/${category}/${post.id}`,
+						});
 					}}
-					params={{
-						category: category || "top",
-						postId: `${lowerCaseTitle(post.title)}-${post.id}`,
-					}}
-
-					to={"/$category/{-$postId}"}
+					type="button"
 				>
-					<div
-						className={cn(
-							"border-gray-200 border-b p-3 text-sm hover:bg-zinc-100 dark:border-gray-700 dark:hover:bg-zinc-800",
-							activePostId === post.id &&
-							"border-orange-700/70 bg-orange-50 hover:bg-orange-50 dark:border-orange-700/70 dark:bg-orange-50/10 dark:hover:bg-orange-50/10"
-						)}
+					<Link
+						className="flex items-center gap-1"
+						onClick={() => {
+							post.url !== undefined && onPostClick?.();
+						}}
+						params={{
+							category: category || "top",
+							postId: `${lowerCaseTitle(post.title)}-${post.id}`,
+						}}
+						target={post.url ? "_blank" : "_self"}
+						to={post.url ? post.url : `/${category}/${post.id}`}
 					>
 						{post.title}
-						<div
-							className={cn(
-								"mt-1 flex items-center justify-between gap-2 text-gray-500 text-xs"
-							)}
-						>
-							<div className="flex items-center gap-1">
-								<HugeiconsIcon icon={AnalyticsUpIcon} size={16} /> {post.score}{" "}
-								points
-							</div>
-							<div className="flex items-center gap-2">
-								<div className="flex items-center gap-1">
-									<HugeiconsIcon icon={Comment01Icon} size={16} />{" "}
-									{post.descendants}
-								</div>
-							</div>
+					</Link>
+					<div
+						className={cn(
+							"mt-1 flex items-center justify-between gap-2 text-gray-500 text-xs"
+						)}
+					>
+						<div className="flex items-center gap-1">
+							<HugeiconsIcon icon={AnalyticsUpIcon} size={16} /> {post.score}{" "}
+							points
+						</div>
+						<div className="flex items-center gap-2">
+							<Link
+								className="flex items-center gap-1"
+								onClick={() => {
+									onPostClick?.();
+								}}
+								params={{
+									category: category || "top",
+									postId: `${lowerCaseTitle(post.title)}-${post.id}`,
+								}}
+								to={"/$category/{-$postId}"}
+							>
+								<HugeiconsIcon icon={Comment01Icon} size={16} />{" "}
+								{post.descendants}
+							</Link>
 						</div>
 					</div>
-				</Link>
+				</button>
 			))}
 
 			{hasNextPage && (

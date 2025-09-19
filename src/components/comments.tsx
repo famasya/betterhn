@@ -68,7 +68,7 @@ function CommentReplies({
 
 	if (isLoading) {
 		return (
-			<div className={cn("ml-4 border-l py-2 pl-4", borderColorLevel(depth))}>
+			<div className={cn("ml-4 border-l-2 py-2 pl-4", borderColorLevel(depth))}>
 				<div className="flex items-center gap-2 text-gray-500 text-sm">
 					<HugeiconsIcon
 						className="animate-spin"
@@ -92,7 +92,7 @@ function CommentReplies({
 	const comments = data?.comments || [];
 
 	return (
-		<div className={cn("ml-4 border-l pl-4", borderColorLevel(depth))}>
+		<div className={cn("ml-4 border-l-2 pl-4", borderColorLevel(depth))}>
 			{comments.map((comment) => (
 				<CommentItem comment={comment} depth={depth + 1} key={comment.id} />
 			))}
@@ -115,8 +115,8 @@ const CommentItem = memo(function CommentItemComponent({
 	};
 
 	return (
-		<div>
-			<div className="border-gray-200 border-b pt-3 pb-1 dark:border-white/20">
+		<>
+			<div className="border-gray-200 not-last:border-b pt-3 pb-1 last:mb-8 dark:border-white/20">
 				<div className="mb-2 flex items-center gap-3 text-gray-600 text-sm">
 					<div className="flex items-center gap-1 font-medium">
 						<HugeiconsIcon icon={UserSquareIcon} size={18} />
@@ -140,13 +140,13 @@ const CommentItem = memo(function CommentItemComponent({
 						__html:
 							typeof window !== "undefined"
 								? DOMPurify.sanitize(
-									comment.deleted ? "Deleted" : comment.text,
-									{
-										USE_PROFILES: { html: true },
-										ADD_ATTR: ["target"],
-										ALLOWED_ATTR: ["href", "target", "rel"],
-									}
-								)
+										comment.deleted ? "Deleted" : comment.text,
+										{
+											USE_PROFILES: { html: true },
+											ADD_ATTR: ["target"],
+											ALLOWED_ATTR: ["href", "target", "rel"],
+										}
+									)
 								: comment.text, // Server-side: use original text, sanitize on client
 					}}
 				/>
@@ -193,7 +193,7 @@ const CommentItem = memo(function CommentItemComponent({
 			{showReplies && hasReplies && comment.kids && (
 				<CommentReplies commentIds={comment.kids} depth={depth} />
 			)}
-		</div>
+		</>
 	);
 });
 

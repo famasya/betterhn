@@ -9,6 +9,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { formatRelative } from "date-fns";
 import DOMPurify from "dompurify";
 import Comments from "~/components/comments";
+import SearchButton from "~/components/search-button";
 import { PostDetailSkeleton } from "~/components/skeletons/post-detail-skeleton";
 import { Button } from "~/components/ui/button";
 import { type CommentItem, loadComments } from "~/functions/load-comments";
@@ -94,20 +95,23 @@ function RouteComponent() {
 					>
 						{post.title}
 					</h1>
-					<a
-						href={`https://news.ycombinator.com/item?id=${post.id}`}
-						rel="noopener noreferrer"
-						target="_blank"
-					>
-						<Button
-							className="flex items-center gap-2 text-xs"
-							size={"sm"}
-							variant={"outline"}
+					<div className="flex items-center gap-2">
+						<SearchButton />
+						<a
+							href={`https://news.ycombinator.com/item?id=${post.id}`}
+							rel="noopener noreferrer"
+							target="_blank"
 						>
-							<HugeiconsIcon icon={LinkSquare02Icon} size={16} />
-							Visit HN
-						</Button>
-					</a>
+							<Button
+								className="flex items-center gap-2 text-xs"
+								size={"sm"}
+								variant={"outline"}
+							>
+								<HugeiconsIcon icon={LinkSquare02Icon} size={16} />
+								Visit HN
+							</Button>
+						</a>
+					</div>
 				</div>
 				<div className="flex flex-wrap items-center gap-3 text-gray-600 text-sm sm:gap-4 dark:text-zinc-400">
 					<span>
@@ -150,10 +154,10 @@ function RouteComponent() {
 								__html:
 									typeof window !== "undefined"
 										? DOMPurify.sanitize(post.text, {
-											USE_PROFILES: { html: true },
-											ADD_ATTR: ["target"],
-											ALLOWED_ATTR: ["href", "target", "rel"],
-										})
+												USE_PROFILES: { html: true },
+												ADD_ATTR: ["target"],
+												ALLOWED_ATTR: ["href", "target", "rel"],
+											})
 										: post.text, // Server-side: use original text, sanitize on client
 							}}
 							id="post-description"

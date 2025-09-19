@@ -157,7 +157,7 @@
 	}
 
 	body #post-description {
-		@apply font-sans break-words text-gray-800 text-sm leading-relaxed dark:text-gray-300 [&_a]:break-words [&_a]:text-orange-600 [&_a]:hover:text-orange-700 [&_a]:dark:text-orange-300 [&_a]:dark:hover:text-orange-400;
+		@apply font-sans break-words whitespace-pre-wrap text-gray-800 text-sm leading-relaxed dark:text-gray-300 [&_a]:break-words [&_a]:text-orange-600 [&_a]:hover:text-orange-700 [&_a]:dark:text-orange-300 [&_a]:dark:hover:text-orange-400;
 	}
 
 	#category-page {
