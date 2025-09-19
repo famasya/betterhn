@@ -43,7 +43,7 @@ export default function NavLinks({ category, postId, search, page }: Params) {
 			{navLinks.map((link) => {
 				const itemCategory = link.href.split("/")[1];
 				return (
-					<Tooltip delayDuration={0} key={link.href}>
+					<Tooltip key={link.href}>
 						<TooltipTrigger asChild>
 							<Link
 								className={cn(

@@ -88,14 +88,14 @@ function RouteComponent() {
 		>
 			{/* Post Header */}
 			<div className="mb-4 border-gray-200 border-b bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-				<div className="mb-3 flex items-center justify-between">
+				<div className="mb-3 flex items-center justify-between gap-2">
 					<h1
 						className="hyphens-auto break-words font-medium text-gray-900 text-lg sm:text-xl dark:text-white"
 						style={{ wordBreak: "break-word", overflowWrap: "anywhere" }}
 					>
 						{post.title}
 					</h1>
-					<div className="flex items-center gap-2">
+					<div className="flex items-center gap-2 md:flex-row">
 						<SearchButton />
 						<a
 							href={`https://news.ycombinator.com/item?id=${post.id}`}
@@ -108,7 +108,7 @@ function RouteComponent() {
 								variant={"outline"}
 							>
 								<HugeiconsIcon icon={LinkSquare02Icon} size={16} />
-								Visit HN
+								OP
 							</Button>
 						</a>
 					</div>
@@ -140,7 +140,8 @@ function RouteComponent() {
 							rel="noopener noreferrer"
 							target="_blank"
 						>
-							{post.url}
+							{/* truncate url */}
+							{post.url.length > 50 ? `${post.url.slice(0, 50)}...` : post.url}
 							<HugeiconsIcon icon={LinkSquare02Icon} size={16} />
 						</a>
 					</div>
@@ -148,7 +149,7 @@ function RouteComponent() {
 
 				{post.text && (
 					<div className="mt-4 border-gray-200 border-t border-dashed pt-4 dark:border-zinc-800">
-						<pre
+						<div
 							// biome-ignore lint/security/noDangerouslySetInnerHtml: ignored
 							dangerouslySetInnerHTML={{
 								__html:

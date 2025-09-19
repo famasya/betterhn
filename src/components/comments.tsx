@@ -114,15 +114,18 @@ const CommentItem = memo(function CommentItemComponent({
 		setShowReplies(!showReplies);
 	};
 
+	const commentText = comment.text;
+
 	return (
 		<>
-			<div className="border-gray-200 not-last:border-b pt-3 pb-1 last:mb-8 dark:border-white/20">
+			<div className="border-gray-200 border-b pt-3 pb-1 dark:border-white/20">
 				<div className="mb-2 flex items-center gap-3 text-gray-600 text-sm">
 					<div className="flex items-center gap-1 font-medium">
 						<HugeiconsIcon icon={UserSquareIcon} size={18} />
 						<a
 							className="text-blue-600 no-underline hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
 							href={`https://news.ycombinator.com/user?id=${comment.by}`}
+							rel="noopener noreferrer"
 							target="_blank"
 							title={comment.by}
 						>
@@ -140,14 +143,14 @@ const CommentItem = memo(function CommentItemComponent({
 						__html:
 							typeof window !== "undefined"
 								? DOMPurify.sanitize(
-										comment.deleted ? "Deleted" : comment.text,
+										comment.deleted ? "Deleted" : commentText,
 										{
 											USE_PROFILES: { html: true },
 											ADD_ATTR: ["target"],
 											ALLOWED_ATTR: ["href", "target", "rel"],
 										}
 									)
-								: comment.text, // Server-side: use original text, sanitize on client
+								: commentText, // Server-side: use original text, sanitize on client
 					}}
 				/>
 				<div className="mt-2 flex items-center justify-end gap-1 text-gray-600 text-xs">
@@ -270,8 +273,8 @@ export default function Comments({
 			</div>
 
 			{/* Load More Button */}
-			{hasNextPage && (
-				<div className="my-4 text-center">
+			{hasNextPage ? (
+				<div className="my-4 border-gray-200 text-center">
 					<Button
 						className="w-full max-w-lg"
 						disabled={isFetchingNextPage}
@@ -290,6 +293,10 @@ export default function Comments({
 							"Load More Comments"
 						)}
 					</Button>
+				</div>
+			) : (
+				<div className="my-4 border-gray-200 text-center text-gray-500 text-sm dark:border-white/20 dark:text-gray-400">
+					That's all
 				</div>
 			)}
 

@@ -8,6 +8,8 @@ import { z } from "zod";
 import { useSearch } from "~/lib/hooks/use-search";
 import type { AlgoliaPostApiResponse } from "~/lib/types";
 import { cn, lowerCaseTitle } from "~/lib/utils";
+import Recents from "./recents";
+import SettingsDialog from "./settings";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
@@ -57,7 +59,10 @@ export default function SearchSection({
 
 	return (
 		<div className="flex h-full w-full flex-col items-center overflow-y-auto">
-			<div className="flex flex-col items-center pt-12">
+			<div className="flex w-full p-2">
+				<SettingsDialog />
+			</div>
+			<div className="flex flex-col items-center pt-2">
 				<h1 className="font-medium text-2xl">Search</h1>
 				<p className="text-gray-500 text-sm">Powered by Algolia</p>
 			</div>
@@ -173,8 +178,11 @@ const SearchResultItem = memo(function SearchResultItemComponent({
 }) {
 	if (search.length === 0) {
 		return (
-			<div className="mt-8 flex w-full items-center justify-center gap-2 text-center text-gray-500 text-sm">
-				<HugeiconsIcon icon={Monocle01Icon} size={24} /> Search for something
+			<div>
+				<div className="mt-8 flex w-full items-center justify-center gap-2 text-center text-gray-500 text-sm">
+					<HugeiconsIcon icon={Monocle01Icon} size={24} /> Search for something
+				</div>
+				<Recents />
 			</div>
 		);
 	}

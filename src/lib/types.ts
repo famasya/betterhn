@@ -58,6 +58,78 @@ export type AlgoliaPostApiResponse = {
 	serverTimeMS: number;
 };
 
+export type AlgoliaCommentApiResponse = {
+	exhaustive: {
+		nbHits: boolean;
+		typo: boolean;
+	};
+	exhaustiveNbHits: boolean;
+	exhaustiveTypo: boolean;
+	hits: Array<{
+		_highlightResult: {
+			author: {
+				matchLevel: string;
+				matchedWords: string[];
+				value: string;
+			};
+			comment_text: {
+				matchLevel: string;
+				matchedWords: string[];
+				value: string;
+			};
+			story_title: {
+				matchLevel: string;
+				matchedWords: string[];
+				value: string;
+			};
+			story_url: {
+				matchLevel: string;
+				matchedWords: string[];
+				value: string;
+			};
+		};
+		_tags: string[];
+		author: string;
+		comment_text: string;
+		created_at: string;
+		created_at_i: number;
+		objectID: string;
+		parent_id: number;
+		story_id: number;
+		story_title: string;
+		story_url: string;
+		updated_at: string;
+	}>;
+	hitsPerPage: number;
+	nbHits: number;
+	nbPages: number;
+	page: number;
+	params: string;
+	processingTimeMS: number;
+	processingTimingsMS: {
+		_request: {
+			roundTrip: number;
+		};
+		afterFetch: {
+			merge: {
+				entries: {
+					decompress: number;
+					total: number;
+				};
+				total: number;
+			};
+			total: number;
+		};
+		fetch: {
+			scanning: number;
+			total: number;
+		};
+		total: number;
+	};
+	query: string;
+	serverTimeMS: number;
+};
+
 export type AlgoliaSinglePostApiResponse = {
 	author: string;
 	children: Array<{

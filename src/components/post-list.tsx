@@ -6,6 +6,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Link, useNavigate } from "@tanstack/react-router";
+import type { SyntheticEvent } from "react";
 import type { FirebasePostDetail } from "~/lib/types";
 import { cn, lowerCaseTitle } from "~/lib/utils";
 import { Button } from "./ui/button";
@@ -35,7 +36,8 @@ export default function PostList({
 	return (
 		<>
 			{posts.map((post) => (
-				<button
+				// biome-ignore lint/a11y/useSemanticElements: a11y
+				<div
 					className={cn(
 						"w-full border-gray-200 border-b p-3 text-left text-sm hover:bg-zinc-100 dark:border-gray-700 dark:hover:bg-zinc-800",
 						activePostId === post.id &&
@@ -49,22 +51,40 @@ export default function PostList({
 								category: category || "top",
 								postId: `${lowerCaseTitle(post.title)}-${post.id}`,
 							},
-							to: `/${category}/${post.id}`,
+							to: "/$category/{-$postId}",
 						});
 					}}
-					type="button"
+					onKeyDown={(e) => {
+						if (e.key === "Enter" || e.key === " ") {
+							e.preventDefault();
+							onPostClick?.();
+							navigate({
+								to: "/$category/{-$postId}",
+								params: {
+									category: category || "top",
+									postId: `${lowerCaseTitle(post.title)}-${post.id}`,
+								},
+							});
+						}
+					}}
+					role="button"
+					tabIndex={0}
 				>
 					<Link
-						className="flex items-center gap-1"
-						onClick={() => {
-							post.url !== undefined && onPostClick?.();
+						className="items-center gap-1"
+						onClick={(e: SyntheticEvent) => {
+							if (post.url) {
+								e.stopPropagation();
+								onPostClick?.();
+							}
 						}}
 						params={{
 							category: category || "top",
 							postId: `${lowerCaseTitle(post.title)}-${post.id}`,
 						}}
+						rel={post.url ? "noopener noreferrer" : undefined}
 						target={post.url ? "_blank" : "_self"}
-						to={post.url ? post.url : `/${category}/${post.id}`}
+						to={post.url ? post.url : "/$category/{-$postId}"}
 					>
 						{post.title}
 					</Link>
@@ -94,7 +114,7 @@ export default function PostList({
 							</Link>
 						</div>
 					</div>
-				</button>
+				</div>
 			))}
 
 			{hasNextPage && (
