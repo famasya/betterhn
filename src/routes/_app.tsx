@@ -1,6 +1,7 @@
 import { Loading03Icon, SearchIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
+import { useStore } from "@tanstack/react-store";
 import { useState } from "react";
 import MobileNav from "~/components/mobile-nav";
 import NavLinks from "~/components/nav-links";
@@ -11,7 +12,8 @@ import { Button } from "~/components/ui/button";
 import { fetchPosts } from "~/lib/fetch-posts";
 import { useInfinitePosts } from "~/lib/hooks/use-infinite-posts";
 import { createQueryClient } from "~/lib/query-client";
-import { lowerCaseTitle } from "~/lib/utils";
+import { userSettingsStore } from "~/lib/user-settings";
+import { cn, lowerCaseTitle } from "~/lib/utils";
 
 export const Route = createFileRoute("/_app")({
 	loader: async ({ location }) => {
@@ -59,6 +61,7 @@ function RouteComponent() {
 	const postId = paths[2] || "";
 	const activePostId = postId?.split("-").pop();
 	const loaderData = Route.useLoaderData();
+	const compactMode = useStore(userSettingsStore, (state) => state.compactMode);
 
 	// Use loader data as initial data only if it matches current category
 	const useLoaderData = loaderData.category === category;
@@ -78,7 +81,13 @@ function RouteComponent() {
 	const [isMobilePostsOpen, setIsMobilePostsOpen] = useState(false);
 
 	return (
-		<div className="flex h-dvh flex-col overflow-hidden bg-zinc-50 md:flex-row dark:bg-black">
+		<div
+			className={cn(
+				"flex h-dvh flex-col overflow-hidden bg-zinc-50 md:flex-row dark:bg-black",
+				compactMode &&
+					"mx-auto w-6xl border-black/20 border-r border-l dark:border-white/20"
+			)}
+		>
 			{/* Mobile Posts Overlay */}
 			{isMobilePostsOpen && (
 				<div className="fixed top-0 right-0 bottom-16 left-0 z-40 h-[calc(100dvh-3.3rem)] md:hidden">

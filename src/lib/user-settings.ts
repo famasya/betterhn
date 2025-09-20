@@ -1,5 +1,6 @@
-import { clientOnly, createIsomorphicFn } from "@tanstack/react-start";
+import { createIsomorphicFn } from "@tanstack/react-start";
 import { getCookie } from "@tanstack/react-start/server";
+import { Store } from "@tanstack/react-store";
 import Cookies from "js-cookie";
 import z from "zod";
 
@@ -7,8 +8,9 @@ const settingsSchema = z.object({
 	theme: z.enum(["light", "dark"]).default("light"),
 	compactMode: z.boolean().default(false),
 });
+type UserSettings = z.infer<typeof settingsSchema>;
 
-export const getUserSettings = createIsomorphicFn()
+export const getUserSettingsFn = createIsomorphicFn()
 	.server(() => {
 		const cookie = getCookie("userSettings");
 		return settingsSchema.parse(JSON.parse(cookie || "{}"));
@@ -18,15 +20,20 @@ export const getUserSettings = createIsomorphicFn()
 		return settingsSchema.parse(JSON.parse(cookie || "{}"));
 	});
 
-export const setUserSettings = clientOnly(
-	(
-		key: keyof z.infer<typeof settingsSchema>,
-		value: z.infer<typeof settingsSchema>[keyof z.infer<typeof settingsSchema>]
-	) => {
-		const existingSettings = getUserSettings();
-		Cookies.set(
-			"userSettings",
-			JSON.stringify({ ...existingSettings, [key]: value })
-		);
-	}
-);
+export const userSettingsStore = new Store<UserSettings>({
+	theme: "light",
+	compactMode: false,
+});
+
+export const updateUserSettings = (
+	key: keyof UserSettings,
+	value: UserSettings[keyof UserSettings]
+) =>
+	userSettingsStore.setState((state) => {
+		// update cookie
+		Cookies.set("userSettings", JSON.stringify({ ...state, [key]: value }));
+		return {
+			...state,
+			[key]: value,
+		};
+	});

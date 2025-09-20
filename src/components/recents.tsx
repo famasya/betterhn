@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { formatRelative } from "date-fns";
+import ky from "ky";
 import type {
 	AlgoliaCommentApiResponse,
 	AlgoliaPostApiResponse,
@@ -11,18 +12,23 @@ import { Button } from "./ui/button";
 export default function Recents() {
 	const { data: recentPosts, isLoading } = useQuery({
 		queryKey: ["recents"],
-		queryFn: () =>
-			fetch("https://hn.algolia.com/api/v1/search_by_date?tags=story").then(
-				(res) => res.json() as unknown as AlgoliaPostApiResponse
-			),
+		queryFn: async () => {
+			return await ky
+				.get<AlgoliaPostApiResponse>(
+					"https://hn.algolia.com/api/v1/search_by_date?tags=story"
+				)
+				.json();
+		},
 	});
 	const { data: activePosts, isLoading: activePostsLoading } = useQuery({
 		queryKey: ["active-posts"],
 		queryFn: async () => {
 			const oneHourAgo = Math.floor(Date.now() / 1000) - 3600;
-			return await fetch(
-				`https://hn.algolia.com/api/v1/search_by_date?tags=comment&numericFilters=created_at_i>${oneHourAgo}`
-			).then((res) => res.json() as unknown as AlgoliaCommentApiResponse);
+			return await ky
+				.get<AlgoliaCommentApiResponse>(
+					`https://hn.algolia.com/api/v1/search_by_date?tags=comment&numericFilters=created_at_i>${oneHourAgo}`
+				)
+				.json();
 		},
 	});
 	return (
@@ -122,7 +128,7 @@ function RecentCommentsList({
 				<Link
 					params={{
 						category: "new",
-						postId: `${lowerCaseTitle(comment.story_title || "")}-${comment.parent_id}`,
+						postId: `${lowerCaseTitle(comment.story_title || "")}-${comment.story_id}`,
 					}}
 					to="/$category/{-$postId}"
 				>

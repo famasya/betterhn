@@ -1,9 +1,9 @@
-import { BowlingBallIcon } from "@hugeicons/core-free-icons";
+import { Settings01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useStore } from "@tanstack/react-store";
 import { useTheme } from "next-themes";
-import { updateUserSettings, userSettingsStore } from "~/lib/stores";
-import { cn } from "~/lib/utils";
+import { updateUserSettings, userSettingsStore } from "~/lib/user-settings";
+import { Button } from "./ui/button";
 import {
 	Dialog,
 	DialogContent,
@@ -25,8 +25,10 @@ export default function SettingsDialog() {
 
 	return (
 		<Dialog>
-			<DialogTrigger className="flex items-center gap-3 rounded-lg bg-gradient-to-br from-blue-400 to-blue-500 p-2 text-gray-700 text-white transition-colors hover:from-blue-500 hover:to-blue-500">
-				<HugeiconsIcon className={cn("h-5 w-5")} icon={BowlingBallIcon} />
+			<DialogTrigger asChild>
+				<Button variant="outline">
+					<HugeiconsIcon icon={Settings01Icon} size={16} />
+				</Button>
 			</DialogTrigger>
 			<DialogContent className="mx-auto max-w-[calc(100vw-2rem)] rounded-md p-4 text-sm duration-0 md:mx-0 md:max-w-lg">
 				<DialogHeader />

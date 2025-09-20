@@ -59,7 +59,10 @@ export default function SearchSection({
 
 	return (
 		<div className="flex h-full w-full flex-col items-center overflow-y-auto">
-			<div className="flex w-full p-2">
+			<div className="flex w-full items-center justify-between p-2">
+				<div className="rounded bg-orange-700 px-2 py-1 font-medium text-sm text-white">
+					ZenHN
+				</div>
 				<SettingsDialog />
 			</div>
 			<div className="flex flex-col items-center pt-2">

@@ -81,6 +81,8 @@ function RouteComponent() {
 	const { post, initialComments, remainingCommentSlices } =
 		Route.useLoaderData();
 
+	console.log(post, 321);
+
 	return (
 		<div
 			className="h-[100dvh] flex-1 overflow-y-auto bg-zinc-50 pb-14 md:pb-0 dark:bg-black"

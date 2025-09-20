@@ -1,7 +1,6 @@
 /// <reference types="vite/client" />
 import { QueryClientProvider } from "@tanstack/react-query";
 import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
-import { useStore } from "@tanstack/react-store";
 import { ThemeProvider } from "next-themes";
 
 import type * as React from "react";
@@ -10,8 +9,7 @@ import { NotFound } from "~/components/not-found";
 import { Toaster } from "~/components/ui/sonner";
 import { TooltipProvider } from "~/components/ui/tooltip";
 import { getBrowserQueryClient } from "~/lib/query-client";
-import { userSettingsStore } from "~/lib/stores";
-import { cn } from "~/lib/utils";
+import { getUserSettingsFn, userSettingsStore } from "~/lib/user-settings";
 import appCss from "~/styles/app.css?url";
 import { seo } from "~/utils/seo";
 
@@ -39,25 +37,25 @@ export const Route = createRootRoute({
 			},
 		],
 	}),
+	loader: () => {
+		const userSettings = getUserSettingsFn();
+		return { userSettings };
+	},
 	errorComponent: DefaultCatchBoundary,
 	notFoundComponent: () => <NotFound />,
 	shellComponent: RootDocument,
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {
-	const compactMode = useStore(userSettingsStore, (state) => state.compactMode);
+	const { userSettings } = Route.useLoaderData();
+	userSettingsStore.setState(userSettings);
+
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<head>
 				<HeadContent />
 			</head>
-			<body
-				className={cn(
-					"flex min-h-dvh flex-col",
-					compactMode &&
-						"mx-auto max-w-6xl border-black/20 border-r border-l dark:border-white/20"
-				)}
-			>
+			<body className="flex min-h-dvh flex-col">
 				<QueryClientProvider client={getBrowserQueryClient()}>
 					<ThemeProvider
 						attribute="class"
