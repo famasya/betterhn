@@ -39,7 +39,7 @@ export type AlgoliaPostApiResponse = {
 		story_id: number;
 		title: string;
 		updated_at: string;
-		url: string;
+		url: string | null;
 		story_text?: string;
 	}>;
 	hitsPerPage: number;
@@ -51,6 +51,78 @@ export type AlgoliaPostApiResponse = {
 	processingTimingsMS: {
 		_request: {
 			roundTrip: number;
+		};
+		total: number;
+	};
+	query: string;
+	serverTimeMS: number;
+};
+
+export type AlgoliaCommentApiResponse = {
+	exhaustive: {
+		nbHits: boolean;
+		typo: boolean;
+	};
+	exhaustiveNbHits: boolean;
+	exhaustiveTypo: boolean;
+	hits: Array<{
+		_highlightResult: {
+			author: {
+				matchLevel: string;
+				matchedWords: string[];
+				value: string;
+			};
+			comment_text: {
+				matchLevel: string;
+				matchedWords: string[];
+				value: string;
+			};
+			story_title: {
+				matchLevel: string;
+				matchedWords: string[];
+				value: string;
+			};
+			story_url: {
+				matchLevel: string;
+				matchedWords: string[];
+				value: string;
+			};
+		};
+		_tags: string[];
+		author: string;
+		comment_text: string | null;
+		created_at: string;
+		created_at_i: number;
+		objectID: string;
+		parent_id: number | null;
+		story_id: number;
+		story_title: string | null;
+		story_url: string | null;
+		updated_at: string;
+	}>;
+	hitsPerPage: number;
+	nbHits: number;
+	nbPages: number;
+	page: number;
+	params: string;
+	processingTimeMS: number;
+	processingTimingsMS: {
+		_request: {
+			roundTrip: number;
+		};
+		afterFetch: {
+			merge: {
+				entries: {
+					decompress: number;
+					total: number;
+				};
+				total: number;
+			};
+			total: number;
+		};
+		fetch: {
+			scanning: number;
+			total: number;
 		};
 		total: number;
 	};
@@ -124,7 +196,7 @@ export type FirebasePostDetail = {
 	score: number;
 	time: number;
 	title: string;
-	type: string;
+	type: "job" | "story" | "comment" | "poll" | "pollopt";
 	url?: string;
 	text?: string;
 };

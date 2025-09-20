@@ -15,6 +15,7 @@ import {
 	loadComments,
 } from "~/functions/load-comments";
 import { useInfiniteComments } from "~/lib/hooks/use-infinite-comments";
+import { cn } from "~/lib/utils";
 import { Button } from "./ui/button";
 
 type CommentsProps = {
@@ -22,6 +23,25 @@ type CommentsProps = {
 	initialComments: CommentItemType[];
 	remainingCommentSlices: number[][];
 	totalComments: number;
+};
+
+const borderColorLevel = (level: number) => {
+	switch (level % 6) {
+		case 0:
+			return "dark:border-blue-400/50 border-blue-400/70";
+		case 1:
+			return "dark:border-green-400/50 border-emerald-400/70";
+		case 2:
+			return "dark:border-yellow-400/50 border-yellow-400/70";
+		case 3:
+			return "dark:border-orange-400/50 border-orange-400/70";
+		case 4:
+			return "dark:border-red-400/50 border-red-400/70";
+		case 5:
+			return "dark:border-purple-400/50 border-purple-400/70";
+		default:
+			return "dark:border-teal-400/50 border-teal-400/70";
+	}
 };
 
 function CommentReplies({
@@ -48,7 +68,7 @@ function CommentReplies({
 
 	if (isLoading) {
 		return (
-			<div className="ml-4 border-gray-200 border-l py-2 pl-4">
+			<div className={cn("ml-4 border-l-2 py-2 pl-4", borderColorLevel(depth))}>
 				<div className="flex items-center gap-2 text-gray-500 text-sm">
 					<HugeiconsIcon
 						className="animate-spin"
@@ -63,7 +83,7 @@ function CommentReplies({
 
 	if (error) {
 		return (
-			<div className="ml-4 border-gray-200 border-l py-2 pl-4">
+			<div className="ml-4 border-white/20 border-l py-2 pl-4">
 				<div className="text-red-600 text-sm">Failed to load replies</div>
 			</div>
 		);
@@ -72,7 +92,7 @@ function CommentReplies({
 	const comments = data?.comments || [];
 
 	return (
-		<div className="ml-4 border-gray-200 border-l pl-4">
+		<div className={cn("ml-4 border-l-2 pl-4", borderColorLevel(depth))}>
 			{comments.map((comment) => (
 				<CommentItem comment={comment} depth={depth + 1} key={comment.id} />
 			))}
@@ -89,21 +109,23 @@ const CommentItem = memo(function CommentItemComponent({
 }) {
 	const [showReplies, setShowReplies] = useState(false);
 	const hasReplies = comment.kids && comment.kids.length > 0;
-	const maxDepth = 4;
 
 	const handleToggleReplies = () => {
 		setShowReplies(!showReplies);
 	};
 
+	const commentText = comment.text;
+
 	return (
-		<div>
-			<div className="border-gray-200 border-b py-3 dark:border-white/20">
+		<>
+			<div className="border-gray-200 border-b pt-3 pb-1 dark:border-white/20">
 				<div className="mb-2 flex items-center gap-3 text-gray-600 text-sm">
 					<div className="flex items-center gap-1 font-medium">
 						<HugeiconsIcon icon={UserSquareIcon} size={18} />
 						<a
 							className="text-blue-600 no-underline hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
 							href={`https://news.ycombinator.com/user?id=${comment.by}`}
+							rel="noopener noreferrer"
 							target="_blank"
 							title={comment.by}
 						>
@@ -120,17 +142,24 @@ const CommentItem = memo(function CommentItemComponent({
 					dangerouslySetInnerHTML={{
 						__html:
 							typeof window !== "undefined"
-								? DOMPurify.sanitize(comment.text, {
-										USE_PROFILES: { html: true },
-										ADD_ATTR: ["target"],
-										ALLOWED_ATTR: ["href", "target", "rel"],
-									})
-								: comment.text, // Server-side: use original text, sanitize on client
+								? DOMPurify.sanitize(
+										comment.deleted ? "Deleted" : commentText,
+										{
+											USE_PROFILES: { html: true },
+											ADD_ATTR: ["target"],
+											ALLOWED_ATTR: ["href", "target", "rel"],
+										}
+									)
+								: commentText, // Server-side: use original text, sanitize on client
 					}}
 				/>
 				<div className="mt-2 flex items-center justify-end gap-1 text-gray-600 text-xs">
 					<a
-						href={`https://news.ycombinator.com/reply?id=${comment.id}&goto=item?id=${comment.parent}#${comment.id}`}
+						href={
+							comment.deleted
+								? "#"
+								: `https://news.ycombinator.com/reply?id=${comment.id}&goto=item?id=${comment.parent}#${comment.id}`
+						}
 						rel="noopener noreferrer"
 						target="_blank"
 					>
@@ -164,18 +193,10 @@ const CommentItem = memo(function CommentItemComponent({
 				</div>
 			</div>
 
-			{showReplies && hasReplies && depth < maxDepth && comment.kids && (
+			{showReplies && hasReplies && comment.kids && (
 				<CommentReplies commentIds={comment.kids} depth={depth} />
 			)}
-
-			{showReplies && depth >= maxDepth && hasReplies && (
-				<div className="ml-4 border-gray-200 border-l py-2 pl-4">
-					<div className="text-gray-500 text-sm">
-						Thread continues... ({comment.kids?.length} more replies)
-					</div>
-				</div>
-			)}
-		</div>
+		</>
 	);
 });
 
@@ -201,7 +222,7 @@ export default function Comments({
 
 	if (error && comments.length === 0) {
 		return (
-			<div className="p-3 sm:p-4">
+			<div className="px-3 sm:px-4">
 				<div className="mb-4 font-medium text-base sm:text-lg">Comments</div>
 				<div className="text-red-600">Failed to load comments</div>
 			</div>
@@ -210,7 +231,7 @@ export default function Comments({
 
 	if (isLoading && comments.length === 0) {
 		return (
-			<div className="p-3 sm:p-4">
+			<div className="px-3 sm:px-4">
 				<div className="mb-4 font-medium text-base sm:text-lg">Comments</div>
 				<div className="flex items-center gap-2 text-gray-500">
 					<HugeiconsIcon
@@ -226,7 +247,7 @@ export default function Comments({
 
 	if (comments.length === 0) {
 		return (
-			<div className="p-3 sm:p-4">
+			<div className="px-3 sm:px-4">
 				<div className="mb-4 font-medium text-base sm:text-lg">Comments</div>
 				<div className="text-gray-500">No comments yet.</div>
 			</div>
@@ -234,7 +255,7 @@ export default function Comments({
 	}
 
 	return (
-		<div className="p-3 sm:p-4">
+		<div className="px-3 sm:px-4">
 			<div className="mb-4 font-medium text-base sm:text-lg">
 				Comments ({totalComments})
 				{failedCount > 0 && (
@@ -252,8 +273,8 @@ export default function Comments({
 			</div>
 
 			{/* Load More Button */}
-			{hasNextPage && (
-				<div className="mt-4 pt-3 text-center">
+			{hasNextPage ? (
+				<div className="my-4 border-gray-200 text-center">
 					<Button
 						className="w-full max-w-lg"
 						disabled={isFetchingNextPage}
@@ -272,6 +293,10 @@ export default function Comments({
 							"Load More Comments"
 						)}
 					</Button>
+				</div>
+			) : (
+				<div className="my-4 border-gray-200 text-center text-gray-500 text-sm dark:border-white/20 dark:text-gray-400">
+					That's all
 				</div>
 			)}
 

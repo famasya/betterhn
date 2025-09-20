@@ -1,11 +1,12 @@
 import {
-	AppleStocksIcon,
-	Comment01FreeIcons,
+	AnalyticsUpIcon,
+	Comment01Icon,
 	InformationCircleIcon,
 	Loading03FreeIcons,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
+import type { SyntheticEvent } from "react";
 import type { FirebasePostDetail } from "~/lib/types";
 import { cn, lowerCaseTitle } from "~/lib/utils";
 import { Button } from "./ui/button";
@@ -27,56 +28,107 @@ export default function PostList({
 	activePostId,
 	isFetchingNextPage,
 	fetchNextPage,
+
 	error,
 	onPostClick,
 }: Params) {
+	const navigate = useNavigate();
 	return (
 		<>
 			{posts.map((post) => (
-				<Link
+				// biome-ignore lint/a11y/useSemanticElements: a11y
+				<div
+					className={cn(
+						"w-full border-gray-200 border-b p-3 text-left text-sm hover:bg-zinc-100 dark:border-gray-700 dark:hover:bg-zinc-800",
+						activePostId === post.id &&
+							"border-orange-700/70 bg-orange-50 hover:bg-orange-50 dark:border-orange-700/70 dark:bg-orange-50/10 dark:hover:bg-orange-50/10"
+					)}
 					key={post.id}
-					onClick={onPostClick}
-					params={{
-						category: category || "top",
-						postId: `${lowerCaseTitle(post.title)}-${post.id}`,
+					onClick={() => {
+						onPostClick?.();
+						navigate({
+							params: {
+								category: category || "top",
+								postId: `${lowerCaseTitle(post.title)}-${post.id}`,
+							},
+							to: "/$category/{-$postId}",
+						});
 					}}
-					to={"/$category/{-$postId}"}
+					onKeyDown={(e) => {
+						if (e.key === "Enter" || e.key === " ") {
+							e.preventDefault();
+							onPostClick?.();
+							navigate({
+								to: "/$category/{-$postId}",
+								params: {
+									category: category || "top",
+									postId: `${lowerCaseTitle(post.title)}-${post.id}`,
+								},
+							});
+						}
+					}}
+					role="button"
+					tabIndex={0}
 				>
+					<Link
+						className="text-black hover:underline dark:text-white"
+						onClick={(e: SyntheticEvent) => {
+							if (post.url) {
+								e.stopPropagation();
+								onPostClick?.();
+							}
+						}}
+						params={{
+							category: category || "top",
+							postId: `${lowerCaseTitle(post.title)}-${post.id}`,
+						}}
+						rel={post.url ? "noopener noreferrer" : undefined}
+						target={post.url ? "_blank" : "_self"}
+						to={post.url ? post.url : "/$category/{-$postId}"}
+					>
+						{post.url && (
+							<span className="mr-1 text-xs text-zinc-500">[ext]</span>
+						)}
+						<span>{post.title}</span>
+					</Link>
 					<div
 						className={cn(
-							"border-gray-200 border-b p-3 text-sm hover:bg-zinc-100 dark:border-gray-700 dark:hover:bg-zinc-800",
-							activePostId === post.id &&
-								"border-blue-200 bg-blue-50 dark:border-blue-700 dark:bg-blue-950/50 dark:hover:bg-blue-950/80"
+							"mt-1 flex items-center justify-between gap-2 text-gray-500 text-xs"
 						)}
 					>
-						{post.title}
-						<div
-							className={cn(
-								"mt-1 flex items-center justify-between gap-2 text-gray-500 text-xs"
-							)}
-						>
-							<div className="flex items-center gap-1">
-								<HugeiconsIcon icon={AppleStocksIcon} size={16} /> {post.score}{" "}
-								points
-							</div>
-							<div className="flex items-center gap-1">
-								<HugeiconsIcon icon={Comment01FreeIcons} size={16} />{" "}
+						<div className="flex items-center gap-1">
+							<HugeiconsIcon icon={AnalyticsUpIcon} size={16} /> {post.score}{" "}
+							points
+						</div>
+						<div className="flex items-center gap-2">
+							<Link
+								className="flex items-center gap-1"
+								onClick={() => {
+									onPostClick?.();
+								}}
+								params={{
+									category: category || "top",
+									postId: `${lowerCaseTitle(post.title)}-${post.id}`,
+								}}
+								to={"/$category/{-$postId}"}
+							>
+								<HugeiconsIcon icon={Comment01Icon} size={16} />{" "}
 								{post.descendants}
-							</div>
+							</Link>
 						</div>
 					</div>
-				</Link>
+				</div>
 			))}
 
 			{hasNextPage && (
-				<div className="border-gray-200 border-b p-3 dark:border-gray-700">
+				<div className="p-3">
 					<Button
 						className="w-full"
 						disabled={isFetchingNextPage}
 						onClick={fetchNextPage}
 						size={"sm"}
 						type="button"
-						variant={"outline"}
+						variant={"orange"}
 					>
 						{isFetchingNextPage ? (
 							<HugeiconsIcon
@@ -85,7 +137,7 @@ export default function PostList({
 								size={16}
 							/>
 						) : (
-							"Load More"
+							"Load More Posts"
 						)}
 					</Button>
 				</div>

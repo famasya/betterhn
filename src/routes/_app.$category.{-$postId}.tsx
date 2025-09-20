@@ -5,10 +5,11 @@ import {
 	Time04Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 import { formatRelative } from "date-fns";
 import DOMPurify from "dompurify";
 import Comments from "~/components/comments";
+import SearchButton from "~/components/search-button";
 import { PostDetailSkeleton } from "~/components/skeletons/post-detail-skeleton";
 import { Button } from "~/components/ui/button";
 import { type CommentItem, loadComments } from "~/functions/load-comments";
@@ -86,28 +87,31 @@ function RouteComponent() {
 			id="post-content"
 		>
 			{/* Post Header */}
-			<div className="border-gray-200 border-b bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-				<div className="mb-3 flex items-center justify-between">
+			<div className="mb-4 border-gray-200 border-b bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+				<div className="mb-3 flex items-center justify-between gap-2">
 					<h1
 						className="hyphens-auto break-words font-medium text-gray-900 text-lg sm:text-xl dark:text-white"
 						style={{ wordBreak: "break-word", overflowWrap: "anywhere" }}
 					>
 						{post.title}
 					</h1>
-					<a
-						href={`https://news.ycombinator.com/item?id=${post.id}`}
-						rel="noopener noreferrer"
-						target="_blank"
-					>
-						<Button
-							className="flex items-center gap-2 text-xs"
-							size={"sm"}
-							variant={"ghost"}
+					<div className="flex items-center gap-2 md:flex-row">
+						<SearchButton />
+						<a
+							href={`https://news.ycombinator.com/item?id=${post.id}`}
+							rel="noopener noreferrer"
+							target="_blank"
 						>
-							<HugeiconsIcon icon={LinkSquare02Icon} size={16} />
-							Visit HN
-						</Button>
-					</a>
+							<Button
+								className="flex items-center gap-2 text-xs"
+								size={"sm"}
+								variant={"outline"}
+							>
+								<HugeiconsIcon icon={LinkSquare02Icon} size={16} />
+								OP
+							</Button>
+						</a>
+					</div>
 				</div>
 				<div className="flex flex-wrap items-center gap-3 text-gray-600 text-sm sm:gap-4 dark:text-zinc-400">
 					<span>
@@ -130,20 +134,16 @@ function RouteComponent() {
 				</div>
 				{post.url && (
 					<div className="mt-3">
-						<Link
-							className="text-orange-600 text-sm hover:text-orange-700"
+						<a
+							className="flex w-fit items-center gap-2 rounded-md border border-emerald-200 bg-emerald-100/40 px-2 py-1 text-emerald-600 text-sm hover:text-emerald-700 dark:border-emerald-800 dark:bg-emerald-800/40 dark:text-emerald-200 dark:hover:text-emerald-300"
+							href={post.url}
 							rel="noopener noreferrer"
 							target="_blank"
-							to={post.url}
 						>
-							{(() => {
-								try {
-									return new URL(post.url).hostname;
-								} catch {
-									return post.url;
-								}
-							})()}
-						</Link>
+							{/* truncate url */}
+							{post.url.length > 50 ? `${post.url.slice(0, 50)}...` : post.url}
+							<HugeiconsIcon icon={LinkSquare02Icon} size={16} />
+						</a>
 					</div>
 				)}
 
@@ -162,15 +162,6 @@ function RouteComponent() {
 										: post.text, // Server-side: use original text, sanitize on client
 							}}
 							id="post-description"
-							style={{
-								color:
-									typeof window !== "undefined" &&
-									document.documentElement.classList.contains("dark")
-										? "#e5e7eb"
-										: "#1f2937",
-								wordBreak: "break-word",
-								overflowWrap: "anywhere",
-							}}
 						/>
 					</div>
 				)}
