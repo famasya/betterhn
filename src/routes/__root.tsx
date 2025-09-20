@@ -1,15 +1,20 @@
 /// <reference types="vite/client" />
 import { QueryClientProvider } from "@tanstack/react-query";
 import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
-import { ThemeProvider } from "next-themes";
 
 import type * as React from "react";
+import { useEffect } from "react";
 import { DefaultCatchBoundary } from "~/components/default-catch-boundary";
 import { NotFound } from "~/components/not-found";
 import { Toaster } from "~/components/ui/sonner";
 import { TooltipProvider } from "~/components/ui/tooltip";
 import { getBrowserQueryClient } from "~/lib/query-client";
-import { getUserSettingsFn, userSettingsStore } from "~/lib/user-settings";
+import { themeScript } from "~/lib/theme-scripts";
+import {
+	getUserSettingsFn,
+	initializeTheme,
+	userSettingsStore,
+} from "~/lib/user-settings";
 import appCss from "~/styles/app.css?url";
 import { seo } from "~/utils/seo";
 
@@ -50,23 +55,24 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 	const { userSettings } = Route.useLoaderData();
 	userSettingsStore.setState(userSettings);
 
+	// Initialize theme on client side
+	useEffect(() => {
+		const cleanup = initializeTheme();
+		return cleanup;
+	}, []);
+
+	// Inline theme script that must run synchronously before any content
+
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<head>
+				{/** biome-ignore lint/security/noDangerouslySetInnerHtml: theme script */}
+				<script dangerouslySetInnerHTML={{ __html: themeScript }} />
 				<HeadContent />
 			</head>
 			<body className="flex min-h-dvh flex-col">
 				<QueryClientProvider client={getBrowserQueryClient()}>
-					<ThemeProvider
-						attribute="class"
-						defaultTheme="system"
-						disableTransitionOnChange
-						enableColorScheme={false}
-						enableSystem
-						storageKey="theme"
-					>
-						<TooltipProvider delayDuration={0}>{children}</TooltipProvider>
-					</ThemeProvider>
+					<TooltipProvider delayDuration={0}>{children}</TooltipProvider>
 				</QueryClientProvider>
 				<Toaster />
 				<Scripts />

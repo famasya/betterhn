@@ -12,7 +12,8 @@
       "mcp__browsermcp__browser_screenshot",
       "mcp__browsermcp__browser_wait",
       "mcp__coderabbitai__get_coderabbit_reviews",
-      "mcp__coderabbitai__get_review_comments"
+      "mcp__coderabbitai__get_review_comments",
+      "mcp__browsermcp__browser_press_key"
     ],
     "deny": [],
     "ask": []

@@ -1,8 +1,11 @@
 import { Settings01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useStore } from "@tanstack/react-store";
-import { useTheme } from "next-themes";
-import { updateUserSettings, userSettingsStore } from "~/lib/user-settings";
+import {
+	updateUserSettings,
+	userSettingsStore,
+	useTheme,
+} from "~/lib/user-settings";
 import { Button } from "./ui/button";
 import {
 	Dialog,
@@ -15,8 +18,8 @@ import { Label } from "./ui/label";
 import { Switch } from "./ui/switch";
 
 export default function SettingsDialog() {
-	const { theme, setTheme } = useTheme();
-	const isDark = theme === "dark" || theme === "system";
+	const { resolvedTheme, setTheme } = useTheme();
+	const isDark = resolvedTheme === "dark";
 	const compactMode = useStore(userSettingsStore, (state) => state.compactMode);
 
 	const toggleTheme = () => {
