@@ -22,7 +22,7 @@ type SearchSectionProps = {
 
 export const searchSchema = z.object({
 	search: z.string().optional(),
-	page: z.number().optional(),
+	page: z.coerce.number().int().optional(),
 });
 
 export default function SearchSection({

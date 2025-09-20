@@ -57,7 +57,7 @@ export default function Recents() {
 function RecentsSkeleton() {
 	return Array.from({ length: 6 }).map((_, index) => (
 		<div
-			className="mt-2 h-40 w-full animate-pulse rounded-lg bg-zinc-200"
+			className="mt-2 h-40 w-full animate-pulse rounded-lg bg-zinc-200 dark:bg-white/10"
 			key={index.toString()}
 		/>
 	));

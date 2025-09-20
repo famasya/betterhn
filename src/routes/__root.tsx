@@ -53,7 +53,14 @@ export const Route = createRootRoute({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
 	const { userSettings } = Route.useLoaderData();
+
+	// Set store state immediately for SSR consistency
 	userSettingsStore.setState(userSettings);
+
+	// Also use useEffect for client-side updates
+	useEffect(() => {
+		userSettingsStore.setState(userSettings);
+	}, [userSettings]);
 
 	// Initialize theme on client side
 	useEffect(() => {

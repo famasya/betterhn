@@ -22,10 +22,10 @@ This is a Hacker News client built with TanStack Start (React framework), TanSta
 - **Linting/Formatting**: Ultracite (extends Biome) with pre-commit hooks
 
 ### Directory Structure
-```
+```text
 src/
 ├── components/       # Reusable React components
-│   ├── ui/          # Shadcn/ui-style components (Button, Dialog, etc.)
+│   ├── ui/          # Shadcn/UI-based components (Button, Dialog, etc.)
 │   └── *.tsx        # App-specific components (PostList, Comments, etc.)
 ├── lib/             # Core utilities and data fetching
 │   ├── hooks/       # Custom React hooks (useInfinitePosts, etc.)
@@ -59,8 +59,8 @@ src/
 
 ### Styling Guidelines
 - **Tailwind CSS**: Utility-first styling with custom theme extensions
-- **Dark Mode**: Theme switching via next-themes with user preference persistence
-- **Component Library**: Radix UI primitives with custom styling
+- **Dark Mode**: Custom theme switching with user preference persistence
+- **Component Library**: Radix UI primitives with Tailwind CSS styling
 - **Responsive**: Mobile-first design with desktop sidebar layout
 
 ### Development Workflow
@@ -75,6 +75,6 @@ src/
 - Pre-commit hooks ensure consistent code formatting
 
 ## Deployment
-- Target: Cloudflare modules (configured in vite.config.ts)
+- Target: Cloudflare Workers (modules) (configured in vite.config.ts)
 - Build output: `.output/` directory with server and client bundles
 - SSR: Full server-side rendering support with TanStack Start

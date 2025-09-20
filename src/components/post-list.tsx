@@ -87,7 +87,7 @@ export default function PostList({
 						to={post.url ? post.url : "/$category/{-$postId}"}
 					>
 						{post.url && (
-							<span className="mr-1 text-xs text-zinc-500">[Link]</span>
+							<span className="mr-1 text-xs text-zinc-500">[ext]</span>
 						)}
 						<span>{post.title}</span>
 					</Link>

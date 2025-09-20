@@ -85,7 +85,7 @@ function RouteComponent() {
 			className={cn(
 				"flex h-dvh flex-col overflow-hidden bg-zinc-50 md:flex-row dark:bg-black",
 				compactMode &&
-					"mx-auto w-6xl border-black/20 border-r border-l dark:border-white/20"
+					"mx-auto w-full max-w-6xl border-black/20 border-r border-l dark:border-white/20"
 			)}
 		>
 			{/* Mobile Posts Overlay */}
