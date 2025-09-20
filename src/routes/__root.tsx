@@ -29,7 +29,7 @@ export const Route = createRootRoute({
 				content: "width=device-width, initial-scale=1",
 			},
 			...seo({
-				title: "hn.fd - Clean and Fast HN Reader",
+				title: "ZenHN - Sleek and Fast HN Reader",
 			}),
 		],
 		links: [
