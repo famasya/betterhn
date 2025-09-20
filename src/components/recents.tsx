@@ -90,7 +90,7 @@ function RecentsList({ posts }: { posts: AlgoliaPostApiResponse["hits"] }) {
 					to="/$category/{-$postId}"
 				>
 					<Button className="mt-2 w-full" size="sm" variant="outline">
-						Go to post
+						View Post
 					</Button>
 				</Link>
 			</div>
@@ -127,7 +127,7 @@ function RecentCommentsList({
 					to="/$category/{-$postId}"
 				>
 					<Button className="mt-2 w-full" size="sm" variant="outline">
-						Go to post
+						View Post
 					</Button>
 				</Link>
 			</div>

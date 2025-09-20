@@ -1,7 +1,7 @@
 import { Loading03Icon, SearchIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import MobileNav from "~/components/mobile-nav";
 import NavLinks from "~/components/nav-links";
 import PostList from "~/components/post-list";
@@ -17,8 +17,7 @@ export const Route = createFileRoute("/_app")({
 	loader: async ({ location }) => {
 		const category = location.pathname.split("/")[1] || "top";
 		const queryClient = createQueryClient();
-
-		return await queryClient.ensureQueryData({
+		const postsData = await queryClient.ensureQueryData({
 			queryKey: ["posts", category],
 			queryFn: async () => {
 				const { first10, remainingItems } = await fetchPosts(category);
@@ -41,6 +40,10 @@ export const Route = createFileRoute("/_app")({
 				};
 			},
 		});
+
+		return {
+			...postsData,
+		};
 	},
 	validateSearch: (search) => searchSchema.parse(search),
 	component: RouteComponent,
@@ -73,20 +76,6 @@ function RouteComponent() {
 		remainingItems: useLoaderData ? loaderData.remainingItems : [],
 	});
 	const [isMobilePostsOpen, setIsMobilePostsOpen] = useState(false);
-
-	// Prevent body scroll when mobile posts are open
-	useEffect(() => {
-		if (isMobilePostsOpen) {
-			document.body.style.overflow = "hidden";
-		} else {
-			document.body.style.overflow = "unset";
-		}
-
-		// Cleanup on unmount
-		return () => {
-			document.body.style.overflow = "unset";
-		};
-	}, [isMobilePostsOpen]);
 
 	return (
 		<div className="flex h-dvh flex-col overflow-hidden bg-zinc-50 md:flex-row dark:bg-black">

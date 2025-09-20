@@ -13,7 +13,6 @@ import {
 	TooltipTrigger,
 } from "~/components/ui/tooltip";
 import { cn } from "~/lib/utils";
-import SettingsDialog from "./settings";
 
 const navLinks = [
 	{ label: "Front Page", href: "/top", icon: FireIcon },
@@ -32,14 +31,6 @@ type Params = {
 export default function NavLinks({ category, postId, search, page }: Params) {
 	return (
 		<nav className="space-y-2 p-2">
-			<Tooltip>
-				<TooltipTrigger asChild>
-					<SettingsDialog />
-				</TooltipTrigger>
-				<TooltipContent side="right">
-					<p>hn.fd - Clean and Fast HN Reader</p>
-				</TooltipContent>
-			</Tooltip>
 			{navLinks.map((link) => {
 				const itemCategory = link.href.split("/")[1];
 				return (
