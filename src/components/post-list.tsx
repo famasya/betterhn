@@ -36,7 +36,7 @@ export default function PostList({
 	return (
 		<>
 			{posts.map((post) => (
-				// biome-ignore lint/a11y/useSemanticElements: a11y
+				// biome-ignore lint/a11y/useSemanticElements: clickable div
 				<div
 					className={cn(
 						"w-full border-gray-200 border-b p-3 text-left text-sm hover:bg-zinc-100 dark:border-gray-700 dark:hover:bg-zinc-800",
@@ -50,6 +50,9 @@ export default function PostList({
 							params: {
 								category: category || "top",
 								postId: `${lowerCaseTitle(post.title)}-${post.id}`,
+							},
+							search: {
+								view: "post",
 							},
 							to: "/$category/{-$postId}",
 						});
@@ -83,6 +86,9 @@ export default function PostList({
 							postId: `${lowerCaseTitle(post.title)}-${post.id}`,
 						}}
 						rel={post.url ? "noopener noreferrer" : undefined}
+						search={{
+							view: "post",
+						}}
 						target={post.url ? "_blank" : "_self"}
 						to={post.url ? post.url : "/$category/{-$postId}"}
 					>

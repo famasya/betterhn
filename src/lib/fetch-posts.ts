@@ -41,7 +41,7 @@ export const fetchPosts = async (type: string) => {
 	const successItems: FirebasePostDetail[] = [];
 	const failedItems: number[] = [];
 	for (const [index, item] of getItems.entries()) {
-		if (item.status === "fulfilled" && item.value) {
+		if (item.status === "fulfilled" && item.value && !item.value.deleted) {
 			// Additional null check for Firebase responses
 			if (item.value) {
 				successItems.push(item.value);

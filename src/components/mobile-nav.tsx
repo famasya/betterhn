@@ -1,22 +1,8 @@
-import {
-	FireIcon,
-	QuestionIcon,
-	RocketIcon,
-	StarIcon,
-	TargetIcon,
-} from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
-
-const mobileNavLinks = [
-	{ label: "Top", href: "/top", icon: FireIcon },
-	{ label: "Best", href: "/best", icon: StarIcon },
-	{ label: "New", href: "/new", icon: TargetIcon },
-	{ label: "Ask", href: "/ask", icon: QuestionIcon },
-	{ label: "Show", href: "/show", icon: RocketIcon },
-];
+import { navLinks } from "./nav-links";
 
 export default function MobileNav({
 	category,
@@ -28,13 +14,16 @@ export default function MobileNav({
 	return (
 		<div className="border-gray-200 border-t bg-white md:hidden dark:border-zinc-800 dark:bg-zinc-900">
 			<nav className="flex">
-				{mobileNavLinks.map((link) => (
+				{navLinks.map((link) => (
 					<Link
 						className={
 							"flex flex-1 flex-col items-center justify-center p-2 text-gray-700 transition-colors hover:bg-zinc-100 dark:text-gray-200 dark:hover:bg-zinc-800"
 						}
 						key={link.href}
 						onClick={() => setIsMobilePostsOpen(true)}
+						search={{
+							view: "nav",
+						}}
 						to={link.href}
 					>
 						<Button

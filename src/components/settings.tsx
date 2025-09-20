@@ -1,6 +1,7 @@
 import { Settings01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { DialogDescription } from "@radix-ui/react-dialog";
+import { useRouteContext } from "@tanstack/react-router";
 import { useStore } from "@tanstack/react-store";
 import {
 	updateUserSettings,
@@ -18,10 +19,8 @@ import {
 import { Label } from "./ui/label";
 import { Switch } from "./ui/switch";
 
-type Params = {
-	buildID: string;
-};
-export default function SettingsDialog({ buildID }: Params) {
+export default function SettingsDialog() {
+	const { buildID } = useRouteContext({ from: "__root__" });
 	const { resolvedTheme, setTheme } = useTheme();
 	const isDark = resolvedTheme === "dark";
 	const compactMode = useStore(userSettingsStore, (state) => state.compactMode);

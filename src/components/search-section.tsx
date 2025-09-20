@@ -18,19 +18,18 @@ type SearchSectionProps = {
 	origin: string;
 	search?: string;
 	page?: number;
-	buildID: string;
 };
 
 export const searchSchema = z.object({
 	search: z.string().optional(),
 	page: z.coerce.number().int().optional(),
+	view: z.enum(["nav", "post"]).optional(),
 });
 
 export default function SearchSection({
 	origin,
 	search,
 	page,
-	buildID,
 }: SearchSectionProps) {
 	const [searchCategory, setSearchCategory] = useState("story");
 	const [inputValue, setInputValue] = useState(search || "");
@@ -65,7 +64,7 @@ export default function SearchSection({
 				<div className="rounded bg-gradient-to-br from-orange-700 to-orange-800 px-2 py-1 font-medium text-white">
 					hnfd
 				</div>
-				<SettingsDialog buildID={buildID} />
+				<SettingsDialog />
 			</div>
 			<div className="flex flex-col items-center pt-2">
 				<h1 className="font-medium text-2xl">Search</h1>

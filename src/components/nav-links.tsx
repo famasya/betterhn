@@ -14,7 +14,7 @@ import {
 } from "~/components/ui/tooltip";
 import { cn } from "~/lib/utils";
 
-const navLinks = [
+export const navLinks = [
 	{ label: "Front Page", href: "/top", icon: FireIcon },
 	{ label: "Best", href: "/best", icon: StarIcon },
 	{ label: "New", href: "/new", icon: TargetIcon },
@@ -46,7 +46,7 @@ export default function NavLinks({ category, postId, search, page }: Params) {
 									category: itemCategory === "search" ? category : itemCategory,
 									postId: itemCategory === "search" ? undefined : postId,
 								}}
-								search={{ search, page }}
+								search={{ search, page, view: "nav" }}
 								to={postId.length > 0 ? "/$category/{-$postId}" : link.href}
 							>
 								<HugeiconsIcon className={cn("h-5 w-5")} icon={link.icon} />

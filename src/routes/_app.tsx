@@ -2,7 +2,7 @@ import { Loading03Icon, SearchIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
 import { useStore } from "@tanstack/react-store";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MobileNav from "~/components/mobile-nav";
 import NavLinks from "~/components/nav-links";
 import PostList from "~/components/post-list";
@@ -45,7 +45,6 @@ export const Route = createFileRoute("/_app")({
 
 		return {
 			...postsData,
-			buildID: process.env.WORKERS_CI_BUILD_UUID || "-",
 		};
 	},
 	validateSearch: (search) => searchSchema.parse(search),
@@ -55,7 +54,7 @@ export const Route = createFileRoute("/_app")({
 });
 
 function RouteComponent() {
-	const { search, page } = Route.useSearch();
+	const { search, page, view } = Route.useSearch();
 	const { pathname } = useLocation();
 	const paths = pathname.split("/");
 	const category = paths[1];
@@ -79,7 +78,12 @@ function RouteComponent() {
 		initialPosts: useLoaderData ? loaderData.first10 : [],
 		remainingItems: useLoaderData ? loaderData.remainingItems : [],
 	});
-	const [isMobilePostsOpen, setIsMobilePostsOpen] = useState(false);
+	const [isMobilePostsOpen, setIsMobilePostsOpen] = useState(view === "nav");
+
+	// Keep mobile posts state in sync with URL search params
+	useEffect(() => {
+		setIsMobilePostsOpen(view === "nav");
+	}, [view]);
 
 	return (
 		<div
@@ -109,7 +113,7 @@ function RouteComponent() {
 									>
 										<HugeiconsIcon icon={SearchIcon} size={16} />
 									</Button>
-									<SettingsDialog buildID={loaderData.buildID} />
+									<SettingsDialog />
 								</div>
 							</div>
 							<div className="flex-1 overflow-y-auto">
