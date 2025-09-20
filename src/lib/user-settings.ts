@@ -58,7 +58,7 @@ export const getResolvedTheme = (
 };
 
 export const applyTheme = createIsomorphicFn()
-	.server(() => {
+	.server((_theme: "light" | "dark") => {
 		// No-op on server
 	})
 	.client((theme: "light" | "dark") => {
