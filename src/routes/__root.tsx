@@ -1,6 +1,10 @@
 /// <reference types="vite/client" />
 import { QueryClientProvider } from "@tanstack/react-query";
-import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import {
+	createRootRouteWithContext,
+	HeadContent,
+	Scripts,
+} from "@tanstack/react-router";
 
 import type * as React from "react";
 import { useEffect } from "react";
@@ -18,7 +22,10 @@ import {
 import appCss from "~/styles/app.css?url";
 import { seo } from "~/utils/seo";
 
-export const Route = createRootRoute({
+type RouterContext = {
+	buildID: string;
+};
+export const Route = createRootRouteWithContext<RouterContext>()({
 	head: () => ({
 		meta: [
 			{
@@ -29,7 +36,7 @@ export const Route = createRootRoute({
 				content: "width=device-width, initial-scale=1",
 			},
 			...seo({
-				title: "ZenHN - Sleek and Fast HN Reader",
+				title: "hnfd - Sleek and Fast HN Reader",
 			}),
 		],
 		links: [

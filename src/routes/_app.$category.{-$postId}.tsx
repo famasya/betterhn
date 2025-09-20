@@ -1,5 +1,5 @@
 import {
-	AppleStocksIcon,
+	AnalyticsUpIcon,
 	Comment01Icon,
 	LinkSquare02Icon,
 	Time04Icon,
@@ -122,7 +122,7 @@ function RouteComponent() {
 						{formatRelative(post.time * 1000, Date.now())}
 					</div>
 					<div className="flex items-center gap-1">
-						<HugeiconsIcon icon={AppleStocksIcon} size={16} />
+						<HugeiconsIcon icon={AnalyticsUpIcon} size={16} />
 						{post.score} points
 					</div>
 					{post.descendants > 0 && (

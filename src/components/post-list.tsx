@@ -71,7 +71,7 @@ export default function PostList({
 					tabIndex={0}
 				>
 					<Link
-						className="text-black hover:underline dark:text-white"
+						className="text-black hover:text-orange-700 dark:text-white dark:hover:text-orange-300"
 						onClick={(e: SyntheticEvent) => {
 							if (post.url) {
 								e.stopPropagation();
@@ -86,9 +86,6 @@ export default function PostList({
 						target={post.url ? "_blank" : "_self"}
 						to={post.url ? post.url : "/$category/{-$postId}"}
 					>
-						{post.url && (
-							<span className="mr-1 text-xs text-zinc-500">[ext]</span>
-						)}
 						<span>{post.title}</span>
 					</Link>
 					<div

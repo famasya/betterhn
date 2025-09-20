@@ -45,6 +45,7 @@ export const Route = createFileRoute("/_app")({
 
 		return {
 			...postsData,
+			buildID: process.env.WORKERS_CI_BUILD_UUID || "-",
 		};
 	},
 	validateSearch: (search) => searchSchema.parse(search),
@@ -108,7 +109,7 @@ function RouteComponent() {
 									>
 										<HugeiconsIcon icon={SearchIcon} size={16} />
 									</Button>
-									<SettingsDialog />
+									<SettingsDialog buildID={loaderData.buildID} />
 								</div>
 							</div>
 							<div className="flex-1 overflow-y-auto">

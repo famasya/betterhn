@@ -71,12 +71,7 @@ function RecentsList({ posts }: { posts: AlgoliaPostApiResponse["hits"] }) {
 		>
 			<div className="mb-2 flex-grow">
 				{post.url ? (
-					<Link
-						className="hover:underline"
-						rel="noopener noreferrer"
-						target="_blank"
-						to={post.url}
-					>
+					<Link rel="noopener noreferrer" target="_blank" to={post.url}>
 						<h1>{post.title}</h1>
 					</Link>
 				) : (
@@ -116,11 +111,7 @@ function RecentCommentsList({
 		>
 			<div className="mb-2 flex-grow">
 				{comment.story_url ? (
-					<Link
-						className="hover:underline"
-						target="_blank"
-						to={comment.story_url}
-					>
+					<Link target="_blank" to={comment.story_url}>
 						<h1>{comment.story_title || "HN Discussions"}</h1>
 					</Link>
 				) : (

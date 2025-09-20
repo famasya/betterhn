@@ -43,7 +43,6 @@ export default function MobileNav({
 								`/${category}` === link.href &&
 									"cursor-pointer bg-orange-200 text-orange-700 hover:bg-orange-200 hover:text-orange-700 dark:bg-orange-800 dark:text-orange-200 dark:hover:bg-orange-800/50 dark:hover:text-orange-200"
 							)}
-							size={"xs"}
 							variant={"ghost"}
 						>
 							<HugeiconsIcon icon={link.icon} />{" "}

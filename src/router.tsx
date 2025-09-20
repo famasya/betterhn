@@ -10,6 +10,9 @@ export function createRouter() {
 		defaultErrorComponent: DefaultCatchBoundary,
 		defaultNotFoundComponent: () => <NotFound />,
 		scrollRestoration: true,
+		context: {
+			buildID: process.env.WORKERS_CI_BUILD_UUID || "-",
+		},
 		scrollToTopSelectors: ["#post-content"],
 	});
 

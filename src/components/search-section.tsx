@@ -18,6 +18,7 @@ type SearchSectionProps = {
 	origin: string;
 	search?: string;
 	page?: number;
+	buildID: string;
 };
 
 export const searchSchema = z.object({
@@ -29,6 +30,7 @@ export default function SearchSection({
 	origin,
 	search,
 	page,
+	buildID,
 }: SearchSectionProps) {
 	const [searchCategory, setSearchCategory] = useState("story");
 	const [inputValue, setInputValue] = useState(search || "");
@@ -60,10 +62,10 @@ export default function SearchSection({
 	return (
 		<div className="flex h-full w-full flex-col items-center overflow-y-auto">
 			<div className="flex w-full items-center justify-between p-2">
-				<div className="rounded bg-orange-700 px-2 py-1 font-medium text-sm text-white">
-					ZenHN
+				<div className="rounded bg-gradient-to-br from-orange-700 to-orange-800 px-2 py-1 font-medium text-white">
+					hnfd
 				</div>
-				<SettingsDialog />
+				<SettingsDialog buildID={buildID} />
 			</div>
 			<div className="flex flex-col items-center pt-2">
 				<h1 className="font-medium text-2xl">Search</h1>
