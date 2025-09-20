@@ -33,7 +33,7 @@ export default function Recents() {
 	});
 	return (
 		<div className="mt-8">
-			<div className="text-sm">Or browse recents submissions</div>
+			<div>Or browse recents submissions</div>
 			<div className="grid grid-cols-2 gap-2 md:grid-cols-2 lg:grid-cols-3">
 				{isLoading ? (
 					<RecentsSkeleton />
@@ -42,7 +42,7 @@ export default function Recents() {
 				)}
 			</div>
 
-			<div className="mt-8 text-sm">Or active discussions</div>
+			<div className="mt-8">Or active discussions</div>
 			<div className="grid grid-cols-2 gap-2 md:grid-cols-2 lg:grid-cols-3">
 				{activePostsLoading ? (
 					<RecentsSkeleton />
@@ -116,7 +116,11 @@ function RecentCommentsList({
 		>
 			<div className="mb-2 flex-grow">
 				{comment.story_url ? (
-					<Link className="hover:underline" to={comment.story_url}>
+					<Link
+						className="hover:underline"
+						target="_blank"
+						to={comment.story_url}
+					>
 						<h1>{comment.story_title || "HN Discussions"}</h1>
 					</Link>
 				) : (
