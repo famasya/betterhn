@@ -75,7 +75,7 @@ export default function SettingsDialog() {
 							</div>
 						</div>
 						<div className="mt-8 border-black/20 border-t border-dashed p-2 font-mono text-xs dark:border-white/20">
-							Build: {buildID.split("-").pop()}
+							Build: {buildID}
 						</div>
 					</div>
 				</DialogDescription>

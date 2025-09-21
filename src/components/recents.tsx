@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { formatDistanceToNow } from "date-fns";
-import ky from "ky";
+import { algoliaFetcher } from "~/lib/fetcher";
 import type {
 	AlgoliaCommentApiResponse,
 	AlgoliaPostApiResponse,
@@ -13,8 +13,8 @@ export default function Recents() {
 	const { data: recentPosts, isLoading } = useQuery({
 		queryKey: ["recents"],
 		queryFn: async () => {
-			return await ky
-				.get("https://hn.algolia.com/api/v1/search_by_date?tags=story")
+			return await algoliaFetcher
+				.get("search_by_date?tags=story")
 				.json<AlgoliaPostApiResponse>();
 		},
 	});
@@ -22,9 +22,9 @@ export default function Recents() {
 		queryKey: ["active-posts"],
 		queryFn: async () => {
 			const oneHourAgo = Math.floor(Date.now() / 1000) - 3600;
-			return await ky
+			return await algoliaFetcher
 				.get(
-					`https://hn.algolia.com/api/v1/search_by_date?tags=comment&numericFilters=created_at_i>${oneHourAgo}`
+					`search_by_date?tags=comment&numericFilters=created_at_i>${oneHourAgo}`
 				)
 				.json<AlgoliaCommentApiResponse>();
 		},
