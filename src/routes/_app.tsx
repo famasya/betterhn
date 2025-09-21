@@ -7,10 +7,10 @@ import {
 	useNavigate,
 } from "@tanstack/react-router";
 import { useStore } from "@tanstack/react-store";
+import z from "zod";
 import MobileNav from "~/components/mobile-nav";
 import NavLinks from "~/components/nav-links";
 import PostList from "~/components/post-list";
-import { searchSchema } from "~/components/search-section";
 import SettingsDialog from "~/components/settings";
 import { Button } from "~/components/ui/button";
 import { fetchPosts } from "~/lib/fetch-posts";
@@ -18,6 +18,13 @@ import { useInfinitePosts } from "~/lib/hooks/use-infinite-posts";
 import { createQueryClient } from "~/lib/query-client";
 import { userSettingsStore } from "~/lib/user-settings";
 import { cn, lowerCaseTitle } from "~/lib/utils";
+
+const searchSchema = z.object({
+	search: z.string().optional(),
+	page: z.coerce.number().int().optional(),
+	view: z.enum(["nav", "post"]).optional(),
+	tags: z.enum(["story", "show_hn", "ask_hn", "front_page"]).optional(),
+});
 
 export const Route = createFileRoute("/_app")({
 	loader: async ({ location }) => {
@@ -166,12 +173,7 @@ function RouteComponent() {
 
 			{/* Desktop Posts sidebar */}
 			<div className="hidden border-gray-200 border-r bg-white md:block dark:border-zinc-800 dark:bg-zinc-900">
-				<NavLinks
-					category={category}
-					page={page}
-					postId={postId}
-					search={search}
-				/>
+				<NavLinks category={category} postId={postId} />
 			</div>
 
 			<div className="hidden w-1/4 min-w-[300px] overflow-y-auto border-gray-200 border-r bg-white md:block dark:border-zinc-800 dark:bg-zinc-900">

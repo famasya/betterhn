@@ -7,7 +7,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useQuery } from "@tanstack/react-query";
-import { formatRelative } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
 import DOMPurify from "dompurify";
 import { memo, useState } from "react";
 import {
@@ -133,7 +133,7 @@ const CommentItem = memo(function CommentItemComponent({
 						</a>
 					</div>
 					<div className="flex items-center gap-1 dark:text-gray-400">
-						[ {formatRelative(comment.time * 1000, Date.now())} ]
+						[ {formatDistanceToNow(comment.time * 1000, { addSuffix: true })} ]
 					</div>
 				</div>
 				<div

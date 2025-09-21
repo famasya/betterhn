@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { formatRelative } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
 import ky from "ky";
 import type {
 	AlgoliaCommentApiResponse,
@@ -71,7 +71,12 @@ function RecentsList({ posts }: { posts: AlgoliaPostApiResponse["hits"] }) {
 		>
 			<div className="mb-2 flex-grow">
 				{post.url ? (
-					<Link rel="noopener noreferrer" target="_blank" to={post.url}>
+					<Link
+						className="hover:text-orange-700 dark:hover:text-orange-300"
+						rel="noopener noreferrer"
+						target="_blank"
+						to={post.url}
+					>
 						<h1>{post.title}</h1>
 					</Link>
 				) : (
@@ -80,9 +85,8 @@ function RecentsList({ posts }: { posts: AlgoliaPostApiResponse["hits"] }) {
 			</div>
 			<div className="text-xs">
 				<p>
-					{post.points} points by {post.author}
+					{formatDistanceToNow(post.created_at_i * 1000, { addSuffix: true })}
 				</p>
-				<p>{formatRelative(post.created_at_i * 1000, Date.now())}</p>
 				<Link
 					params={{
 						category: "new",
@@ -111,7 +115,12 @@ function RecentCommentsList({
 		>
 			<div className="mb-2 flex-grow">
 				{comment.story_url ? (
-					<Link target="_blank" to={comment.story_url}>
+					<Link
+						className="hover:text-orange-700 dark:hover:text-orange-300"
+						rel="noopener noreferrer"
+						target="_blank"
+						to={comment.story_url}
+					>
 						<h1>{comment.story_title || "HN Discussions"}</h1>
 					</Link>
 				) : (
@@ -119,7 +128,11 @@ function RecentCommentsList({
 				)}
 			</div>
 			<div className="text-xs">
-				<p>{formatRelative(comment.created_at_i * 1000, Date.now())}</p>
+				<p>
+					{formatDistanceToNow(comment.created_at_i * 1000, {
+						addSuffix: true,
+					})}
+				</p>
 				<Link
 					params={{
 						category: "new",

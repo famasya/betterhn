@@ -6,7 +6,7 @@ import {
 	TargetIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Link } from "@tanstack/react-router";
+import { Link, useSearch } from "@tanstack/react-router";
 import {
 	Tooltip,
 	TooltipContent,
@@ -25,10 +25,9 @@ export const navLinks = [
 type Params = {
 	category: string;
 	postId: string;
-	search?: string;
-	page?: number;
 };
-export default function NavLinks({ category, postId, search, page }: Params) {
+export default function NavLinks({ category, postId }: Params) {
+	const { tags, search, page } = useSearch({ from: "/_app" });
 	return (
 		<nav className="space-y-2 p-2">
 			{navLinks.map((link) => {
@@ -46,7 +45,7 @@ export default function NavLinks({ category, postId, search, page }: Params) {
 									category: itemCategory === "search" ? category : itemCategory,
 									postId: itemCategory === "search" ? undefined : postId,
 								}}
-								search={{ search, page, view: "nav" }}
+								search={{ search, page, tags, view: "nav" }}
 								to={postId.length > 0 ? "/$category/{-$postId}" : link.href}
 							>
 								<HugeiconsIcon className={cn("h-5 w-5")} icon={link.icon} />

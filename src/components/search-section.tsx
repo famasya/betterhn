@@ -1,10 +1,13 @@
 import { ConfusedIcon, Monocle01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { debounce } from "@tanstack/pacer";
-import { Link, useNavigate } from "@tanstack/react-router";
+import {
+	Link,
+	useNavigate,
+	useSearch as useSearchRouter,
+} from "@tanstack/react-router";
 import { formatRelative } from "date-fns";
 import { memo, useCallback, useState } from "react";
-import { z } from "zod";
 import { useSearch } from "~/lib/hooks/use-search";
 import type { AlgoliaPostApiResponse } from "~/lib/types";
 import { cn, lowerCaseTitle } from "~/lib/utils";
@@ -20,22 +23,16 @@ type SearchSectionProps = {
 	page?: number;
 };
 
-export const searchSchema = z.object({
-	search: z.string().optional(),
-	page: z.coerce.number().int().optional(),
-	view: z.enum(["nav", "post"]).optional(),
-});
-
 export default function SearchSection({
 	origin,
 	search,
 	page,
 }: SearchSectionProps) {
-	const [searchCategory, setSearchCategory] = useState("story");
+	const { tags } = useSearchRouter({ from: "/_app" });
 	const [inputValue, setInputValue] = useState(search || "");
 	const { data, isLoading } = useSearch(
 		search || "",
-		searchCategory,
+		tags || "story",
 		page || 1
 	);
 	const navigate = useNavigate();
@@ -67,7 +64,9 @@ export default function SearchSection({
 				<SettingsDialog />
 			</div>
 			<div className="flex flex-col items-center pt-2">
-				<h1 className="font-medium text-2xl">Search</h1>
+				<h1 className="mb-2 flex w-full items-center justify-center gap-2 text-center text-xl">
+					<HugeiconsIcon icon={Monocle01Icon} size={24} /> Search for something
+				</h1>
 				<p className="text-gray-500 text-sm">Powered by Algolia</p>
 			</div>
 			<div className="mx-auto w-full max-w-[800px] p-6 md:px-16">
@@ -94,8 +93,21 @@ export default function SearchSection({
 						</div>
 						<div>
 							<Tabs
-								defaultValue="story"
-								onValueChange={(value) => setSearchCategory(value)}
+								defaultValue={tags || "story"}
+								onValueChange={(value) =>
+									navigate({
+										to: ".",
+										search: {
+											search: inputValue,
+											page: 1,
+											tags: value as
+												| "story"
+												| "show_hn"
+												| "ask_hn"
+												| "front_page",
+										},
+									})
+								}
 							>
 								<TabsList>
 									<TabsTrigger className="text-xs" value="story">
@@ -183,9 +195,6 @@ const SearchResultItem = memo(function SearchResultItemComponent({
 	if (search.length === 0) {
 		return (
 			<div>
-				<div className="mt-8 flex w-full items-center justify-center gap-2 text-center text-gray-500 text-sm">
-					<HugeiconsIcon icon={Monocle01Icon} size={24} /> Search for something
-				</div>
 				<Recents />
 			</div>
 		);

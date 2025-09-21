@@ -28,7 +28,7 @@ export default function MobileNav({
 					>
 						<Button
 							className={cn(
-								"flex cursor-pointer flex-col items-center justify-center gap-0",
+								"flex cursor-pointer flex-col items-center justify-center",
 								`/${category}` === link.href &&
 									"cursor-pointer bg-orange-200 text-orange-700 hover:bg-orange-200 hover:text-orange-700 dark:bg-orange-800 dark:text-orange-200 dark:hover:bg-orange-800/50 dark:hover:text-orange-200"
 							)}

@@ -53,7 +53,6 @@ export default function SettingsDialog() {
 									</Label>
 									<Switch
 										checked={isDark}
-										className="data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700"
 										id="color-mode"
 										onCheckedChange={toggleTheme}
 									/>
@@ -67,7 +66,6 @@ export default function SettingsDialog() {
 									</Label>
 									<Switch
 										checked={compactMode}
-										className="data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700"
 										id="compact-mode"
 										onCheckedChange={(value) =>
 											updateUserSettings("compactMode", value)
