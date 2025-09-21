@@ -152,6 +152,16 @@
 		font-family: "Inter", system-ui, sans-serif;
 	}
 
+	/* Optimize font loading performance */
+	@font-face {
+		font-family: 'Inter';
+		font-style: normal;
+		font-weight: 400 700;
+		font-display: swap;
+		src: url('https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7W0Q5nw.woff2') format('woff2');
+		unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+	}
+
 	body .comment-item {
 		@apply overflow-x-auto break-words text-gray-800 text-sm leading-relaxed dark:text-gray-300 [&_*]:break-words [&_*]:text-gray-800 [&_*]:dark:text-gray-300 [&_a]:break-words [&_a]:text-orange-600 [&_a]:hover:text-orange-700  [&_a]:dark:text-orange-200 [&_a]:dark:hover:text-orange-300 [&_code]:break-normal [&_code]:rounded [&_code]:bg-zinc-200 [&_code]:px-1 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-xs [&_code]:dark:bg-zinc-800 [&_p:last-child]:mb-0 [&_p]:mb-2 [&_pre]:mt-2 [&_pre]:whitespace-pre-wrap [&_pre]:break-words [&_pre]:rounded [&_pre]:bg-zinc-200 [&_pre]:p-2 [&_pre]:font-mono [&_pre]:text-xs [&_pre]:dark:bg-zinc-800 [&_p]:mt-2;
 	}

@@ -17,4 +17,26 @@ export default defineConfig({
 		}),
 		viteReact(),
 	],
+	build: {
+		sourcemap: false,
+		minify: "terser",
+		terserOptions: {
+			compress: {
+				drop_console: true,
+				drop_debugger: true,
+			},
+		},
+		chunkSizeWarningLimit: 1000,
+	},
+	optimizeDeps: {
+		include: [
+			"react",
+			"react-dom",
+			"@tanstack/react-query",
+			"@tanstack/react-router",
+			"@radix-ui/react-dialog",
+			"@radix-ui/react-select",
+			"@radix-ui/react-tooltip",
+		],
+	},
 });
