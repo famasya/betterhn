@@ -6,7 +6,7 @@ export type CommentItem = {
 	id: number;
 	kids: number[];
 	parent: number;
-	text: string;
+	text: string | null;
 	deleted?: boolean;
 	time: number;
 	type: string;
@@ -23,8 +23,8 @@ export const loadComments = createServerFn({
 		const comments = await Promise.allSettled(
 			data.map(async (commentId) => {
 				const comment = await firebaseFetcher
-					.get<CommentItem>(`item/${commentId}.json`)
-					.json();
+					.get(`item/${commentId}.json`)
+					.json<CommentItem>();
 				return { commentId, comment, success: true };
 			})
 		);

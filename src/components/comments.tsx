@@ -143,29 +143,21 @@ const CommentItem = memo(function CommentItemComponent({
 						__html:
 							typeof window !== "undefined"
 								? DOMPurify.sanitize(
-										comment.deleted ? "Deleted" : commentText,
+										comment.deleted ? "Deleted" : commentText || "",
 										{
 											USE_PROFILES: { html: true },
 											ADD_ATTR: ["target"],
 											ALLOWED_ATTR: ["href", "target", "rel"],
 										}
 									)
-								: commentText, // Server-side: use original text, sanitize on client
+								: commentText || "", // Server-side: use original text, sanitize on client
 					}}
 				/>
 				<div className="mt-2 flex items-center justify-end gap-1 text-gray-600 text-xs">
-					<a
-						href={
-							comment.deleted
-								? "#"
-								: `https://news.ycombinator.com/reply?id=${comment.id}&goto=item?id=${comment.parent}#${comment.id}`
-						}
-						rel="noopener noreferrer"
-						target="_blank"
-					>
+					{comment.deleted ? (
 						<Button
 							className="flex items-center gap-1 text-xs dark:text-gray-400"
-							disabled={comment.deleted}
+							disabled
 							size={"sm"}
 							type="button"
 							variant={"ghost"}
@@ -173,7 +165,27 @@ const CommentItem = memo(function CommentItemComponent({
 							<HugeiconsIcon icon={CommentAdd01Icon} size={14} />
 							Reply
 						</Button>
-					</a>
+					) : (
+						<a
+							href={
+								comment.deleted
+									? "#"
+									: `https://news.ycombinator.com/reply?id=${comment.id}&goto=item?id=${comment.parent}#${comment.id}`
+							}
+							rel="noopener noreferrer"
+							target="_blank"
+						>
+							<Button
+								className="flex items-center gap-1 text-xs dark:text-gray-400"
+								size={"sm"}
+								type="button"
+								variant={"ghost"}
+							>
+								<HugeiconsIcon icon={CommentAdd01Icon} size={14} />
+								Reply
+							</Button>
+						</a>
+					)}
 					{hasReplies && (
 						<Button
 							className="flex cursor-pointer items-center gap-1 text-orange-600 text-xs hover:text-orange-700 dark:text-orange-300 dark:hover:text-orange-200"

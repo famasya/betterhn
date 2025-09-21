@@ -13,8 +13,8 @@ export const loadMorePosts = createServerFn({
 		const results = await Promise.allSettled(
 			data.map(async (postId) => {
 				const post = await firebaseFetcher
-					.get<FirebasePostDetail>(`item/${postId}.json`)
-					.json();
+					.get(`item/${postId}.json`)
+					.json<FirebasePostDetail>();
 				return { postId, post, success: true };
 			})
 		);

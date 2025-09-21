@@ -14,10 +14,8 @@ export default function Recents() {
 		queryKey: ["recents"],
 		queryFn: async () => {
 			return await ky
-				.get<AlgoliaPostApiResponse>(
-					"https://hn.algolia.com/api/v1/search_by_date?tags=story"
-				)
-				.json();
+				.get("https://hn.algolia.com/api/v1/search_by_date?tags=story")
+				.json<AlgoliaPostApiResponse>();
 		},
 	});
 	const { data: activePosts, isLoading: activePostsLoading } = useQuery({
@@ -25,10 +23,10 @@ export default function Recents() {
 		queryFn: async () => {
 			const oneHourAgo = Math.floor(Date.now() / 1000) - 3600;
 			return await ky
-				.get<AlgoliaCommentApiResponse>(
+				.get(
 					`https://hn.algolia.com/api/v1/search_by_date?tags=comment&numericFilters=created_at_i>${oneHourAgo}`
 				)
-				.json();
+				.json<AlgoliaCommentApiResponse>();
 		},
 	});
 	return (
@@ -92,6 +90,7 @@ function RecentsList({ posts }: { posts: AlgoliaPostApiResponse["hits"] }) {
 						category: "new",
 						postId: `${lowerCaseTitle(post.title)}-${post.objectID}`,
 					}}
+					search={{ view: "post" }}
 					to="/$category/{-$postId}"
 				>
 					<Button className="mt-2 w-full" size="sm" variant="outline">
@@ -138,6 +137,7 @@ function RecentCommentsList({
 						category: "new",
 						postId: `${lowerCaseTitle(comment.story_title || "")}-${comment.story_id}`,
 					}}
+					search={{ view: "post" }}
 					to="/$category/{-$postId}"
 				>
 					<Button className="mt-2 w-full" size="sm" variant="outline">

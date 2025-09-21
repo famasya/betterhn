@@ -193,7 +193,8 @@ export type FirebasePostDetail = {
 	descendants: number;
 	id: number;
 	deleted?: boolean;
-	kids: number[];
+	dead?: boolean;
+	kids?: number[];
 	score: number;
 	time: number;
 	title: string;

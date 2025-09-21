@@ -218,7 +218,7 @@ function RouteComponent() {
 
 			<MobileNav
 				category={category}
-				setIsMobilePostsOpen={() =>
+				onNavigate={() =>
 					navigate({
 						to: ".",
 						search: {
