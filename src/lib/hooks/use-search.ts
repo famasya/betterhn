@@ -6,10 +6,10 @@ export const useSearch = (search: string, tags: string, page: number) => {
 	return useQuery({
 		queryKey: ["search", search, tags, page],
 		queryFn: async () => {
-			const response = await ky.get<AlgoliaPostApiResponse>(
+			const response = await ky.get(
 				`https://hn.algolia.com/api/v1/search_by_date?tags=${tags}&query=${search}&page=${page}`
 			);
-			return response.json();
+			return response.json<AlgoliaPostApiResponse>();
 		},
 		enabled: search.length > 0,
 	});

@@ -7,7 +7,7 @@
     "dev": "vite dev --host",
     "build": "vite build && tsc --noEmit",
     "start": "node .output/server/index.mjs",
-    "lint": "ultracite fix"
+    "lint": "bun tsc --noEmit && bun ultracite fix"
   },
   "dependencies": {
     "@hugeicons/core-free-icons": "^1.0.17",

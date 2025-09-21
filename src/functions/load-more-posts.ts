@@ -12,15 +12,10 @@ export const loadMorePosts = createServerFn({
 	.handler(async ({ data }) => {
 		const results = await Promise.allSettled(
 			data.map(async (postId) => {
-				try {
-					const post = await firebaseFetcher
-						.get<FirebasePostDetail>(`item/${postId}.json`)
-						.json();
-					return { postId, post, success: true };
-				} catch (error) {
-					console.warn(`Failed to fetch post ${postId}:`, error);
-					return { postId, post: null, success: false };
-				}
+				const post = await firebaseFetcher
+					.get(`item/${postId}.json`)
+					.json<FirebasePostDetail>();
+				return { postId, post, success: true };
 			})
 		);
 
@@ -34,12 +29,6 @@ export const loadMorePosts = createServerFn({
 				} else {
 					failedPostIds.push(result.value.postId);
 				}
-			} else {
-				// This shouldn't happen with our try-catch, but just in case
-				console.error(
-					"Unexpected Promise.allSettled rejection:",
-					result.reason
-				);
 			}
 		}
 

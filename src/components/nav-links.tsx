@@ -6,7 +6,7 @@ import {
 	TargetIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Link } from "@tanstack/react-router";
+import { Link, useSearch } from "@tanstack/react-router";
 import {
 	Tooltip,
 	TooltipContent,
@@ -14,21 +14,20 @@ import {
 } from "~/components/ui/tooltip";
 import { cn } from "~/lib/utils";
 
-const navLinks = [
-	{ label: "Front Page", href: "/top", icon: FireIcon },
-	{ label: "Best", href: "/best", icon: StarIcon },
-	{ label: "New", href: "/new", icon: TargetIcon },
-	{ label: "Ask", href: "/ask", icon: QuestionIcon },
-	{ label: "Show", href: "/show", icon: RocketIcon },
+export const navLinks = [
+	{ label: "Front Page", href: "/top", icon: FireIcon, showMobile: true },
+	{ label: "Best", href: "/best", icon: StarIcon, showMobile: true },
+	{ label: "New", href: "/new", icon: TargetIcon, showMobile: true },
+	{ label: "Ask", href: "/ask", icon: QuestionIcon, showMobile: true },
+	{ label: "Show", href: "/show", icon: RocketIcon, showMobile: true },
 ];
 
 type Params = {
 	category: string;
 	postId: string;
-	search?: string;
-	page?: number;
 };
-export default function NavLinks({ category, postId, search, page }: Params) {
+export default function NavLinks({ category, postId }: Params) {
+	const { tags, search, page } = useSearch({ from: "/_app" });
 	return (
 		<nav className="space-y-2 p-2">
 			{navLinks.map((link) => {
@@ -46,7 +45,7 @@ export default function NavLinks({ category, postId, search, page }: Params) {
 									category: itemCategory === "search" ? category : itemCategory,
 									postId: itemCategory === "search" ? undefined : postId,
 								}}
-								search={{ search, page }}
+								search={{ search, page, tags, view: "nav" }}
 								to={postId.length > 0 ? "/$category/{-$postId}" : link.href}
 							>
 								<HugeiconsIcon className={cn("h-5 w-5")} icon={link.icon} />

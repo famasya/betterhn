@@ -6,7 +6,7 @@ export type CommentItem = {
 	id: number;
 	kids: number[];
 	parent: number;
-	text: string;
+	text: string | null;
 	deleted?: boolean;
 	time: number;
 	type: string;
@@ -22,17 +22,13 @@ export const loadComments = createServerFn({
 	.handler(async ({ data }) => {
 		const comments = await Promise.allSettled(
 			data.map(async (commentId) => {
-				try {
-					const comment = await firebaseFetcher
-						.get<CommentItem>(`item/${commentId}.json`)
-						.json();
-					return { commentId, comment, success: true };
-				} catch (error) {
-					console.warn(`Failed to fetch comment ${commentId}:`, error);
-					return { commentId, comment: null, success: false };
-				}
+				const comment = await firebaseFetcher
+					.get(`item/${commentId}.json`)
+					.json<CommentItem>();
+				return { commentId, comment, success: true };
 			})
 		);
+
 		const successfulComments: CommentItem[] = [];
 		const failedCommentIds: number[] = [];
 		for (const result of comments) {
@@ -42,15 +38,10 @@ export const loadComments = createServerFn({
 				} else {
 					failedCommentIds.push(result.value.commentId);
 				}
-			} else {
-				console.error(
-					"Unexpected Promise.allSettled rejection:",
-					result.reason
-				);
 			}
 		}
 		return {
-			comments: successfulComments,
+			comments: successfulComments.sort((a, b) => b.id - a.id),
 			failedIds: failedCommentIds,
 		};
 	});

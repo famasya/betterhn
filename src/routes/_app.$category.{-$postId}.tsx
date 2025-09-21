@@ -25,8 +25,8 @@ export const Route = createFileRoute("/_app/$category/{-$postId}")({
 			queryFn: async () => {
 				const postIdNum = postId?.split("-").pop();
 				const post = await firebaseFetcher
-					.get<FirebasePostDetail>(`item/${postIdNum}.json`)
-					.json();
+					.get(`item/${postIdNum}.json`)
+					.json<FirebasePostDetail>();
 
 				let initialComments: CommentItem[] = [];
 				const remainingCommentSlices: number[][] = [];
