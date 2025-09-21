@@ -11,11 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
-import { Route as AppTopRouteImport } from './routes/_app.top'
-import { Route as AppShowRouteImport } from './routes/_app.show'
-import { Route as AppNewRouteImport } from './routes/_app.new'
-import { Route as AppBestRouteImport } from './routes/_app.best'
-import { Route as AppAskRouteImport } from './routes/_app.ask'
 import { Route as AppCategoryChar123PostIdChar125RouteImport } from './routes/_app.$category.{-$postId}'
 
 const AppRoute = AppRouteImport.update({
@@ -27,31 +22,6 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRoute,
 } as any)
-const AppTopRoute = AppTopRouteImport.update({
-  id: '/top',
-  path: '/top',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppShowRoute = AppShowRouteImport.update({
-  id: '/show',
-  path: '/show',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppNewRoute = AppNewRouteImport.update({
-  id: '/new',
-  path: '/new',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppBestRoute = AppBestRouteImport.update({
-  id: '/best',
-  path: '/best',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppAskRoute = AppAskRouteImport.update({
-  id: '/ask',
-  path: '/ask',
-  getParentRoute: () => AppRoute,
-} as any)
 const AppCategoryChar123PostIdChar125Route =
   AppCategoryChar123PostIdChar125RouteImport.update({
     id: '/$category/{-$postId}',
@@ -60,63 +30,25 @@ const AppCategoryChar123PostIdChar125Route =
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/ask': typeof AppAskRoute
-  '/best': typeof AppBestRoute
-  '/new': typeof AppNewRoute
-  '/show': typeof AppShowRoute
-  '/top': typeof AppTopRoute
   '/': typeof AppIndexRoute
   '/$category/{-$postId}': typeof AppCategoryChar123PostIdChar125Route
 }
 export interface FileRoutesByTo {
-  '/ask': typeof AppAskRoute
-  '/best': typeof AppBestRoute
-  '/new': typeof AppNewRoute
-  '/show': typeof AppShowRoute
-  '/top': typeof AppTopRoute
   '/': typeof AppIndexRoute
   '/$category/{-$postId}': typeof AppCategoryChar123PostIdChar125Route
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
-  '/_app/ask': typeof AppAskRoute
-  '/_app/best': typeof AppBestRoute
-  '/_app/new': typeof AppNewRoute
-  '/_app/show': typeof AppShowRoute
-  '/_app/top': typeof AppTopRoute
   '/_app/': typeof AppIndexRoute
   '/_app/$category/{-$postId}': typeof AppCategoryChar123PostIdChar125Route
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/ask'
-    | '/best'
-    | '/new'
-    | '/show'
-    | '/top'
-    | '/'
-    | '/$category/{-$postId}'
+  fullPaths: '/' | '/$category/{-$postId}'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/ask'
-    | '/best'
-    | '/new'
-    | '/show'
-    | '/top'
-    | '/'
-    | '/$category/{-$postId}'
-  id:
-    | '__root__'
-    | '/_app'
-    | '/_app/ask'
-    | '/_app/best'
-    | '/_app/new'
-    | '/_app/show'
-    | '/_app/top'
-    | '/_app/'
-    | '/_app/$category/{-$postId}'
+  to: '/' | '/$category/{-$postId}'
+  id: '__root__' | '/_app' | '/_app/' | '/_app/$category/{-$postId}'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -139,41 +71,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/top': {
-      id: '/_app/top'
-      path: '/top'
-      fullPath: '/top'
-      preLoaderRoute: typeof AppTopRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/show': {
-      id: '/_app/show'
-      path: '/show'
-      fullPath: '/show'
-      preLoaderRoute: typeof AppShowRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/new': {
-      id: '/_app/new'
-      path: '/new'
-      fullPath: '/new'
-      preLoaderRoute: typeof AppNewRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/best': {
-      id: '/_app/best'
-      path: '/best'
-      fullPath: '/best'
-      preLoaderRoute: typeof AppBestRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/ask': {
-      id: '/_app/ask'
-      path: '/ask'
-      fullPath: '/ask'
-      preLoaderRoute: typeof AppAskRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/_app/$category/{-$postId}': {
       id: '/_app/$category/{-$postId}'
       path: '/$category/{-$postId}'
@@ -185,21 +82,11 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteChildren {
-  AppAskRoute: typeof AppAskRoute
-  AppBestRoute: typeof AppBestRoute
-  AppNewRoute: typeof AppNewRoute
-  AppShowRoute: typeof AppShowRoute
-  AppTopRoute: typeof AppTopRoute
   AppIndexRoute: typeof AppIndexRoute
   AppCategoryChar123PostIdChar125Route: typeof AppCategoryChar123PostIdChar125Route
 }
 
 const AppRouteChildren: AppRouteChildren = {
-  AppAskRoute: AppAskRoute,
-  AppBestRoute: AppBestRoute,
-  AppNewRoute: AppNewRoute,
-  AppShowRoute: AppShowRoute,
-  AppTopRoute: AppTopRoute,
   AppIndexRoute: AppIndexRoute,
   AppCategoryChar123PostIdChar125Route: AppCategoryChar123PostIdChar125Route,
 }

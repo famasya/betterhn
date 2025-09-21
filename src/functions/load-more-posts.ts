@@ -10,16 +10,16 @@ export const loadMorePosts = createServerFn({
 		return slices;
 	})
 	.handler(async ({ data, signal }) => {
-		const results = await Promise.allSettled(
+		const results = await Promise.all(
 			data.map(async (postId) => {
 				try {
 					const post = await firebaseFetcher
 						.get(`item/${postId}.json`, { signal })
 						.json<FirebasePostDetail | null>();
-					return { postId, post };
-				} catch (error) {
+					return { postId, post, ok: true };
+				} catch {
 					// reuse in failedIds
-					return { postId, error };
+					return { postId, post: null, ok: false };
 				}
 			})
 		);
@@ -28,14 +28,12 @@ export const loadMorePosts = createServerFn({
 		const failedPostIds: number[] = [];
 
 		for (const result of results) {
-			if (result.status === "fulfilled") {
-				if (result.value.post) {
-					successfulPosts.push(result.value.post);
-				} else {
-					failedPostIds.push(result.value.postId);
+			if (result.ok) {
+				if (result.post) {
+					successfulPosts.push(result.post);
 				}
 			} else {
-				failedPostIds.push(result.reason.postId);
+				failedPostIds.push(result.postId);
 			}
 		}
 

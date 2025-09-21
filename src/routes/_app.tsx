@@ -67,7 +67,9 @@ export const Route = createFileRoute("/_app")({
 
 function RouteComponent() {
 	const { pathname } = useLocation();
-	const { view } = useRouterState({ select: (state) => state.location.state });
+	const view = useRouterState({
+		select: (state) => state.location.state?.view,
+	});
 	const paths = pathname.split("/");
 	const category = paths[1];
 	const postId = paths[2] || "";
@@ -90,13 +92,12 @@ function RouteComponent() {
 		initialPosts: useLoaderData ? loaderData.first10 : [],
 		remainingItems: useLoaderData ? loaderData.remainingItems : [],
 	});
-	// Handle hydration-safe mobile overlay state
 	const [isMobilePostsOpen, setIsMobilePostsOpen] = useState(false);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		setIsMobilePostsOpen(view === "nav");
 	}, [view]);
-	const navigate = useNavigate();
 
 	return (
 		<div

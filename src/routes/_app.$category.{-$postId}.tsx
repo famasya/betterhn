@@ -10,6 +10,7 @@ import { formatRelative } from "date-fns";
 import DOMPurify from "isomorphic-dompurify";
 import Comments from "~/components/comments";
 import SearchButton from "~/components/search-button";
+import SearchSection from "~/components/search-section";
 import { PostDetailSkeleton } from "~/components/skeletons/post-detail-skeleton";
 import { Button } from "~/components/ui/button";
 import { type CommentItem, loadComments } from "~/functions/load-comments";
@@ -18,54 +19,66 @@ import type { FirebasePostDetail } from "../lib/types";
 
 export const Route = createFileRoute("/_app/$category/{-$postId}")({
 	loader: async ({
-		params: { postId },
+		params: { postId, category },
 		context: { queryClient },
 		preload,
 		abortController,
 	}) => {
-		return await queryClient.ensureQueryData({
-			queryKey: ["post", postId],
-			queryFn: async () => {
-				const postIdNum = postId?.split("-").pop();
-				const post = await firebaseFetcher
-					.get(`item/${postIdNum}.json`, {
-						signal: abortController.signal,
-					})
-					.json<FirebasePostDetail>();
+		if (postId) {
+			const content = await queryClient.ensureQueryData({
+				queryKey: ["post", postId],
+				queryFn: async () => {
+					const postIdNum = postId?.split("-").pop();
+					const post = await firebaseFetcher
+						.get(`item/${postIdNum}.json`, {
+							signal: abortController.signal,
+						})
+						.json<FirebasePostDetail>();
 
-				if (!post) {
-					throw notFound();
-				}
+					if (!post) {
+						throw notFound();
+					}
 
-				// if preload, also fetch comments
-				const kids = post.kids || [];
-				const comments: CommentItem[] = [];
-				const remainingCommentSlices: number[][] = [];
-				if (preload && kids.length > 0) {
-					// get first 10 comments
-					const { comments: preloadComments } = await loadComments({
-						data: kids.slice(0, 10),
-						signal: abortController.signal,
-					});
-					queryClient.setQueryData(["comments", postId], comments);
-					comments.push(...preloadComments);
+					// if preload, also fetch comments
+					const kids = post.kids || [];
+					const comments: CommentItem[] = [];
+					const remainingCommentSlices: number[][] = [];
+					if (preload && kids.length > 0) {
+						// get first 10 comments
+						const { comments: preloadComments } = await loadComments({
+							data: kids.slice(0, 10),
+							signal: abortController.signal,
+						});
+						queryClient.setQueryData(["comments", postId], preloadComments);
+						comments.push(...preloadComments);
 
-					// remaining comments
-					remainingCommentSlices.push(kids.slice(10));
-				}
-				return {
-					post,
-					comments,
-					remainingCommentSlices,
-				};
-			},
-		});
+						// remaining comments
+						for (let i = 10; i < kids.length; i += 10) {
+							remainingCommentSlices.push(kids.slice(i, i + 10));
+						}
+					}
+					return {
+						post,
+						comments,
+						remainingCommentSlices,
+					};
+				},
+			});
+			return {
+				content,
+				category,
+			};
+		}
+		return {
+			content: null,
+			category,
+		};
 	},
 	component: RouteComponent,
 	head: ({ loaderData }) => ({
 		meta: [
 			{
-				title: loaderData?.post?.title || "Post",
+				title: loaderData?.content?.post?.title || "Post",
 			},
 		],
 	}),
@@ -73,7 +86,13 @@ export const Route = createFileRoute("/_app/$category/{-$postId}")({
 });
 
 function RouteComponent() {
-	const { post, comments, remainingCommentSlices } = Route.useLoaderData();
+	const { category, content } = Route.useLoaderData();
+
+	if (!content) {
+		return <SearchSection origin={category} />;
+	}
+
+	const { post, comments, remainingCommentSlices } = content;
 
 	return (
 		<div
