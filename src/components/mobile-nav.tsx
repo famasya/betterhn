@@ -28,13 +28,14 @@ export default function MobileNav({
 					>
 						<Button
 							className={cn(
-								"flex cursor-pointer flex-col items-center justify-center",
+								"flex cursor-pointer flex-row items-center justify-center text-xs",
 								`/${category}` === link.href &&
 									"cursor-pointer bg-orange-200 text-orange-700 hover:bg-orange-200 hover:text-orange-700 dark:bg-orange-800 dark:text-orange-200 dark:hover:bg-orange-800/50 dark:hover:text-orange-200"
 							)}
 							variant={"ghost"}
 						>
-							<HugeiconsIcon icon={link.icon} />{" "}
+							<HugeiconsIcon icon={link.icon} size={24} />{" "}
+							{`/${category}` === link.href && link.label}
 							<span className="sr-only">{link.label}</span>
 						</Button>
 					</Link>
