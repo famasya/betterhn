@@ -51,9 +51,7 @@ export default function PostList({
 								category: category || "top",
 								postId: `${lowerCaseTitle(post.title)}-${post.id}`,
 							},
-							search: {
-								view: "post",
-							},
+							state: (prev) => ({ ...prev, view: "post" }),
 							to: "/$category/{-$postId}",
 						});
 					}}
@@ -86,9 +84,7 @@ export default function PostList({
 							postId: `${lowerCaseTitle(post.title)}-${post.id}`,
 						}}
 						rel={post.url ? "noopener noreferrer" : undefined}
-						search={{
-							view: "post",
-						}}
+						state={(prev) => ({ ...prev, view: "post" })}
 						target={post.url ? "_blank" : "_self"}
 						to={post.url ? post.url : "/$category/{-$postId}"}
 					>

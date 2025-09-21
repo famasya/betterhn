@@ -9,12 +9,12 @@ export const loadMorePosts = createServerFn({
 	.validator((slices: number[]) => {
 		return slices;
 	})
-	.handler(async ({ data }) => {
+	.handler(async ({ data, signal }) => {
 		const results = await Promise.allSettled(
 			data.map(async (postId) => {
 				try {
 					const post = await firebaseFetcher
-						.get(`item/${postId}.json`)
+						.get(`item/${postId}.json`, { signal })
 						.json<FirebasePostDetail | null>();
 					return { postId, post };
 				} catch (error) {

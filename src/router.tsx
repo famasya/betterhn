@@ -26,4 +26,8 @@ declare module "@tanstack/react-router" {
 	interface Register {
 		router: ReturnType<typeof createRouter>;
 	}
+	// biome-ignore lint/nursery/useConsistentTypeDefinitions: ignored
+	interface HistoryState {
+		view?: "nav" | "post";
+	}
 }

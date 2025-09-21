@@ -1,7 +1,8 @@
+import type { Options } from "ky";
 import { firebaseFetcher } from "./fetcher";
 import type { FirebasePostDetail } from "./types";
 
-export const fetchPosts = async (type: string) => {
+export const fetchPosts = async (type: string, options?: Options) => {
 	// fetch post lists
 	let url = "topstories.json";
 	switch (type) {
@@ -21,7 +22,7 @@ export const fetchPosts = async (type: string) => {
 			url = "topstories.json";
 			break;
 	}
-	const topStories = await firebaseFetcher.get(url).json<number[]>();
+	const topStories = await firebaseFetcher.get(url, options).json<number[]>();
 
 	// slices every 10 items
 	const slices: number[][] = [];
@@ -34,7 +35,7 @@ export const fetchPosts = async (type: string) => {
 	const getItems = await Promise.allSettled(
 		first10Items.map((postId) =>
 			firebaseFetcher
-				.get(`item/${postId}.json`)
+				.get(`item/${postId}.json`, options)
 				.json<FirebasePostDetail | null>()
 		)
 	);

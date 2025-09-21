@@ -31,7 +31,7 @@ export default function MobileNav({
 							>
 								<Link
 									onClick={() => onNavigate()}
-									search={(prev) => ({ ...prev, view: "nav" })}
+									state={(prev) => ({ ...prev, view: "nav" })}
 									to={link.href}
 								>
 									<HugeiconsIcon icon={link.icon} size={24} />

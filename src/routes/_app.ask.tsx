@@ -1,4 +1,4 @@
-import { createFileRoute, useSearch } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import SearchSection from "~/components/search-section";
 
 export const Route = createFileRoute("/_app/ask")({
@@ -6,6 +6,5 @@ export const Route = createFileRoute("/_app/ask")({
 });
 
 function RouteComponent() {
-	const { search, page } = useSearch({ from: "/_app" });
-	return <SearchSection origin="ask" page={page} search={search} />;
+	return <SearchSection origin="ask" />;
 }

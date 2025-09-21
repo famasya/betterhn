@@ -17,13 +17,20 @@ import { firebaseFetcher } from "../lib/fetcher";
 import type { FirebasePostDetail } from "../lib/types";
 
 export const Route = createFileRoute("/_app/$category/{-$postId}")({
-	loader: async ({ params: { postId }, context: { queryClient }, preload }) => {
+	loader: async ({
+		params: { postId },
+		context: { queryClient },
+		preload,
+		abortController,
+	}) => {
 		return await queryClient.ensureQueryData({
 			queryKey: ["post", postId],
 			queryFn: async () => {
 				const postIdNum = postId?.split("-").pop();
 				const post = await firebaseFetcher
-					.get(`item/${postIdNum}.json`)
+					.get(`item/${postIdNum}.json`, {
+						signal: abortController.signal,
+					})
 					.json<FirebasePostDetail>();
 
 				if (!post) {
@@ -38,6 +45,7 @@ export const Route = createFileRoute("/_app/$category/{-$postId}")({
 					// get first 10 comments
 					const { comments: preloadComments } = await loadComments({
 						data: kids.slice(0, 10),
+						signal: abortController.signal,
 					});
 					queryClient.setQueryData(["comments", postId], comments);
 					comments.push(...preloadComments);

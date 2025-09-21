@@ -5,8 +5,10 @@ import {
 	Outlet,
 	useLocation,
 	useNavigate,
+	useRouterState,
 } from "@tanstack/react-router";
 import { useStore } from "@tanstack/react-store";
+import { useEffect, useState } from "react";
 import z from "zod";
 import MobileNav from "~/components/mobile-nav";
 import NavLinks from "~/components/nav-links";
@@ -21,17 +23,18 @@ import { cn, lowerCaseTitle } from "~/lib/utils";
 const searchSchema = z.object({
 	search: z.string().optional(),
 	page: z.coerce.number().int().optional(),
-	view: z.enum(["nav", "post"]).optional(),
 	tags: z.enum(["story", "show_hn", "ask_hn", "front_page"]).optional(),
 });
 
 export const Route = createFileRoute("/_app")({
-	loader: async ({ location, context: { queryClient } }) => {
+	loader: async ({ location, context: { queryClient }, abortController }) => {
 		const category = location.pathname.split("/")[1] || "top";
 		const postsData = await queryClient.ensureQueryData({
 			queryKey: ["posts", category],
 			queryFn: async () => {
-				const { first10, remainingItems } = await fetchPosts(category);
+				const { first10, remainingItems } = await fetchPosts(category, {
+					signal: abortController.signal,
+				});
 
 				for (const post of first10) {
 					queryClient.setQueryData(
@@ -63,8 +66,8 @@ export const Route = createFileRoute("/_app")({
 });
 
 function RouteComponent() {
-	const { search, page, view } = Route.useSearch();
 	const { pathname } = useLocation();
+	const { view } = useRouterState({ select: (state) => state.location.state });
 	const paths = pathname.split("/");
 	const category = paths[1];
 	const postId = paths[2] || "";
@@ -87,7 +90,12 @@ function RouteComponent() {
 		initialPosts: useLoaderData ? loaderData.first10 : [],
 		remainingItems: useLoaderData ? loaderData.remainingItems : [],
 	});
-	const isMobilePostsOpen = view === "nav";
+	// Handle hydration-safe mobile overlay state
+	const [isMobilePostsOpen, setIsMobilePostsOpen] = useState(false);
+
+	useEffect(() => {
+		setIsMobilePostsOpen(view === "nav");
+	}, [view]);
 	const navigate = useNavigate();
 
 	return (
@@ -113,11 +121,9 @@ function RouteComponent() {
 										onClick={() =>
 											navigate({
 												to: ".",
-												search: {
-													search,
-													page,
-													view: undefined,
-												},
+												search: (prev) => ({
+													...prev,
+												}),
 											})
 										}
 										size={"icon"}
@@ -153,11 +159,9 @@ function RouteComponent() {
 										onPostClick={() =>
 											navigate({
 												to: ".",
-												search: {
-													search,
-													page,
-													view: undefined,
-												},
+												search: (prev) => ({
+													...prev,
+												}),
 											})
 										}
 										posts={posts}
@@ -197,11 +201,9 @@ function RouteComponent() {
 						onPostClick={() =>
 							navigate({
 								to: ".",
-								search: {
-									search,
-									page,
-									view: undefined,
-								},
+								search: (prev) => ({
+									...prev,
+								}),
 							})
 						}
 						posts={posts}
@@ -219,11 +221,9 @@ function RouteComponent() {
 				onNavigate={() =>
 					navigate({
 						to: ".",
-						search: {
-							search,
-							page,
-							view: undefined,
-						},
+						search: (prev) => ({
+							...prev,
+						}),
 					})
 				}
 			/>

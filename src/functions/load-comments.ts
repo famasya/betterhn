@@ -19,11 +19,11 @@ export const loadComments = createServerFn({
 	.validator((commentIds: number[]) => {
 		return commentIds;
 	})
-	.handler(async ({ data }) => {
+	.handler(async ({ data, signal }) => {
 		const comments = await Promise.allSettled(
 			data.map(async (commentId) => {
 				const comment = await firebaseFetcher
-					.get(`item/${commentId}.json`)
+					.get(`item/${commentId}.json`, { signal })
 					.json<CommentItem>();
 				return { commentId, comment, success: true };
 			})
