@@ -11,7 +11,7 @@ import { Button } from "./ui/button";
 
 export default function Recents() {
 	const { pathname } = useLocation();
-	const category = pathname.split("/")[1];
+	const category = pathname.split("/")[1] || "top";
 	const { data: recentPosts, isLoading } = useQuery({
 		queryKey: ["recents"],
 		queryFn: async () => {

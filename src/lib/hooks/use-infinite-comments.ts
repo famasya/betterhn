@@ -49,7 +49,7 @@ export const useInfiniteComments = ({
 			return [];
 		}
 
-		const slices = createSlicesFromIds([...commentIds]);
+		const slices = createSlicesFromIds(commentIds);
 		return failedSlices.length > 0 ? [...failedSlices, ...slices] : slices;
 	}, [remainingCommentSlices, commentIds, failedIds]);
 
@@ -65,8 +65,7 @@ export const useInfiniteComments = ({
 			"infinite-comments",
 			postId,
 			remainingCommentSlices.length,
-			commentIds?.length || 0,
-			failedIds.size,
+			commentIds ? commentIds.join(",") : "",
 		],
 		queryFn: async ({ pageParam }) => {
 			if (pageParam === 0) {

@@ -10,13 +10,12 @@ export const loadMorePosts = createServerFn({
 		return slices;
 	})
 	.handler(async ({ data }) => {
-		const originalSlices = [...data];
 		const results = await Promise.allSettled(
 			data.map(async (postId) => {
 				const post = await firebaseFetcher
 					.get(`item/${postId}.json`)
-					.json<FirebasePostDetail>();
-				return { postId, post, success: true };
+					.json<FirebasePostDetail | null>();
+				return { postId, post };
 			})
 		);
 
@@ -25,20 +24,13 @@ export const loadMorePosts = createServerFn({
 
 		for (const result of results) {
 			if (result.status === "fulfilled") {
-				if (result.value.success && result.value.post) {
+				if (result.value.post) {
 					successfulPosts.push(result.value.post);
 				} else {
 					failedPostIds.push(result.value.postId);
 				}
 			}
 		}
-
-		// Sort posts by original order
-		successfulPosts.sort((a, b) => {
-			const originalIndexA = originalSlices.indexOf(a.id);
-			const originalIndexB = originalSlices.indexOf(b.id);
-			return originalIndexA - originalIndexB;
-		});
 
 		return {
 			posts: successfulPosts,

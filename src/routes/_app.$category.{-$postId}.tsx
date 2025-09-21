@@ -111,7 +111,13 @@ function RouteComponent() {
 							target="_blank"
 						>
 							{/* truncate url */}
-							{new URL(post.url).hostname}
+							{(() => {
+								try {
+									return new URL(post.url).hostname;
+								} catch {
+									return post.url;
+								}
+							})()}
 							<HugeiconsIcon icon={LinkSquare02Icon} size={16} />
 						</a>
 					</div>
