@@ -1,8 +1,12 @@
 import { Loading03Icon, SearchIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
+import {
+	createFileRoute,
+	Outlet,
+	useLocation,
+	useNavigate,
+} from "@tanstack/react-router";
 import { useStore } from "@tanstack/react-store";
-import { useEffect, useState } from "react";
 import MobileNav from "~/components/mobile-nav";
 import NavLinks from "~/components/nav-links";
 import PostList from "~/components/post-list";
@@ -78,12 +82,8 @@ function RouteComponent() {
 		initialPosts: useLoaderData ? loaderData.first10 : [],
 		remainingItems: useLoaderData ? loaderData.remainingItems : [],
 	});
-	const [isMobilePostsOpen, setIsMobilePostsOpen] = useState(view === "nav");
-
-	// Keep mobile posts state in sync with URL search params
-	useEffect(() => {
-		setIsMobilePostsOpen(view === "nav");
-	}, [view]);
+	const isMobilePostsOpen = view === "nav";
+	const navigate = useNavigate();
 
 	return (
 		<div
@@ -105,7 +105,16 @@ function RouteComponent() {
 								</h2>
 								<div className="flex items-center gap-2">
 									<Button
-										onClick={() => setIsMobilePostsOpen(false)}
+										onClick={() =>
+											navigate({
+												to: ".",
+												search: {
+													search,
+													page,
+													view: undefined,
+												},
+											})
+										}
 										size={"icon"}
 										title="Search"
 										type="button"
@@ -136,7 +145,16 @@ function RouteComponent() {
 										fetchNextPage={fetchNextPage}
 										hasNextPage={hasNextPage}
 										isFetchingNextPage={isFetchingNextPage}
-										onPostClick={() => setIsMobilePostsOpen(false)}
+										onPostClick={() =>
+											navigate({
+												to: ".",
+												search: {
+													search,
+													page,
+													view: undefined,
+												},
+											})
+										}
 										posts={posts}
 									/>
 								)}
@@ -176,7 +194,16 @@ function RouteComponent() {
 						fetchNextPage={fetchNextPage}
 						hasNextPage={hasNextPage}
 						isFetchingNextPage={isFetchingNextPage}
-						onPostClick={() => setIsMobilePostsOpen(false)}
+						onPostClick={() =>
+							navigate({
+								to: ".",
+								search: {
+									search,
+									page,
+									view: undefined,
+								},
+							})
+						}
 						posts={posts}
 					/>
 				)}
@@ -189,7 +216,16 @@ function RouteComponent() {
 
 			<MobileNav
 				category={category}
-				setIsMobilePostsOpen={setIsMobilePostsOpen}
+				setIsMobilePostsOpen={() =>
+					navigate({
+						to: ".",
+						search: {
+							search,
+							page,
+							view: undefined,
+						},
+					})
+				}
 			/>
 		</div>
 	);
