@@ -7,7 +7,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { formatRelative } from "date-fns";
-import DOMPurify from "dompurify";
+import DOMPurify from "isomorphic-dompurify";
 import Comments from "~/components/comments";
 import SearchButton from "~/components/search-button";
 import { PostDetailSkeleton } from "~/components/skeletons/post-detail-skeleton";
@@ -128,14 +128,11 @@ function RouteComponent() {
 						<div
 							// biome-ignore lint/security/noDangerouslySetInnerHtml: ignored
 							dangerouslySetInnerHTML={{
-								__html:
-									typeof window !== "undefined"
-										? DOMPurify.sanitize(post.text, {
-												USE_PROFILES: { html: true },
-												ADD_ATTR: ["target"],
-												ALLOWED_ATTR: ["href", "target", "rel"],
-											})
-										: post.text, // Server-side: use original text, sanitize on client
+								__html: DOMPurify.sanitize(post.text, {
+									USE_PROFILES: { html: true },
+									ADD_ATTR: ["target"],
+									ALLOWED_ATTR: ["href", "target", "rel"],
+								}),
 							}}
 							id="post-description"
 						/>

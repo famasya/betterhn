@@ -8,7 +8,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useQuery } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
-import DOMPurify from "dompurify";
+import DOMPurify from "isomorphic-dompurify";
 import { memo, useState } from "react";
 import {
 	type CommentItem as CommentItemType,
@@ -151,17 +151,14 @@ const CommentItem = memo(function CommentItemComponent({
 					className="comment-item"
 					// biome-ignore lint/security/noDangerouslySetInnerHtml: ignored
 					dangerouslySetInnerHTML={{
-						__html:
-							typeof window !== "undefined"
-								? DOMPurify.sanitize(
-										comment.deleted ? "Deleted" : commentText || "",
-										{
-											USE_PROFILES: { html: true },
-											ADD_ATTR: ["target"],
-											ALLOWED_ATTR: ["href", "target", "rel"],
-										}
-									)
-								: commentText || "", // Server-side: use original text, sanitize on client
+						__html: DOMPurify.sanitize(
+							comment.deleted ? "Deleted" : commentText || "",
+							{
+								USE_PROFILES: { html: true },
+								ADD_ATTR: ["target"],
+								ALLOWED_ATTR: ["href", "target", "rel"],
+							}
+						),
 					}}
 				/>
 				<div className="mt-2 flex items-center justify-end gap-1 text-gray-600 text-xs">

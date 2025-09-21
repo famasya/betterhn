@@ -12,10 +12,15 @@ export const loadMorePosts = createServerFn({
 	.handler(async ({ data }) => {
 		const results = await Promise.allSettled(
 			data.map(async (postId) => {
-				const post = await firebaseFetcher
-					.get(`item/${postId}.json`)
-					.json<FirebasePostDetail | null>();
-				return { postId, post };
+				try {
+					const post = await firebaseFetcher
+						.get(`item/${postId}.json`)
+						.json<FirebasePostDetail | null>();
+					return { postId, post };
+				} catch (error) {
+					// reuse in failedIds
+					return { postId, error };
+				}
 			})
 		);
 
@@ -29,6 +34,8 @@ export const loadMorePosts = createServerFn({
 				} else {
 					failedPostIds.push(result.value.postId);
 				}
+			} else {
+				failedPostIds.push(result.reason.postId);
 			}
 		}
 
