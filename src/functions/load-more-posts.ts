@@ -10,6 +10,7 @@ export const loadMorePosts = createServerFn({
 		return slices;
 	})
 	.handler(async ({ data }) => {
+		const originalSlices = [...data];
 		const results = await Promise.allSettled(
 			data.map(async (postId) => {
 				const post = await firebaseFetcher
@@ -31,6 +32,13 @@ export const loadMorePosts = createServerFn({
 				}
 			}
 		}
+
+		// Sort posts by original order
+		successfulPosts.sort((a, b) => {
+			const originalIndexA = originalSlices.indexOf(a.id);
+			const originalIndexB = originalSlices.indexOf(b.id);
+			return originalIndexA - originalIndexB;
+		});
 
 		return {
 			posts: successfulPosts,

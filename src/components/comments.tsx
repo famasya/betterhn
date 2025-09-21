@@ -23,6 +23,7 @@ type CommentsProps = {
 	initialComments: CommentItemType[];
 	remainingCommentSlices: number[][];
 	totalComments: number;
+	commentIds?: number[];
 };
 
 const borderColorLevel = (level: number) => {
@@ -68,7 +69,12 @@ function CommentReplies({
 
 	if (isLoading) {
 		return (
-			<div className={cn("ml-4 border-l-2 py-2 pl-4", borderColorLevel(depth))}>
+			<div
+				className={cn(
+					"ml-4 border-l-1 border-dashed py-2 pl-4",
+					borderColorLevel(depth)
+				)}
+			>
 				<div className="flex items-center gap-2 text-gray-500 text-sm">
 					<HugeiconsIcon
 						className="animate-spin"
@@ -92,7 +98,12 @@ function CommentReplies({
 	const comments = data?.comments || [];
 
 	return (
-		<div className={cn("ml-4 border-l-2 pl-4", borderColorLevel(depth))}>
+		<div
+			className={cn(
+				"ml-4 border-l-1 border-dashed pl-4",
+				borderColorLevel(depth)
+			)}
+		>
 			{comments.map((comment) => (
 				<CommentItem comment={comment} depth={depth + 1} key={comment.id} />
 			))}
@@ -217,6 +228,7 @@ export default function Comments({
 	initialComments,
 	remainingCommentSlices,
 	totalComments,
+	commentIds,
 }: CommentsProps) {
 	const {
 		comments,
@@ -230,6 +242,7 @@ export default function Comments({
 		initialComments,
 		remainingCommentSlices,
 		postId,
+		commentIds,
 	});
 
 	if (error && comments.length === 0) {
