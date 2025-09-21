@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
-import { QueryClientProvider } from "@tanstack/react-query";
+import { type QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
 	createRootRouteWithContext,
 	HeadContent,
@@ -24,6 +24,7 @@ import { seo } from "~/utils/seo";
 
 type RouterContext = {
 	buildID: string;
+	queryClient: QueryClient;
 };
 export const Route = createRootRouteWithContext<RouterContext>()({
 	head: () => ({

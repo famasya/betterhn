@@ -15,7 +15,6 @@ import SettingsDialog from "~/components/settings";
 import { Button } from "~/components/ui/button";
 import { fetchPosts } from "~/lib/fetch-posts";
 import { useInfinitePosts } from "~/lib/hooks/use-infinite-posts";
-import { createQueryClient } from "~/lib/query-client";
 import { userSettingsStore } from "~/lib/user-settings";
 import { cn, lowerCaseTitle } from "~/lib/utils";
 
@@ -27,9 +26,8 @@ const searchSchema = z.object({
 });
 
 export const Route = createFileRoute("/_app")({
-	loader: async ({ location }) => {
+	loader: async ({ location, context: { queryClient } }) => {
 		const category = location.pathname.split("/")[1] || "top";
-		const queryClient = createQueryClient();
 		const postsData = await queryClient.ensureQueryData({
 			queryKey: ["posts", category],
 			queryFn: async () => {

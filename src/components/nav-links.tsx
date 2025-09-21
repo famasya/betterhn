@@ -37,9 +37,9 @@ export default function NavLinks({ category, postId }: Params) {
 						<TooltipTrigger asChild>
 							<Link
 								className={cn(
-									"flex items-center gap-3 rounded-lg p-2 text-gray-700 transition-colors hover:bg-zinc-100 dark:text-gray-200 dark:hover:bg-orange-800/50 dark:hover:bg-zinc-800",
+									"flex items-center gap-3 rounded-lg p-2 text-gray-700 transition-colors hover:bg-zinc-100 dark:text-gray-200 dark:hover:bg-orange-800/50",
 									`/${category}` === link.href &&
-										"bg-orange-200 text-orange-700 hover:bg-orange-200 dark:bg-orange-800/30 dark:text-orange-300 dark:hover:bg-orange-800/50"
+										"bg-orange-200 text-orange-700 hover:bg-orange-200 dark:bg-orange-800 dark:text-orange-300 dark:hover:bg-orange-800"
 								)}
 								params={{
 									category: itemCategory === "search" ? category : itemCategory,

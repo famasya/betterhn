@@ -1,6 +1,7 @@
 import { createRouter as createTanStackRouter } from "@tanstack/react-router";
 import { DefaultCatchBoundary } from "./components/default-catch-boundary";
 import { NotFound } from "./components/not-found";
+import { createQueryClient } from "./lib/query-client";
 import { routeTree } from "./routeTree.gen";
 
 export function createRouter() {
@@ -12,6 +13,7 @@ export function createRouter() {
 		scrollRestoration: true,
 		context: {
 			buildID: "-",
+			queryClient: createQueryClient(),
 		},
 		scrollToTopSelectors: ["#post-content"],
 	});

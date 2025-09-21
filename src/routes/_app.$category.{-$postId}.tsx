@@ -12,14 +12,13 @@ import Comments from "~/components/comments";
 import SearchButton from "~/components/search-button";
 import { PostDetailSkeleton } from "~/components/skeletons/post-detail-skeleton";
 import { Button } from "~/components/ui/button";
-import { createQueryClient } from "~/lib/query-client";
+import { type CommentItem, loadComments } from "~/functions/load-comments";
 import { firebaseFetcher } from "../lib/fetcher";
 import type { FirebasePostDetail } from "../lib/types";
 
 export const Route = createFileRoute("/_app/$category/{-$postId}")({
-	loader: ({ params: { postId } }) => {
-		const queryClient = createQueryClient();
-		return queryClient.ensureQueryData({
+	loader: async ({ params: { postId }, context: { queryClient }, preload }) => {
+		return await queryClient.ensureQueryData({
 			queryKey: ["post", postId],
 			queryFn: async () => {
 				const postIdNum = postId?.split("-").pop();
@@ -31,8 +30,25 @@ export const Route = createFileRoute("/_app/$category/{-$postId}")({
 					throw notFound();
 				}
 
+				// if preload, also fetch comments
+				const kids = post.kids || [];
+				const comments: CommentItem[] = [];
+				const remainingCommentSlices: number[][] = [];
+				if (preload && kids.length > 0) {
+					// get first 10 comments
+					const { comments: preloadComments } = await loadComments({
+						data: kids.slice(0, 10),
+					});
+					queryClient.setQueryData(["comments", postId], comments);
+					comments.push(...preloadComments);
+
+					// remaining comments
+					remainingCommentSlices.push(kids.slice(10));
+				}
 				return {
 					post,
+					comments,
+					remainingCommentSlices,
 				};
 			},
 		});
@@ -49,7 +65,7 @@ export const Route = createFileRoute("/_app/$category/{-$postId}")({
 });
 
 function RouteComponent() {
-	const { post } = Route.useLoaderData();
+	const { post, comments, remainingCommentSlices } = Route.useLoaderData();
 
 	return (
 		<div
@@ -143,9 +159,9 @@ function RouteComponent() {
 			{/* Comments Section */}
 			<Comments
 				commentIds={post.kids}
-				initialComments={[]}
+				initialComments={comments}
 				postId={post.id}
-				remainingCommentSlices={[]}
+				remainingCommentSlices={remainingCommentSlices}
 				totalComments={post.descendants}
 			/>
 		</div>
