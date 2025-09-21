@@ -15,11 +15,11 @@ import {
 import { cn } from "~/lib/utils";
 
 export const navLinks = [
-	{ label: "Front Page", href: "/top", icon: FireIcon },
-	{ label: "Best", href: "/best", icon: StarIcon },
-	{ label: "New", href: "/new", icon: TargetIcon },
-	{ label: "Ask", href: "/ask", icon: QuestionIcon },
-	{ label: "Show", href: "/show", icon: RocketIcon },
+	{ label: "Front Page", href: "/top", icon: FireIcon, showMobile: true },
+	{ label: "Best", href: "/best", icon: StarIcon, showMobile: true },
+	{ label: "New", href: "/new", icon: TargetIcon, showMobile: true },
+	{ label: "Ask", href: "/ask", icon: QuestionIcon, showMobile: true },
+	{ label: "Show", href: "/show", icon: RocketIcon, showMobile: true },
 ];
 
 type Params = {
