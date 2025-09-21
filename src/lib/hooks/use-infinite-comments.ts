@@ -19,11 +19,15 @@ const createSlicesFromIds = (ids: number[]): number[][] => {
 };
 
 // Helper function to get failed ID slices
-const getFailedSlices = (failedIds: Set<number>): number[][] => {
+const getFailedSlices = (
+	failedIds: Set<number>,
+	allowed?: ReadonlySet<number>
+): number[][] => {
 	if (failedIds.size === 0) {
 		return [];
 	}
-	return createSlicesFromIds(Array.from(failedIds));
+	const ids = Array.from(failedIds).filter((id) => !allowed || allowed.has(id));
+	return createSlicesFromIds(ids);
 };
 
 export const useInfiniteComments = ({
@@ -36,7 +40,8 @@ export const useInfiniteComments = ({
 
 	// Memoized slices with failed IDs re-added to the front
 	const enhancedSlices = useMemo(() => {
-		const failedSlices = getFailedSlices(failedIds);
+		const allowed = new Set(commentIds ?? remainingCommentSlices.flat());
+		const failedSlices = getFailedSlices(failedIds, allowed);
 
 		if (remainingCommentSlices.length > 0) {
 			if (failedIds.size === 0) {
@@ -71,7 +76,7 @@ export const useInfiniteComments = ({
 			if (pageParam === 0) {
 				// If we have initialComments, return them
 				if (initialComments.length > 0) {
-					return { comments: initialComments, sliceIndex: 0, failedIds: [] };
+					return { comments: initialComments, sliceIndex: -1, failedIds: [] };
 				}
 				// If no initialComments but we have commentIds, fetch the first slice
 				if (commentIds && commentIds.length > 0 && enhancedSlices.length > 0) {
@@ -141,8 +146,7 @@ export const useInfiniteComments = ({
 
 	const allComments =
 		data?.pages.flatMap((page) => page.comments) || initialComments;
-	const totalFailedIds =
-		data?.pages.reduce((acc, page) => acc + page.failedIds.length, 0) || 0;
+	const totalFailedIds = failedIds.size;
 
 	return {
 		comments: allComments,
