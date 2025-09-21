@@ -60,10 +60,12 @@ export const fetchPosts = async (type: string) => {
 		remainingItems.push(failedItems);
 	}
 
-	return {
+	const result = {
 		first10: successItems,
 		remainingItems,
 	};
+
+	return result;
 };
 
 export const fetchPost = async (
