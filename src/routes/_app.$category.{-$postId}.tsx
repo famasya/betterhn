@@ -12,7 +12,6 @@ import Comments from "~/components/comments";
 import SearchButton from "~/components/search-button";
 import { PostDetailSkeleton } from "~/components/skeletons/post-detail-skeleton";
 import { Button } from "~/components/ui/button";
-import { type CommentItem, loadComments } from "~/functions/load-comments";
 import { createQueryClient } from "~/lib/query-client";
 import { firebaseFetcher } from "../lib/fetcher";
 import type { FirebasePostDetail } from "../lib/types";
@@ -28,40 +27,12 @@ export const Route = createFileRoute("/_app/$category/{-$postId}")({
 					.get(`item/${postIdNum}.json`)
 					.json<FirebasePostDetail>();
 
-				let initialComments: CommentItem[] = [];
-				const remainingCommentSlices: number[][] = [];
-
 				if (!post) {
 					throw notFound();
 				}
 
-				if (post.kids && post.kids.length > 0) {
-					// Load only first 10 comments server-side for SEO and initial load performance
-					const initialCommentIds = post.kids.slice(0, 10);
-					const remainingCommentIds = post.kids.slice(10);
-
-					// Create slices of 10 for remaining comments
-					for (let i = 0; i < remainingCommentIds.length; i += 10) {
-						remainingCommentSlices.push(remainingCommentIds.slice(i, i + 10));
-					}
-
-					// Load initial comments server-side
-					if (initialCommentIds.length > 0) {
-						try {
-							const commentsResult = await loadComments({
-								data: initialCommentIds,
-							});
-							initialComments = commentsResult.comments;
-						} catch (error) {
-							console.warn("Failed to load initial comments:", error);
-						}
-					}
-				}
-
 				return {
 					post,
-					initialComments,
-					remainingCommentSlices,
 				};
 			},
 		});
@@ -78,8 +49,7 @@ export const Route = createFileRoute("/_app/$category/{-$postId}")({
 });
 
 function RouteComponent() {
-	const { post, initialComments, remainingCommentSlices } =
-		Route.useLoaderData();
+	const { post } = Route.useLoaderData();
 
 	return (
 		<div
@@ -141,7 +111,13 @@ function RouteComponent() {
 							target="_blank"
 						>
 							{/* truncate url */}
-							{post.url.length > 50 ? `${post.url.slice(0, 50)}...` : post.url}
+							{(() => {
+								try {
+									return new URL(post.url).hostname;
+								} catch {
+									return post.url;
+								}
+							})()}
 							<HugeiconsIcon icon={LinkSquare02Icon} size={16} />
 						</a>
 					</div>
@@ -169,9 +145,10 @@ function RouteComponent() {
 
 			{/* Comments Section */}
 			<Comments
-				initialComments={initialComments}
+				commentIds={post.kids}
+				initialComments={[]}
 				postId={post.id}
-				remainingCommentSlices={remainingCommentSlices}
+				remainingCommentSlices={[]}
 				totalComments={post.descendants}
 			/>
 		</div>

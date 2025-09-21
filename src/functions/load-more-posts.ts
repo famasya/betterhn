@@ -14,8 +14,8 @@ export const loadMorePosts = createServerFn({
 			data.map(async (postId) => {
 				const post = await firebaseFetcher
 					.get(`item/${postId}.json`)
-					.json<FirebasePostDetail>();
-				return { postId, post, success: true };
+					.json<FirebasePostDetail | null>();
+				return { postId, post };
 			})
 		);
 
@@ -24,7 +24,7 @@ export const loadMorePosts = createServerFn({
 
 		for (const result of results) {
 			if (result.status === "fulfilled") {
-				if (result.value.success && result.value.post) {
+				if (result.value.post) {
 					successfulPosts.push(result.value.post);
 				} else {
 					failedPostIds.push(result.value.postId);

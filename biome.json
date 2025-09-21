@@ -11,7 +11,8 @@
       "!src/routeTree.gen.ts",
       "!src/**/*.css",
       "!src/components/ui/**/*",
-      "!.nitro"
+      "!.nitro",
+      "!worker-configuration.d.ts"
     ],
     "ignoreUnknown": true
   },

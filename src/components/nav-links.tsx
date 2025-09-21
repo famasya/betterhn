@@ -45,6 +45,7 @@ export default function NavLinks({ category, postId }: Params) {
 									category: itemCategory === "search" ? category : itemCategory,
 									postId: itemCategory === "search" ? undefined : postId,
 								}}
+								resetScroll={false}
 								search={{ search, page, tags, view: "nav" }}
 								to={postId.length > 0 ? "/$category/{-$postId}" : link.href}
 							>

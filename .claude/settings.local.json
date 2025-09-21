@@ -20,5 +20,5 @@
     "ask": []
   },
   "enableAllProjectMcpServers": true,
-  "enabledMcpjsonServers": ["browsermcp"]
+  "enabledMcpjsonServers": ["browsermcp", "coderabbitai"]
 }

@@ -11,7 +11,7 @@ export function createRouter() {
 		defaultNotFoundComponent: () => <NotFound />,
 		scrollRestoration: true,
 		context: {
-			buildID: process.env.WORKERS_CI_COMMIT_SHA || "-",
+			buildID: "-",
 		},
 		scrollToTopSelectors: ["#post-content"],
 	});

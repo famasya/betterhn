@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "@tanstack/react-router";
+import { Link, useLocation } from "@tanstack/react-router";
 import { formatDistanceToNow } from "date-fns";
 import { algoliaFetcher } from "~/lib/fetcher";
 import type {
@@ -10,6 +10,8 @@ import { lowerCaseTitle } from "~/lib/utils";
 import { Button } from "./ui/button";
 
 export default function Recents() {
+	const { pathname } = useLocation();
+	const category = pathname.split("/")[1] || "top";
 	const { data: recentPosts, isLoading } = useQuery({
 		queryKey: ["recents"],
 		queryFn: async () => {
@@ -36,7 +38,7 @@ export default function Recents() {
 				{isLoading ? (
 					<RecentsSkeleton />
 				) : (
-					<RecentsList posts={recentPosts?.hits || []} />
+					<RecentsList category={category} posts={recentPosts?.hits || []} />
 				)}
 			</div>
 
@@ -45,7 +47,10 @@ export default function Recents() {
 				{activePostsLoading ? (
 					<RecentsSkeleton />
 				) : (
-					<RecentCommentsList comments={activePosts?.hits || []} />
+					<RecentCommentsList
+						category={category}
+						comments={activePosts?.hits || []}
+					/>
 				)}
 			</div>
 		</div>
@@ -61,7 +66,13 @@ function RecentsSkeleton() {
 	));
 }
 
-function RecentsList({ posts }: { posts: AlgoliaPostApiResponse["hits"] }) {
+function RecentsList({
+	posts,
+	category,
+}: {
+	posts: AlgoliaPostApiResponse["hits"];
+	category: string;
+}) {
 	return posts.slice(0, 6).map((post) => (
 		<div
 			className="mt-2 flex w-full flex-col rounded-lg border border-zinc-200 bg-zinc-100 p-2 text-sm dark:border-gray-800 dark:bg-white/10 dark:text-gray-200"
@@ -87,8 +98,8 @@ function RecentsList({ posts }: { posts: AlgoliaPostApiResponse["hits"] }) {
 				</p>
 				<Link
 					params={{
-						category: "new",
 						postId: `${lowerCaseTitle(post.title)}-${post.objectID}`,
+						category,
 					}}
 					search={{ view: "post" }}
 					to="/$category/{-$postId}"
@@ -104,8 +115,10 @@ function RecentsList({ posts }: { posts: AlgoliaPostApiResponse["hits"] }) {
 
 function RecentCommentsList({
 	comments,
+	category,
 }: {
 	comments: AlgoliaCommentApiResponse["hits"];
+	category: string;
 }) {
 	return comments.slice(0, 6).map((comment) => (
 		<div
@@ -134,8 +147,8 @@ function RecentCommentsList({
 				</p>
 				<Link
 					params={{
-						category: "new",
 						postId: `${lowerCaseTitle(comment.story_title || "")}-${comment.story_id}`,
+						category,
 					}}
 					search={{ view: "post" }}
 					to="/$category/{-$postId}"

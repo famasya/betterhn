@@ -41,7 +41,7 @@ export const loadComments = createServerFn({
 			}
 		}
 		return {
-			comments: successfulComments.sort((a, b) => b.id - a.id),
+			comments: successfulComments,
 			failedIds: failedCommentIds,
 		};
 	});
