@@ -46,6 +46,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 			{ rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "" },
 			{ rel: "preconnect", href: "https://hacker-news.firebaseio.com" },
 			{ rel: "preconnect", href: "https://hn.algolia.com" },
+			{ rel: "preconnect", href: "https://news.ycombinator.com" },
 			{
 				rel: "preload",
 				href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap",
@@ -81,19 +82,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 			<head>
 				{/** biome-ignore lint/security/noDangerouslySetInnerHtml: theme script */}
 				<script dangerouslySetInnerHTML={{ __html: themeScript }} />
-				<script
-					// biome-ignore lint/security/noDangerouslySetInnerHtml: Performance optimization for font loading
-					dangerouslySetInnerHTML={{
-						__html: `
-						(function() {
-							var link = document.createElement('link');
-							link.rel = 'stylesheet';
-							link.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap';
-							document.head.appendChild(link);
-						})();
-						`,
-					}}
-				/>
 				<noscript>
 					<link
 						href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"

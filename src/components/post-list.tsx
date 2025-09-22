@@ -7,6 +7,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import type { SyntheticEvent } from "react";
+import { useIntersectionObserver } from "~/lib/hooks/use-intersection-observer";
 import type { FirebasePostDetail } from "~/lib/types";
 import { cn, lowerCaseTitle } from "~/lib/utils";
 import { Button } from "./ui/button";
@@ -35,6 +36,17 @@ export default function PostList({
 		console.error(error);
 	}
 	const navigate = useNavigate();
+
+	// Auto-load more posts when the trigger element comes into view
+	const triggerRef = useIntersectionObserver({
+		onIntersect: () => {
+			if (hasNextPage && !isFetchingNextPage && fetchNextPage) {
+				fetchNextPage();
+			}
+		},
+		threshold: 0.1,
+		rootMargin: "200px",
+	});
 	return (
 		<>
 			{posts.map((post) => (
@@ -42,6 +54,8 @@ export default function PostList({
 				<div
 					className={cn(
 						"w-full border-gray-200 border-b p-3 text-left text-sm hover:bg-zinc-100 dark:border-gray-700 dark:hover:bg-zinc-800",
+						"transform-gpu transition-colors duration-150 will-change-auto",
+						"contain-layout contain-paint contain-style",
 						activePostId === post.id &&
 							"border-orange-700/70 bg-orange-50 hover:bg-orange-50 dark:border-orange-700/70 dark:bg-orange-50/10 dark:hover:bg-orange-50/10"
 					)}
@@ -123,6 +137,8 @@ export default function PostList({
 
 			{hasNextPage && (
 				<div className="p-3">
+					{/* Intersection trigger - auto-loads when visible */}
+					<div className="h-1" ref={triggerRef} />
 					<Button
 						className="w-full"
 						disabled={isFetchingNextPage}

@@ -27,6 +27,42 @@ export default defineConfig({
 			},
 		},
 		chunkSizeWarningLimit: 1000,
+		rollupOptions: {
+			output: {
+				manualChunks: (id) => {
+					// Node modules chunking
+					if (id.includes("node_modules")) {
+						// Group React-related packages
+						if (id.includes("react") && !id.includes("@tanstack")) {
+							return "react-vendor";
+						}
+						// Group TanStack packages
+						if (id.includes("@tanstack")) {
+							return "tanstack-vendor";
+						}
+						// Group Radix UI packages
+						if (id.includes("@radix-ui")) {
+							return "radix-vendor";
+						}
+						// Group icon packages
+						if (id.includes("@hugeicons")) {
+							return "icons-vendor";
+						}
+						// Group utility packages
+						if (
+							id.includes("clsx") ||
+							id.includes("tailwind-merge") ||
+							id.includes("class-variance-authority") ||
+							id.includes("date-fns") ||
+							id.includes("ky") ||
+							id.includes("zod")
+						) {
+							return "utils-vendor";
+						}
+					}
+				},
+			},
+		},
 	},
 	optimizeDeps: {
 		include: [

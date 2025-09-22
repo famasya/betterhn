@@ -6,6 +6,10 @@
 @layer base {
 	html {
 		color-scheme: light dark;
+		/* Performance optimizations */
+		text-rendering: optimizeSpeed;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
 	}
 
 	* {
@@ -18,10 +22,36 @@
 		@apply text-gray-900;
 		@apply dark:bg-black;
 		@apply dark:text-white;
+		/* Prevent layout shifts */
+		overflow-anchor: auto;
 	}
 
 	.using-mouse * {
 		outline: none !important;
+	}
+
+	/* Performance optimizations for scrolling */
+	.scroll-container {
+		transform: translateZ(0);
+		-webkit-overflow-scrolling: touch;
+		will-change: scroll-position;
+	}
+
+	/* Optimize animations */
+	.optimized-animation {
+		transform: translateZ(0);
+		will-change: transform, opacity;
+	}
+
+	/* Contain layout for better performance */
+	.post-item {
+		contain: layout style paint;
+	}
+
+	/* Critical font display */
+	@font-face {
+		font-family: 'Inter';
+		font-display: swap;
 	}
 }
 

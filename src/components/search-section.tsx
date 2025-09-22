@@ -7,12 +7,14 @@ import {
 	useSearch as useSearchRouter,
 } from "@tanstack/react-router";
 import { formatRelative } from "date-fns";
-import { memo, useCallback, useState } from "react";
+import { lazy, memo, Suspense, useCallback, useState } from "react";
 import { useSearch } from "~/lib/hooks/use-search";
 import type { AlgoliaPostApiResponse } from "~/lib/types";
 import { cn, lowerCaseTitle } from "~/lib/utils";
 import Recents from "./recents";
-import SettingsDialog from "./settings";
+
+const SettingsDialog = lazy(() => import("./settings"));
+
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
@@ -51,7 +53,9 @@ export default function SearchSection({ origin }: SearchSectionProps) {
 				<div className="rounded bg-gradient-to-br from-orange-700 to-orange-800 px-2 py-1 font-medium text-white">
 					hnfd
 				</div>
-				<SettingsDialog />
+				<Suspense fallback={<div className="h-9 w-9" />}>
+					<SettingsDialog />
+				</Suspense>
 			</div>
 			<div className="flex flex-col items-center pt-2">
 				<h1 className="mb-2 flex w-full items-center justify-center gap-2 text-center text-xl">

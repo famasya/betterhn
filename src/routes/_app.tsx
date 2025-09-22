@@ -1,4 +1,4 @@
-import { Loading03Icon, SearchIcon } from "@hugeicons/core-free-icons";
+import { SearchIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
 	createFileRoute,
@@ -8,12 +8,15 @@ import {
 	useRouterState,
 } from "@tanstack/react-router";
 import { useStore } from "@tanstack/react-store";
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { z } from "zod";
 import MobileNav from "~/components/mobile-nav";
 import NavLinks from "~/components/nav-links";
 import PostList from "~/components/post-list";
-import SettingsDialog from "~/components/settings";
+import { PostListSkeleton } from "~/components/skeleton";
+
+const SettingsDialog = lazy(() => import("~/components/settings"));
+
 import { Button } from "~/components/ui/button";
 import { fetchPosts } from "~/lib/fetch-posts";
 import { useInfinitePosts } from "~/lib/hooks/use-infinite-posts";
@@ -134,21 +137,14 @@ function RouteComponent() {
 									>
 										<HugeiconsIcon icon={SearchIcon} size={16} />
 									</Button>
-									<SettingsDialog />
+									<Suspense fallback={<div className="h-9 w-9" />}>
+										<SettingsDialog />
+									</Suspense>
 								</div>
 							</div>
 							<div className="flex-1 overflow-y-auto">
 								{isLoading ? (
-									<div className="flex items-center justify-center p-4">
-										<div className="flex items-center gap-2 text-gray-500 text-sm">
-											<HugeiconsIcon
-												className="animate-spin"
-												icon={Loading03Icon}
-												size={16}
-											/>
-											Loading posts...
-										</div>
-									</div>
+									<PostListSkeleton />
 								) : (
 									<PostList
 										activePostId={Number(activePostId)}
@@ -181,16 +177,7 @@ function RouteComponent() {
 
 			<div className="hidden w-1/4 min-w-[300px] overflow-y-auto border-gray-200 border-r bg-white md:block dark:border-zinc-800 dark:bg-zinc-900">
 				{isLoading ? (
-					<div className="flex items-center justify-center p-4">
-						<div className="flex items-center gap-2 text-gray-500 text-sm">
-							<HugeiconsIcon
-								className="animate-spin"
-								icon={Loading03Icon}
-								size={16}
-							/>
-							Loading posts...
-						</div>
-					</div>
+					<PostListSkeleton />
 				) : (
 					<PostList
 						activePostId={Number(activePostId)}

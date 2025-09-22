@@ -14,7 +14,8 @@
       "mcp__coderabbitai__get_coderabbit_reviews",
       "mcp__coderabbitai__get_review_comments",
       "mcp__browsermcp__browser_press_key",
-      "mcp__coderabbitai__get_review_details"
+      "mcp__coderabbitai__get_review_details",
+      "WebFetch(domain:pagespeed.web.dev)"
     ],
     "deny": [],
     "ask": []
