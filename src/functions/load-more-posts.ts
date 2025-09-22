@@ -2,7 +2,6 @@ import { createServerFn } from "@tanstack/react-start";
 import { getBindings } from "~/lib/bindings";
 import { firebaseFetcher } from "~/lib/fetcher";
 import type { FirebasePostDetail } from "~/lib/types";
-import { logMiddleware } from "~/utils/logging-middleware";
 
 const CACHE_TTL = 300; // 5 minutes in seconds
 
@@ -13,7 +12,6 @@ export const loadMorePosts = createServerFn({
 	.validator((slices: number[]) => {
 		return slices;
 	})
-	.middleware([logMiddleware])
 	.handler(async ({ data, signal }) => {
 		const { KV } = getBindings();
 

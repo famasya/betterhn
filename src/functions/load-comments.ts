@@ -1,6 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
 import { firebaseFetcher } from "~/lib/fetcher";
-import { logMiddleware } from "~/utils/logging-middleware";
 
 export type CommentItem = {
 	by: string;
@@ -17,7 +16,6 @@ export const loadComments = createServerFn({
 	method: "GET",
 	response: "data",
 })
-	.middleware([logMiddleware])
 	.validator((commentIds: number[]) => {
 		return commentIds;
 	})

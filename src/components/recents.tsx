@@ -103,7 +103,7 @@ function RecentsList({
 						category,
 					}}
 					state={(prev) => ({ ...prev, view: "post" })}
-					to="/$category/{-$postId}"
+					to="/$category/$postId"
 				>
 					<Button className="mt-2 w-full" size="sm" variant="outline">
 						View Post
@@ -152,7 +152,7 @@ function RecentCommentsList({
 						category,
 					}}
 					state={(prev) => ({ ...prev, view: "post" })}
-					to="/$category/{-$postId}"
+					to="/$category/$postId"
 				>
 					<Button className="mt-2 w-full" size="sm" variant="outline">
 						View Post
