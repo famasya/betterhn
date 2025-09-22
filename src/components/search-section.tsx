@@ -59,7 +59,7 @@ export default function SearchSection({ origin }: SearchSectionProps) {
 				</h1>
 				<p className="text-gray-500 text-sm">Powered by Algolia</p>
 			</div>
-			<div className="mx-auto w-full p-6 md:px-16">
+			<div className="mx-auto w-full max-w-4xl p-6 md:px-16">
 				<Input
 					className="rounded-full border border-black/10 shadow-lg dark:border-zinc-800"
 					onChange={(e) => {

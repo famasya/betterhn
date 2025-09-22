@@ -177,7 +177,11 @@ function RouteComponent() {
 
 			{/* Desktop Posts sidebar */}
 			<div className="hidden border-gray-200 border-r bg-white md:block dark:border-zinc-800 dark:bg-zinc-900">
-				<NavLinks category={category} postId={postId} />
+				<NavLinks
+					category={category}
+					isLoadingCategory={isFetching ? category : null}
+					postId={postId}
+				/>
 			</div>
 
 			<div className="hidden w-1/4 min-w-[300px] overflow-y-auto border-gray-200 border-r bg-white md:block dark:border-zinc-800 dark:bg-zinc-900">

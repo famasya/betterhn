@@ -28,6 +28,8 @@ export const Route = createFileRoute("/_app/$category/{-$postId}")({
 		if (postId) {
 			const content = await queryClient.ensureQueryData({
 				queryKey: ["post", postId],
+				staleTime: 5 * 60 * 1000, // 5 minutes
+				gcTime: 10 * 60 * 1000, // 10 minutes
 				queryFn: async () => {
 					const postIdNum = Number(postId?.split("-").pop());
 					if (!postIdNum) {

@@ -1,5 +1,6 @@
 import {
 	FireIcon,
+	Loading03Icon,
 	QuestionIcon,
 	RocketIcon,
 	StarIcon,
@@ -25,8 +26,13 @@ export const navLinks = [
 type Params = {
 	category: string;
 	postId: string;
+	isLoadingCategory: string | null;
 };
-export default function NavLinks({ category, postId }: Params) {
+export default function NavLinks({
+	category,
+	postId,
+	isLoadingCategory,
+}: Params) {
 	return (
 		<nav className="space-y-2 p-2">
 			{navLinks.map((link) => {
@@ -48,7 +54,14 @@ export default function NavLinks({ category, postId }: Params) {
 								state={(prev) => ({ ...prev, view: "nav" })}
 								to={postId.length > 0 ? "/$category/{-$postId}" : link.href}
 							>
-								<HugeiconsIcon className={cn("h-5 w-5")} icon={link.icon} />
+								{`/${isLoadingCategory}` === link.href ? (
+									<HugeiconsIcon
+										className="h-5 w-5 animate-spin"
+										icon={Loading03Icon}
+									/>
+								) : (
+									<HugeiconsIcon className={cn("h-5 w-5")} icon={link.icon} />
+								)}
 							</Link>
 						</TooltipTrigger>
 						<TooltipContent side="right">
