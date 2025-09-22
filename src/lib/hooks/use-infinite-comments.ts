@@ -151,7 +151,7 @@ export const useInfiniteComments = ({
 	return {
 		comments: allComments,
 		fetchNextPage,
-		hasNextPage: !!hasNextPage,
+		hasNextPage: !!hasNextPage && remainingCommentSlices.length > 0,
 		isFetchingNextPage,
 		isLoading,
 		error,

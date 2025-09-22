@@ -9,12 +9,13 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { formatRelative } from "date-fns";
 import DOMPurify from "isomorphic-dompurify";
 import Comments from "~/components/comments";
+import { NotFound } from "~/components/not-found";
 import SearchButton from "~/components/search-button";
 import SearchSection from "~/components/search-section";
 import { PostDetailSkeleton } from "~/components/skeletons/post-detail-skeleton";
 import { Button } from "~/components/ui/button";
 import { type CommentItem, loadComments } from "~/functions/load-comments";
-import { firebaseFetcher } from "../lib/fetcher";
+import { fetchPost } from "../lib/fetch-posts";
 import type { FirebasePostDetail } from "../lib/types";
 
 export const Route = createFileRoute("/_app/$category/{-$postId}")({
@@ -28,16 +29,12 @@ export const Route = createFileRoute("/_app/$category/{-$postId}")({
 			const content = await queryClient.ensureQueryData({
 				queryKey: ["post", postId],
 				queryFn: async () => {
-					const postIdNum = postId?.split("-").pop();
-					const post = await firebaseFetcher
-						.get(`item/${postIdNum}.json`, {
-							signal: abortController.signal,
-						})
-						.json<FirebasePostDetail>();
-
-					if (!post) {
+					const postIdNum = Number(postId?.split("-").pop());
+					if (!postIdNum) {
 						throw notFound();
 					}
+
+					const post = await fetchPost(postIdNum);
 
 					// if preload, also fetch comments
 					const kids = post.kids || [];
@@ -82,6 +79,9 @@ export const Route = createFileRoute("/_app/$category/{-$postId}")({
 			},
 		],
 	}),
+	notFoundComponent: () => (
+		<NotFound>That post has been removed or does not exist.</NotFound>
+	),
 	pendingComponent: () => <PostDetailSkeleton />,
 });
 

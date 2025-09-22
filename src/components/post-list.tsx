@@ -28,10 +28,12 @@ export default function PostList({
 	activePostId,
 	isFetchingNextPage,
 	fetchNextPage,
-
 	error,
 	onPostClick,
 }: Params) {
+	if (error) {
+		console.error(error);
+	}
 	const navigate = useNavigate();
 	return (
 		<>

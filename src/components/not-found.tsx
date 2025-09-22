@@ -8,7 +8,7 @@ export function NotFound({ children }: { children?: React.ReactNode }) {
 				{children || <p>The page you are looking for does not exist.</p>}
 			</div>
 			<p className="flex flex-wrap items-center gap-2">
-				<Link to="/">
+				<Link to="..">
 					<Button variant="outline">Go back to Home</Button>
 				</Link>
 			</p>
