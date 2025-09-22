@@ -13,7 +13,7 @@ export default function MobileNav({
 }) {
 	return (
 		<div className="border-gray-200 border-t bg-white md:hidden dark:border-zinc-800 dark:bg-zinc-900">
-			<nav className="flex p-2">
+			<nav className="flex gap-1 p-2">
 				{navLinks
 					.filter((link) => link.showMobile)
 					.map((link) => {
@@ -22,17 +22,16 @@ export default function MobileNav({
 							<Button
 								asChild
 								className={cn(
-									"flex flex-1 flex-row items-center justify-center p-2 text-gray-700 text-xs transition-colors hover:bg-zinc-100 dark:text-gray-200 dark:hover:bg-zinc-800",
+									"flex flex-1 flex-row items-center justify-center p-2 text-gray-700 text-xs transition-colors transition-colors hover:bg-zinc-100 dark:text-gray-200 dark:hover:bg-zinc-800",
 									isActive &&
-										"bg-orange-700 text-white hover:bg-orange-700 hover:text-white dark:bg-orange-800 dark:text-orange-200 dark:hover:bg-orange-800/50 dark:hover:text-orange-200"
+										"bg-orange-700 text-white hover:bg-orange-700 hover:text-white dark:bg-orange-800 dark:text-orange-200 dark:hover:bg-orange-800 dark:hover:text-orange-200"
 								)}
 								key={link.href}
 								variant="ghost"
 							>
 								<Link
-									aria-current={isActive ? "page" : undefined}
 									onClick={() => onNavigate()}
-									search={(prev) => ({ ...prev, view: "nav" })}
+									state={(prev) => ({ ...prev, view: "nav" })}
 									to={link.href}
 								>
 									<HugeiconsIcon icon={link.icon} size={24} />

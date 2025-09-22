@@ -14,19 +14,20 @@ export default function Recents() {
 	const category = pathname.split("/")[1] || "top";
 	const { data: recentPosts, isLoading } = useQuery({
 		queryKey: ["recents"],
-		queryFn: async () => {
+		queryFn: async ({ signal }) => {
 			return await algoliaFetcher
-				.get("search_by_date?tags=story")
+				.get("search_by_date?tags=story", { signal })
 				.json<AlgoliaPostApiResponse>();
 		},
 	});
 	const { data: activePosts, isLoading: activePostsLoading } = useQuery({
 		queryKey: ["active-posts"],
-		queryFn: async () => {
+		queryFn: async ({ signal }) => {
 			const oneHourAgo = Math.floor(Date.now() / 1000) - 3600;
 			return await algoliaFetcher
 				.get(
-					`search_by_date?tags=comment&numericFilters=created_at_i>${oneHourAgo}`
+					`search_by_date?tags=comment&numericFilters=created_at_i>${oneHourAgo}`,
+					{ signal }
 				)
 				.json<AlgoliaCommentApiResponse>();
 		},
@@ -101,7 +102,7 @@ function RecentsList({
 						postId: `${lowerCaseTitle(post.title)}-${post.objectID}`,
 						category,
 					}}
-					search={{ view: "post" }}
+					state={(prev) => ({ ...prev, view: "post" })}
 					to="/$category/{-$postId}"
 				>
 					<Button className="mt-2 w-full" size="sm" variant="outline">
@@ -150,7 +151,7 @@ function RecentCommentsList({
 						postId: `${lowerCaseTitle(comment.story_title || "")}-${comment.story_id}`,
 						category,
 					}}
-					search={{ view: "post" }}
+					state={(prev) => ({ ...prev, view: "post" })}
 					to="/$category/{-$postId}"
 				>
 					<Button className="mt-2 w-full" size="sm" variant="outline">

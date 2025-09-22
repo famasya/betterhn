@@ -19,22 +19,12 @@ import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
 
 type SearchSectionProps = {
 	origin: string;
-	search?: string;
-	page?: number;
 };
 
-export default function SearchSection({
-	origin,
-	search,
-	page,
-}: SearchSectionProps) {
-	const { tags } = useSearchRouter({ from: "/_app" });
+export default function SearchSection({ origin }: SearchSectionProps) {
+	const { tags, search, page } = useSearchRouter({ from: "/_app" });
 	const [inputValue, setInputValue] = useState(search || "");
-	const { data, isLoading } = useSearch(
-		search || "",
-		tags || "story",
-		page || 1
-	);
+	const { data, isLoading } = useSearch();
 	const navigate = useNavigate();
 
 	const debouncedSearch = useCallback(
@@ -87,9 +77,11 @@ export default function SearchSection({
 							(!search || search?.length === 0) && "hidden"
 						)}
 					>
-						<div className="font-medium text-base">
+						<div className="mb-1 font-medium text-base md:mb-0">
 							Search results for{" "}
-							<span className="bg-yellow-200 px-1">{search}</span>
+							<span className="bg-yellow-200 px-1 dark:bg-yellow-700">
+								{search}
+							</span>
 						</div>
 						<div>
 							<Tabs

@@ -1,10 +1,14 @@
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import type { Options } from "ky";
 import type { CommentItem } from "~/functions/load-comments";
 import { firebaseFetcher } from "~/lib/fetcher";
 
-export const fetchComment = async (commentId: number): Promise<CommentItem> => {
+export const fetchComment = async (
+	commentId: number,
+	options?: Options
+): Promise<CommentItem> => {
 	const data = await firebaseFetcher
-		.get(`item/${commentId}.json`)
+		.get(`item/${commentId}.json`, options)
 		.json<CommentItem | null>();
 	if (!data) {
 		throw new Error(`Comment ${commentId} not found or removed`);
@@ -18,15 +22,5 @@ export const useComment = (commentId: number) => {
 		queryFn: () => fetchComment(commentId),
 		staleTime: 5 * 60 * 1000,
 		gcTime: 30 * 60 * 1000,
-	});
-};
-
-export const useComments = (commentIds: number[]) => {
-	return useQueries({
-		queries: commentIds.map((id) => ({
-			queryKey: ["comment", id],
-			queryFn: () => fetchComment(id),
-			staleTime: 5 * 60 * 1000,
-		})),
 	});
 };
