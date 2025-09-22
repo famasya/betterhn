@@ -1,10 +1,11 @@
 import {
 	FireIcon,
+	JobSearchIcon,
 	Loading03Icon,
+	PropertyNewIcon,
 	QuestionIcon,
 	RocketIcon,
 	StarIcon,
-	TargetIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Link } from "@tanstack/react-router";
@@ -17,8 +18,9 @@ import { cn } from "~/lib/utils";
 
 export const navLinks = [
 	{ label: "Front Page", href: "/top", icon: FireIcon, showMobile: true },
+	{ label: "New", href: "/new", icon: PropertyNewIcon, showMobile: true },
 	{ label: "Best", href: "/best", icon: StarIcon, showMobile: true },
-	{ label: "New", href: "/new", icon: TargetIcon, showMobile: true },
+	{ label: "Job", href: "/job", icon: JobSearchIcon, showMobile: true },
 	{ label: "Ask", href: "/ask", icon: QuestionIcon, showMobile: true },
 	{ label: "Show", href: "/show", icon: RocketIcon, showMobile: true },
 ];
@@ -34,7 +36,7 @@ export default function NavLinks({
 	isLoadingCategory,
 }: Params) {
 	return (
-		<nav className="space-y-2 p-2">
+		<nav className="h-[calc(100vh-3rem)] flex-1 space-y-2 p-2">
 			{navLinks.map((link) => {
 				const itemCategory = link.href.split("/")[1];
 				return (
@@ -56,6 +58,7 @@ export default function NavLinks({
 									postId: itemCategory === "search" ? undefined : postId,
 								}}
 								resetScroll={false}
+								search={(prev) => prev}
 								state={(prev) => ({ ...prev, view: "nav" })}
 								to={postId.length > 0 ? "/$category/$postId" : link.href}
 							>

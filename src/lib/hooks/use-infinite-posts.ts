@@ -119,7 +119,6 @@ export const useInfinitePosts = ({
 				? nextSliceIndex + 1
 				: undefined;
 		},
-		placeholderData: (prev) => prev,
 		initialData: hasInitialData
 			? {
 					pages: [{ posts: initialPosts, sliceIndex: -1, failedIds: [] }],
@@ -140,9 +139,9 @@ export const useInfinitePosts = ({
 		posts: allPosts,
 		fetchNextPage,
 		isFetching,
+		isLoading,
 		hasNextPage: actualHasNextPage,
 		isFetchingNextPage,
-		isLoading,
 		error,
 	};
 };

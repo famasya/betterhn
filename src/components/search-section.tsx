@@ -80,7 +80,7 @@ export default function SearchSection({ origin }: SearchSectionProps) {
 					>
 						<div className="mb-1 font-medium text-base md:mb-0">
 							Search results for{" "}
-							<span className="bg-yellow-200 px-1 dark:bg-yellow-700">
+							<span className="rounded-md bg-yellow-200 px-2 dark:bg-yellow-700">
 								{search}
 							</span>
 						</div>
@@ -214,6 +214,8 @@ const SearchResultItem = memo(function SearchResultItemComponent({
 								category: origin,
 								postId: `${lowerCaseTitle(post.title)}-${post.objectID}`,
 							}}
+							search={(prev) => prev}
+							state={(prev) => ({ ...prev, view: "post" })}
 							to={"/$category/$postId"}
 						>
 							<p className="font-medium">{post.title}</p>

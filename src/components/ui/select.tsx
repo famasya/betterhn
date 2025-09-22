@@ -1,7 +1,7 @@
 import * as SelectPrimitive from "@radix-ui/react-select"
 import * as React from "react"
 
-import { ArrowDownIcon, CircleArrowDown01Icon, CircleArrowUp01Icon, Tick01Icon } from "@hugeicons/core-free-icons"
+import { ArrowDownIcon, CheckmarkSquare03Icon, CircleArrowDown01Icon, CircleArrowUp01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { cn } from "~/lib/utils"
 
@@ -124,7 +124,7 @@ const SelectItem = React.forwardRef<
   >
     <span className="absolute right-2 flex h-3.5 w-3.5 items-center justify-center">
       <SelectPrimitive.ItemIndicator>
-        <HugeiconsIcon icon={Tick01Icon} className="h-4 w-4" />
+        <HugeiconsIcon icon={CheckmarkSquare03Icon} className="h-4 w-4" />
       </SelectPrimitive.ItemIndicator>
     </span>
     <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
