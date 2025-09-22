@@ -12,7 +12,6 @@ import { DefaultCatchBoundary } from "~/components/default-catch-boundary";
 import { NotFound } from "~/components/not-found";
 import { Toaster } from "~/components/ui/sonner";
 import { TooltipProvider } from "~/components/ui/tooltip";
-import { getBrowserQueryClient } from "~/lib/query-client";
 import { themeScript } from "~/lib/theme-scripts";
 import {
 	getUserSettingsFn,
@@ -64,6 +63,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
 	const { userSettings } = Route.useLoaderData();
+	const { queryClient } = Route.useRouteContext();
 
 	// Set store state immediately for SSR consistency
 	userSettingsStore.setState(userSettings);
@@ -103,7 +103,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 				<HeadContent />
 			</head>
 			<body className="flex min-h-dvh flex-col">
-				<QueryClientProvider client={getBrowserQueryClient()}>
+				<QueryClientProvider client={queryClient}>
 					<TooltipProvider delayDuration={0}>{children}</TooltipProvider>
 				</QueryClientProvider>
 				<Toaster />
