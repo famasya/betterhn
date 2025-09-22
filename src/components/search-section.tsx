@@ -77,7 +77,7 @@ export default function SearchSection({ origin }: SearchSectionProps) {
 							(!search || search?.length === 0) && "hidden"
 						)}
 					>
-						<div className="font-medium text-base">
+						<div className="mb-1 font-medium text-base md:mb-0">
 							Search results for{" "}
 							<span className="bg-yellow-200 px-1 dark:bg-yellow-700">
 								{search}

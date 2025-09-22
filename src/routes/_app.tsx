@@ -9,7 +9,7 @@ import {
 } from "@tanstack/react-router";
 import { useStore } from "@tanstack/react-store";
 import { useEffect, useState } from "react";
-import z from "zod";
+import { z } from "zod";
 import MobileNav from "~/components/mobile-nav";
 import NavLinks from "~/components/nav-links";
 import PostList from "~/components/post-list";
