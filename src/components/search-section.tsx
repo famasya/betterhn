@@ -140,6 +140,7 @@ export default function SearchSection({ origin }: SearchSectionProps) {
 					>
 						<Link
 							disabled={page === 1}
+							hash="search-results"
 							search={{ page: (page || 1) - 1, search }}
 							to={"."}
 						>
@@ -149,6 +150,7 @@ export default function SearchSection({ origin }: SearchSectionProps) {
 						</Link>
 						<Link
 							disabled={page === data?.nbPages}
+							hash="search-results"
 							search={{ page: (page || 1) + 1, search }}
 							to={"."}
 						>
@@ -170,7 +172,7 @@ export default function SearchSection({ origin }: SearchSectionProps) {
 function LoadingSkeleton() {
 	return Array.from({ length: 10 }).map((_, index) => (
 		<div
-			className="mt-2 h-20 w-full animate-pulse rounded-lg bg-zinc-200"
+			className="mt-2 h-20 w-full animate-pulse rounded-lg bg-zinc-200 dark:bg-zinc-800"
 			key={index.toString()}
 		/>
 	));
@@ -204,7 +206,7 @@ const SearchResultItem = memo(function SearchResultItemComponent({
 			{results?.hits.map((post) => {
 				return (
 					<div
-						className="rounded-sm border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-black/90"
+						className="rounded-sm border border-gray-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900"
 						key={post.objectID}
 					>
 						<Link

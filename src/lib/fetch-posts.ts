@@ -7,6 +7,105 @@ import type { FirebasePostDetail } from "./types";
 
 const CACHE_TTL = 300; // 5 minutes in seconds
 
+export const fetchPostBatch = createIsomorphicFn()
+	.server(async (ids: number[], options?: Options) => {
+		const { KV } = getBindings();
+
+		// Check cache for individual posts
+		const cachedPosts = await Promise.all(
+			ids.map(async (postId) => {
+				const postCacheKey = `post:${postId}`;
+				const cachedPost = await KV.get(postCacheKey);
+				return cachedPost
+					? { postId, data: JSON.parse(cachedPost) as FirebasePostDetail }
+					: null;
+			})
+		);
+
+		// Separate cached and uncached posts
+		const cachedPostData = cachedPosts
+			.filter(
+				(item): item is { postId: number; data: FirebasePostDetail } =>
+					item !== null
+			)
+			.map((item) => item.data)
+			.filter((data) => !data.deleted);
+
+		const uncachedIds = ids.filter(
+			(postId) => !cachedPosts.some((item) => item?.postId === postId)
+		);
+
+		// Fetch uncached posts
+		const getItems = await Promise.allSettled(
+			uncachedIds.map((postId) =>
+				firebaseFetcher
+					.get(`item/${postId}.json`, options)
+					.json<FirebasePostDetail | null>()
+					.then((data) => ({ postId, data }))
+			)
+		);
+
+		const successItems: FirebasePostDetail[] = [...cachedPostData];
+		const failedItems: number[] = [];
+
+		for (const [index, item] of getItems.entries()) {
+			const postId = uncachedIds[index];
+			if (item.status === "fulfilled") {
+				const { data: post } = item.value;
+				if (post && !post.deleted) {
+					successItems.push(post);
+					// Cache the post for 5 minutes
+					const postCacheKey = `post:${postId}`;
+					await KV.put(postCacheKey, JSON.stringify(post), {
+						expirationTtl: CACHE_TTL,
+					});
+				}
+				// else: deleted/missing → drop; don't requeue
+			} else {
+				// transient failure → requeue
+				failedItems.push(postId);
+			}
+		}
+
+		return {
+			posts: successItems,
+			failedIds: failedItems,
+		};
+	})
+	.client(async (ids: number[], options?: Options) => {
+		// Fetch posts directly without caching
+		const getItems = await Promise.allSettled(
+			ids.map((postId) =>
+				firebaseFetcher
+					.get(`item/${postId}.json`, options)
+					.json<FirebasePostDetail | null>()
+					.then((data) => ({ postId, data }))
+			)
+		);
+
+		const successItems: FirebasePostDetail[] = [];
+		const failedItems: number[] = [];
+
+		for (const [index, item] of getItems.entries()) {
+			const postId = ids[index];
+			if (item.status === "fulfilled") {
+				const { data: post } = item.value;
+				if (post && !post.deleted) {
+					successItems.push(post);
+				}
+				// else: deleted/missing → drop; don't requeue
+			} else {
+				// transient failure → requeue
+				failedItems.push(postId);
+			}
+		}
+
+		return {
+			posts: successItems,
+			failedIds: failedItems,
+		};
+	});
+
 export const fetchPosts = createIsomorphicFn()
 	.server(async (type: string, options?: Options) => {
 		const { KV } = getBindings();
@@ -55,59 +154,10 @@ export const fetchPosts = createIsomorphicFn()
 		// fetch post details for first 10
 		const [first10Items, ...remainingItems] = slices;
 
-		// Check cache for individual posts
-		const cachedPosts = await Promise.all(
-			first10Items.map(async (postId) => {
-				const postCacheKey = `post:${postId}`;
-				const cachedPost = await KV.get(postCacheKey);
-				return cachedPost
-					? { postId, data: JSON.parse(cachedPost) as FirebasePostDetail }
-					: null;
-			})
-		);
+		const batchResult = await fetchPostBatch(first10Items, options);
 
-		// Separate cached and uncached posts
-		const cachedPostData = cachedPosts.filter(
-			(item): item is { postId: number; data: FirebasePostDetail } =>
-				item !== null
-		);
-		const uncachedIds = first10Items.filter(
-			(postId) => !cachedPosts.some((item) => item?.postId === postId)
-		);
-
-		// Fetch uncached posts
-		const getItems = await Promise.allSettled(
-			uncachedIds.map((postId) =>
-				firebaseFetcher
-					.get(`item/${postId}.json`, options)
-					.json<FirebasePostDetail | null>()
-					.then((data) => ({ postId, data }))
-			)
-		);
-
-		const successItems: FirebasePostDetail[] = [
-			...cachedPostData.map((item) => item.data),
-		];
-		const failedItems: number[] = [];
-
-		for (const [index, item] of getItems.entries()) {
-			const postId = uncachedIds[index];
-			if (item.status === "fulfilled") {
-				const { data: post } = item.value;
-				if (post && !post.deleted) {
-					successItems.push(post);
-					// Cache the post for 5 minutes
-					const postCacheKey = `post:${postId}`;
-					await KV.put(postCacheKey, JSON.stringify(post), {
-						expirationTtl: CACHE_TTL,
-					});
-				}
-				// else: deleted/missing → drop; don't requeue
-			} else if (typeof postId === "number") {
-				// transient failure → requeue
-				failedItems.push(postId);
-			}
-		}
+		const successItems = batchResult.posts;
+		const failedItems = batchResult.failedIds;
 
 		// re add failed items to remaining items
 		if (failedItems.length > 0) {
@@ -154,32 +204,10 @@ export const fetchPosts = createIsomorphicFn()
 		// fetch post details for first 10
 		const [first10Items, ...remainingItems] = slices;
 
-		// Fetch posts directly without caching
-		const getItems = await Promise.allSettled(
-			first10Items.map((postId) =>
-				firebaseFetcher
-					.get(`item/${postId}.json`, options)
-					.json<FirebasePostDetail | null>()
-					.then((data) => ({ postId, data }))
-			)
-		);
+		const batchResult = await fetchPostBatch(first10Items, options);
 
-		const successItems: FirebasePostDetail[] = [];
-		const failedItems: number[] = [];
-
-		for (const [index, item] of getItems.entries()) {
-			const postId = first10Items[index];
-			if (item.status === "fulfilled") {
-				const { data: post } = item.value;
-				if (post && !post.deleted) {
-					successItems.push(post);
-				}
-				// else: deleted/missing → drop; don't requeue
-			} else if (typeof postId === "number") {
-				// transient failure → requeue
-				failedItems.push(postId);
-			}
-		}
+		const successItems = batchResult.posts;
+		const failedItems = batchResult.failedIds;
 
 		// re add failed items to remaining items
 		if (failedItems.length > 0) {

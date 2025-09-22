@@ -1,7 +1,6 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useMemo, useRef, useState } from "react";
-import { loadMorePosts } from "~/functions/load-more-posts";
-import { fetchPosts } from "~/lib/fetch-posts";
+import { fetchPostBatch, fetchPosts } from "~/lib/fetch-posts";
 import type { FirebasePostDetail } from "../types";
 
 type UseInfinitePostsParams = {
@@ -85,7 +84,7 @@ export const useInfinitePosts = ({
 				return { posts: [], sliceIndex, failedIds: [] };
 			}
 
-			const result = await loadMorePosts({ data: slice });
+			const result = await fetchPostBatch(slice);
 
 			// Handle both old and new response formats
 			if (Array.isArray(result)) {
