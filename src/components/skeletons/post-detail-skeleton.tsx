@@ -5,9 +5,12 @@ import { Skeleton } from "~/components/ui/skeleton";
 
 export function PostDetailSkeleton() {
 	return (
-		<ScrollArea className="h-dvh flex-1 bg-zinc-50" id="post-content">
+		<ScrollArea
+			className="h-dvh flex-1 bg-zinc-50 dark:bg-zinc-800"
+			id="post-content"
+		>
 			{/* Post Header Skeleton */}
-			<div className="border-gray-200 border-b bg-white p-4 sm:p-6">
+			<div className="border-gray-200 border-b bg-white p-4 sm:p-6 dark:border-gray-700 dark:bg-zinc-800">
 				{/* Title Skeleton - 2-3 lines */}
 				<div className="mb-3">
 					<Skeleton className="mb-2 h-6 w-full sm:h-7" />
@@ -44,7 +47,7 @@ export function PostDetailSkeleton() {
 				</div>
 
 				{/* Post Text Content Skeleton - Optional, Ask HN posts might not have text */}
-				<div className="mt-4 border-gray-200 border-t border-dashed pt-4">
+				<div className="mt-4 border-gray-200 border-t border-dashed pt-4 dark:border-gray-700">
 					<div className="space-y-2">
 						<Skeleton className="h-4 w-full" />
 						<Skeleton className="h-4 w-11/12" />
@@ -80,7 +83,7 @@ export function PostDetailSkeleton() {
 
 const CommentSkeleton = memo(function CommentSkeletonComponent() {
 	return (
-		<div className="border-gray-200 border-b px-2 py-3">
+		<div className="border-gray-200 border-b px-2 py-3 dark:border-gray-700">
 			{/* Comment Header */}
 			<div className="mb-2 flex items-center gap-2">
 				<Skeleton className="h-4 w-4" />

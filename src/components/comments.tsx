@@ -245,8 +245,12 @@ export default function Comments({
 	if (error && comments.length === 0) {
 		return (
 			<div className="px-3 sm:px-4">
-				<div className="mb-4 font-medium text-base sm:text-lg">Comments</div>
-				<div className="text-red-600">Failed to load comments</div>
+				<div className="mb-4 font-medium text-base sm:text-lg dark:text-white">
+					Comments
+				</div>
+				<div className="text-red-600 dark:text-red-300">
+					Failed to load comments
+				</div>
 			</div>
 		);
 	}
