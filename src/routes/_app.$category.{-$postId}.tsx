@@ -1,8 +1,8 @@
 import {
 	AnalyticsUpIcon,
 	Comment01Icon,
-	ComputerCloudIcon,
 	LinkSquare02Icon,
+	Loading03Icon,
 	Time04Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -75,7 +75,8 @@ export const Route = createFileRoute("/_app/$category/{-$postId}")({
 	head: ({ loaderData }) => ({
 		meta: [
 			{
-				title: loaderData?.content?.post?.title || "Post",
+				title:
+					loaderData?.content?.post?.title || "hnfd - Sleek and Fast HN Reader",
 			},
 		],
 	}),
@@ -84,11 +85,7 @@ export const Route = createFileRoute("/_app/$category/{-$postId}")({
 	),
 	pendingComponent: () => (
 		<div className="flex h-[100dvh] flex-1 items-center justify-center gap-2 overflow-y-auto bg-zinc-50 pb-14 md:pb-0 dark:bg-black dark:text-zinc-400">
-			<HugeiconsIcon
-				className="animate-pulse"
-				icon={ComputerCloudIcon}
-				size={36}
-			/>
+			<HugeiconsIcon className="animate-spin" icon={Loading03Icon} size={36} />
 		</div>
 	),
 });

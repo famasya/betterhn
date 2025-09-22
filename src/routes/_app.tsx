@@ -85,6 +85,7 @@ function RouteComponent() {
 		fetchNextPage,
 		hasNextPage,
 		isFetchingNextPage,
+		isFetching,
 		isLoading,
 		error,
 	} = useInfinitePosts({
@@ -219,6 +220,7 @@ function RouteComponent() {
 
 			<MobileNav
 				category={category}
+				isLoadingCategory={isFetching ? category : null}
 				onNavigate={() =>
 					navigate({
 						to: ".",
