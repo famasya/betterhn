@@ -41,6 +41,11 @@ export default function NavLinks({
 					<Tooltip key={link.href}>
 						<TooltipTrigger asChild>
 							<Link
+								aria-busy={Boolean(
+									isLoadingCategory && `/${isLoadingCategory}` === link.href
+								)}
+								aria-current={`/${category}` === link.href ? "page" : undefined}
+								aria-label={link.label}
 								className={cn(
 									"flex items-center gap-3 rounded-lg p-2 text-gray-700 transition-colors hover:bg-zinc-100 dark:text-gray-200 dark:hover:bg-orange-800/50",
 									`/${category}` === link.href &&

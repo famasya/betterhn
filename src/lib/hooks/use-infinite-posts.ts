@@ -17,6 +17,7 @@ export const useInfinitePosts = ({
 }: UseInfinitePostsParams) => {
 	const [failedIds, setFailedIds] = useState<Set<number>>(new Set());
 	const freshRemainingItemsRef = useRef<number[][]>([]);
+	const [initialLoad, setInitialLoad] = useState(true);
 
 	// If no initial data is provided, we'll fetch it in the query
 	const hasInitialData = initialPosts.length > 0 || remainingItems.length > 0;
@@ -55,13 +56,14 @@ export const useInfinitePosts = ({
 		queryKey: [
 			"infinite-posts",
 			category,
-			remainingItems.length,
+			enhancedSlices.length,
 			failedIds.size,
 		],
 		queryFn: async ({ pageParam }) => {
 			if (pageParam === 0) {
 				// If we have initial posts, use them
-				if (hasInitialData) {
+				if (hasInitialData && initialLoad) {
+					setInitialLoad(false);
 					return { posts: initialPosts, sliceIndex: -1, failedIds: [] };
 				}
 				// Otherwise, fetch fresh data for this category

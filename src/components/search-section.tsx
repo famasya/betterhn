@@ -36,6 +36,7 @@ export default function SearchSection({ origin }: SearchSectionProps) {
 						search: term,
 						page: 1,
 					},
+					replace: true,
 				});
 			},
 			{
@@ -61,7 +62,7 @@ export default function SearchSection({ origin }: SearchSectionProps) {
 			</div>
 			<div className="mx-auto w-full max-w-4xl p-6 md:px-16">
 				<Input
-					className="rounded-full border border-black/10 shadow-lg dark:border-zinc-800"
+					className="rounded-full border border-black/10 text-lg shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/20 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-zinc-800 dark:focus-visible:ring-orange-400/30 dark:focus-visible:ring-offset-zinc-950"
 					onChange={(e) => {
 						setInputValue(e.target.value);
 						debouncedSearch(e.target.value);

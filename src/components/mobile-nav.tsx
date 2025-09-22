@@ -33,6 +33,8 @@ export default function MobileNav({
 								variant="ghost"
 							>
 								<Link
+									aria-busy={Boolean(`/${isLoadingCategory}` === link.href)}
+									aria-current={isActive ? "page" : undefined}
 									onClick={() => onNavigate()}
 									state={(prev) => ({ ...prev, view: "nav" })}
 									to={link.href}
