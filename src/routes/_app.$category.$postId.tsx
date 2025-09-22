@@ -1,8 +1,8 @@
 import {
 	AnalyticsUpIcon,
 	Comment01Icon,
-	ComputerCloudIcon,
 	LinkSquare02Icon,
+	Loading03Icon,
 	Time04Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -12,62 +12,57 @@ import DOMPurify from "isomorphic-dompurify";
 import Comments from "~/components/comments";
 import { NotFound } from "~/components/not-found";
 import SearchButton from "~/components/search-button";
-import SearchSection from "~/components/search-section";
 import { Button } from "~/components/ui/button";
 import { type CommentItem, loadComments } from "~/functions/load-comments";
 import { fetchPost } from "../lib/fetch-posts";
 import type { FirebasePostDetail } from "../lib/types";
 
-export const Route = createFileRoute("/_app/$category/{-$postId}")({
+export const Route = createFileRoute("/_app/$category/$postId")({
 	loader: async ({
 		params: { postId, category },
 		context: { queryClient },
 		preload,
 		abortController,
 	}) => {
-		if (postId) {
-			const content = await queryClient.ensureQueryData({
-				queryKey: ["post", postId],
-				queryFn: async () => {
-					const postIdNum = Number(postId?.split("-").pop());
-					if (!postIdNum) {
-						throw notFound();
+		const content = await queryClient.ensureQueryData({
+			queryKey: ["post", postId],
+			staleTime: 5 * 60 * 1000, // 5 minutes
+			gcTime: 10 * 60 * 1000, // 10 minutes
+			queryFn: async () => {
+				const postIdNum = Number(postId?.split("-").pop());
+				if (!postIdNum) {
+					throw notFound();
+				}
+
+				const post = await fetchPost(postIdNum);
+
+				// if preload, also fetch comments
+				const kids = post.kids || [];
+				const comments: CommentItem[] = [];
+				const remainingCommentSlices: number[][] = [];
+				if (preload && kids.length > 0) {
+					// get first 10 comments
+					const { comments: preloadComments } = await loadComments({
+						data: kids.slice(0, 10),
+						signal: abortController.signal,
+					});
+					queryClient.setQueryData(["comments", postId], preloadComments);
+					comments.push(...preloadComments);
+
+					// remaining comments
+					for (let i = 10; i < kids.length; i += 10) {
+						remainingCommentSlices.push(kids.slice(i, i + 10));
 					}
-
-					const post = await fetchPost(postIdNum);
-
-					// if preload, also fetch comments
-					const kids = post.kids || [];
-					const comments: CommentItem[] = [];
-					const remainingCommentSlices: number[][] = [];
-					if (preload && kids.length > 0) {
-						// get first 10 comments
-						const { comments: preloadComments } = await loadComments({
-							data: kids.slice(0, 10),
-							signal: abortController.signal,
-						});
-						queryClient.setQueryData(["comments", postId], preloadComments);
-						comments.push(...preloadComments);
-
-						// remaining comments
-						for (let i = 10; i < kids.length; i += 10) {
-							remainingCommentSlices.push(kids.slice(i, i + 10));
-						}
-					}
-					return {
-						post,
-						comments,
-						remainingCommentSlices,
-					};
-				},
-			});
-			return {
-				content,
-				category,
-			};
-		}
+				}
+				return {
+					post,
+					comments,
+					remainingCommentSlices,
+				};
+			},
+		});
 		return {
-			content: null,
+			content,
 			category,
 		};
 	},
@@ -75,7 +70,8 @@ export const Route = createFileRoute("/_app/$category/{-$postId}")({
 	head: ({ loaderData }) => ({
 		meta: [
 			{
-				title: loaderData?.content?.post?.title || "Post",
+				title:
+					loaderData?.content?.post?.title || "hnfd - Sleek and Fast HN Reader",
 			},
 		],
 	}),
@@ -84,21 +80,13 @@ export const Route = createFileRoute("/_app/$category/{-$postId}")({
 	),
 	pendingComponent: () => (
 		<div className="flex h-[100dvh] flex-1 items-center justify-center gap-2 overflow-y-auto bg-zinc-50 pb-14 md:pb-0 dark:bg-black dark:text-zinc-400">
-			<HugeiconsIcon
-				className="animate-pulse"
-				icon={ComputerCloudIcon}
-				size={36}
-			/>
+			<HugeiconsIcon className="animate-spin" icon={Loading03Icon} size={36} />
 		</div>
 	),
 });
 
 function RouteComponent() {
-	const { category, content } = Route.useLoaderData();
-
-	if (!content) {
-		return <SearchSection origin={category} />;
-	}
+	const { content } = Route.useLoaderData();
 
 	const { post, comments, remainingCommentSlices } = content;
 	return (

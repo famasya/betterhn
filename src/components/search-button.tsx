@@ -15,9 +15,8 @@ export default function SearchButton() {
 						navigate({
 							params: {
 								category: currentCategory,
-								postId: undefined,
 							},
-							to: "/$category/{-$postId}",
+							to: "/$category",
 						});
 					}}
 					size={"sm"}

@@ -71,26 +71,27 @@ function RouteComponent() {
 		select: (state) => state.location.state?.view,
 	});
 	const paths = pathname.split("/");
-	const category = paths[1];
+	const category = paths[1] || "top";
 	const postId = paths[2] || "";
 	const activePostId = postId?.split("-").pop();
 	const loaderData = Route.useLoaderData();
 	const compactMode = useStore(userSettingsStore, (state) => state.compactMode);
 
 	// Use loader data as initial data only if it matches current category
-	const useLoaderData = loaderData.category === category;
+	const shouldUseLoaderData = loaderData.category === category;
 
 	const {
 		posts,
 		fetchNextPage,
 		hasNextPage,
 		isFetchingNextPage,
+		isFetching,
 		isLoading,
 		error,
 	} = useInfinitePosts({
 		category,
-		initialPosts: useLoaderData ? loaderData.first10 : [],
-		remainingItems: useLoaderData ? loaderData.remainingItems : [],
+		initialPosts: shouldUseLoaderData ? loaderData.first10 : [],
+		remainingItems: shouldUseLoaderData ? loaderData.remainingItems : [],
 	});
 	const [isMobilePostsOpen, setIsMobilePostsOpen] = useState(false);
 	const navigate = useNavigate();
@@ -151,7 +152,9 @@ function RouteComponent() {
 									</div>
 								) : (
 									<PostList
-										activePostId={Number(activePostId)}
+										activePostId={
+											activePostId ? Number(activePostId) : undefined
+										}
 										category={category}
 										error={error}
 										fetchNextPage={fetchNextPage}
@@ -176,7 +179,11 @@ function RouteComponent() {
 
 			{/* Desktop Posts sidebar */}
 			<div className="hidden border-gray-200 border-r bg-white md:block dark:border-zinc-800 dark:bg-zinc-900">
-				<NavLinks category={category} postId={postId} />
+				<NavLinks
+					category={category}
+					isLoadingCategory={isFetching ? category : null}
+					postId={postId}
+				/>
 			</div>
 
 			<div className="hidden w-1/4 min-w-[300px] overflow-y-auto border-gray-200 border-r bg-white md:block dark:border-zinc-800 dark:bg-zinc-900">
@@ -219,6 +226,7 @@ function RouteComponent() {
 
 			<MobileNav
 				category={category}
+				isLoadingCategory={isFetching ? category : null}
 				onNavigate={() =>
 					navigate({
 						to: ".",

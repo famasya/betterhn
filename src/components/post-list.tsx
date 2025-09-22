@@ -54,7 +54,7 @@ export default function PostList({
 								postId: `${lowerCaseTitle(post.title)}-${post.id}`,
 							},
 							state: (prev) => ({ ...prev, view: "post" }),
-							to: "/$category/{-$postId}",
+							to: "/$category/$postId",
 						});
 					}}
 					onKeyDown={(e) => {
@@ -62,7 +62,7 @@ export default function PostList({
 							e.preventDefault();
 							onPostClick?.();
 							navigate({
-								to: "/$category/{-$postId}",
+								to: "/$category/$postId",
 								params: {
 									category: category || "top",
 									postId: `${lowerCaseTitle(post.title)}-${post.id}`,
@@ -88,7 +88,7 @@ export default function PostList({
 						rel={post.url ? "noopener noreferrer" : undefined}
 						state={(prev) => ({ ...prev, view: "post" })}
 						target={post.url ? "_blank" : "_self"}
-						to={post.url ? post.url : "/$category/{-$postId}"}
+						to={post.url ? post.url : "/$category/$postId"}
 					>
 						<span>{post.title}</span>
 					</Link>
@@ -111,7 +111,7 @@ export default function PostList({
 									category: category || "top",
 									postId: `${lowerCaseTitle(post.title)}-${post.id}`,
 								}}
-								to={"/$category/{-$postId}"}
+								to={"/$category/$postId"}
 							>
 								<HugeiconsIcon icon={Comment01Icon} size={16} />{" "}
 								{post.descendants}

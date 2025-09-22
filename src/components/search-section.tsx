@@ -36,6 +36,7 @@ export default function SearchSection({ origin }: SearchSectionProps) {
 						search: term,
 						page: 1,
 					},
+					replace: true,
 				});
 			},
 			{
@@ -59,9 +60,9 @@ export default function SearchSection({ origin }: SearchSectionProps) {
 				</h1>
 				<p className="text-gray-500 text-sm">Powered by Algolia</p>
 			</div>
-			<div className="mx-auto w-full max-w-[800px] p-6 md:px-16">
+			<div className="mx-auto w-full max-w-4xl p-6 md:px-16">
 				<Input
-					className="bg-white"
+					className="rounded-full border border-black/10 text-lg shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/20 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-zinc-800 dark:focus-visible:ring-orange-400/30 dark:focus-visible:ring-offset-zinc-950"
 					onChange={(e) => {
 						setInputValue(e.target.value);
 						debouncedSearch(e.target.value);
@@ -139,6 +140,7 @@ export default function SearchSection({ origin }: SearchSectionProps) {
 					>
 						<Link
 							disabled={page === 1}
+							hash="search-results"
 							search={{ page: (page || 1) - 1, search }}
 							to={"."}
 						>
@@ -148,6 +150,7 @@ export default function SearchSection({ origin }: SearchSectionProps) {
 						</Link>
 						<Link
 							disabled={page === data?.nbPages}
+							hash="search-results"
 							search={{ page: (page || 1) + 1, search }}
 							to={"."}
 						>
@@ -169,7 +172,7 @@ export default function SearchSection({ origin }: SearchSectionProps) {
 function LoadingSkeleton() {
 	return Array.from({ length: 10 }).map((_, index) => (
 		<div
-			className="mt-2 h-20 w-full animate-pulse rounded-lg bg-zinc-200"
+			className="mt-2 h-20 w-full animate-pulse rounded-lg bg-zinc-200 dark:bg-zinc-800"
 			key={index.toString()}
 		/>
 	));
@@ -203,7 +206,7 @@ const SearchResultItem = memo(function SearchResultItemComponent({
 			{results?.hits.map((post) => {
 				return (
 					<div
-						className="rounded-sm border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-black/90"
+						className="rounded-sm border border-gray-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900"
 						key={post.objectID}
 					>
 						<Link
@@ -211,7 +214,7 @@ const SearchResultItem = memo(function SearchResultItemComponent({
 								category: origin,
 								postId: `${lowerCaseTitle(post.title)}-${post.objectID}`,
 							}}
-							to={"/$category/{-$postId}"}
+							to={"/$category/$postId"}
 						>
 							<p className="font-medium">{post.title}</p>
 							<p className="mt-2 text-gray-500 text-sm">

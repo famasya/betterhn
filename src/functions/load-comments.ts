@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { firebaseFetcher } from "~/lib/fetcher";
 
 export type CommentItem = {
@@ -16,9 +17,9 @@ export const loadComments = createServerFn({
 	method: "GET",
 	response: "data",
 })
-	.validator((commentIds: number[]) => {
-		return commentIds;
-	})
+	.validator((input: number[]) =>
+		z.array(z.number().int().positive()).parse(input)
+	)
 	.handler(async ({ data, signal }) => {
 		const comments = await Promise.allSettled(
 			data.map(async (commentId) => {

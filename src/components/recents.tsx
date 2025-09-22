@@ -76,7 +76,7 @@ function RecentsList({
 }) {
 	return posts.slice(0, 6).map((post) => (
 		<div
-			className="mt-2 flex w-full flex-col rounded-lg border border-zinc-200 bg-zinc-100 p-2 text-sm dark:border-gray-800 dark:bg-white/10 dark:text-gray-200"
+			className="mt-2 flex min-h-40 w-full flex-col rounded-lg border border-zinc-200 bg-zinc-100 p-2 text-sm dark:border-gray-800 dark:bg-white/10 dark:text-gray-200"
 			key={post.objectID}
 		>
 			<div className="mb-2 flex-grow">
@@ -103,7 +103,7 @@ function RecentsList({
 						category,
 					}}
 					state={(prev) => ({ ...prev, view: "post" })}
-					to="/$category/{-$postId}"
+					to="/$category/$postId"
 				>
 					<Button className="mt-2 w-full" size="sm" variant="outline">
 						View Post
@@ -123,7 +123,7 @@ function RecentCommentsList({
 }) {
 	return comments.slice(0, 6).map((comment) => (
 		<div
-			className="mt-2 flex w-full flex-col rounded-lg border border-zinc-200 bg-zinc-100 p-2 text-sm dark:border-gray-800 dark:bg-white/10 dark:text-gray-200"
+			className="mt-2 flex min-h-40 w-full flex-col rounded-lg border border-zinc-200 bg-zinc-100 p-2 text-sm dark:border-gray-800 dark:bg-white/10 dark:text-gray-200"
 			key={comment.objectID}
 		>
 			<div className="mb-2 flex-grow">
@@ -152,7 +152,7 @@ function RecentCommentsList({
 						category,
 					}}
 					state={(prev) => ({ ...prev, view: "post" })}
-					to="/$category/{-$postId}"
+					to="/$category/$postId"
 				>
 					<Button className="mt-2 w-full" size="sm" variant="outline">
 						View Post
