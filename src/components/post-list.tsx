@@ -148,7 +148,7 @@ export default function PostList({
 						<HugeiconsIcon icon={InformationCircleIcon} size={16} />
 						<div>
 							<div className="font-medium">Failed to load more posts</div>
-							<div className="text-red-600 text-xs">
+							<div className="text-red-600 text-xs dark:text-red-300">
 								Some posts may be temporarily unavailable
 							</div>
 						</div>
