@@ -71,7 +71,7 @@ export const Route = createFileRoute("/_app/$category/$postId")({
 			{
 				title:
 					loaderData?.content?.post?.title ||
-					"BetterHN - Sleek and Fast HN Reader",
+					"BetterHN - Sleek and Clean HN Reader",
 			},
 		],
 	}),

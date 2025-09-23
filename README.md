@@ -1,10 +1,10 @@
-# BetterHN - Sleek and Fast HN Reader
+# BetterHN - Sleek and Clean HN Reader
 
-BetterHN is a sleek, fast, minimal Hacker News reader built for the web. It gives you quick access to posts, comments, and discussions with clean, lightweight design. No fluff, just content.
+BetterHN is a sleek, clean, minimal Hacker News reader built for the web. It gives you quick access to posts, comments, and discussions with clean, lightweight design.
 
 ## Features
 
-- **Lightning Fast** - Server-side rendering with TanStack Start for instant page loads
+- **Clean Layout** - BetterHN is designed to be simple and easy to navigate, with a clean layout that puts the content front and center.
 - **Infinite Scrolling** - Seamlessly browse through stories without pagination
 - **Real-time Comments** - View and navigate comment threads with ease
 - **Modern UI** - Clean, responsive design with dark/light theme support

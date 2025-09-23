@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This is a Hacker News client built with TanStack Start (React framework), TanStack Router for routing, and TanStack Query for data fetching. The app provides a modern, responsive interface for browsing Hacker News stories with infinite scrolling, real-time comments, and user settings management.
 
 ## Common Development Commands
-- `bun dev` - Start development server (runs on port 3001)
+- `bun dev` - Start development server (runs on port 3000)
 - `bun run build` - Build for production (includes TypeScript type checking)
 - `bun start` - Start production server
 - `bun run lint` - Format and fix code using Ultracite (Biome-based linter/formatter)

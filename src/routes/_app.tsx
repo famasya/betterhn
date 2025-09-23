@@ -187,6 +187,7 @@ function RouteComponent() {
 				category={category}
 				isLoadingCategory={isLoading ? category : null}
 				postId={postId}
+				view={isMobilePostsOpen ? "post" : "nav"}
 			/>
 		</div>
 	);

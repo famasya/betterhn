@@ -36,7 +36,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 				content: "width=device-width, initial-scale=1",
 			},
 			...seo({
-				title: "BetterHN - Sleek and Fast HN Reader",
+				title: "BetterHN - Sleek and Clean HN Reader",
 			}),
 		],
 		links: [
