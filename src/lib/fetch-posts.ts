@@ -1,43 +1,14 @@
 import { notFound } from "@tanstack/react-router";
 import { createIsomorphicFn } from "@tanstack/react-start";
 import type { Options } from "ky";
-import { getBindings } from "./bindings";
 import { firebaseFetcher } from "./fetcher";
 import type { FirebasePostDetail } from "./types";
 
-const CACHE_TTL = 300; // 5 minutes in seconds
-
 export const fetchPostBatch = createIsomorphicFn()
 	.server(async (ids: number[], options?: Options) => {
-		const { KV } = getBindings();
-
-		// Check cache for individual posts
-		const cachedPosts = await Promise.all(
-			ids.map(async (postId) => {
-				const postCacheKey = `post:${postId}`;
-				const cachedPost = await KV.get(postCacheKey);
-				return cachedPost
-					? { postId, data: JSON.parse(cachedPost) as FirebasePostDetail }
-					: null;
-			})
-		);
-
-		// Separate cached and uncached posts
-		const cachedPostData = cachedPosts
-			.filter(
-				(item): item is { postId: number; data: FirebasePostDetail } =>
-					item !== null
-			)
-			.map((item) => item.data)
-			.filter((data) => !data.deleted);
-
-		const uncachedIds = ids.filter(
-			(postId) => !cachedPosts.some((item) => item?.postId === postId)
-		);
-
-		// Fetch uncached posts
+		// Fetch all posts directly
 		const getItems = await Promise.allSettled(
-			uncachedIds.map((postId) =>
+			ids.map((postId) =>
 				firebaseFetcher
 					.get(`item/${postId}.json`, options)
 					.json<FirebasePostDetail | null>()
@@ -45,20 +16,15 @@ export const fetchPostBatch = createIsomorphicFn()
 			)
 		);
 
-		const successItems: FirebasePostDetail[] = [...cachedPostData];
+		const successItems: FirebasePostDetail[] = [];
 		const failedItems: number[] = [];
 
 		for (const [index, item] of getItems.entries()) {
-			const postId = uncachedIds[index];
+			const postId = ids[index];
 			if (item.status === "fulfilled") {
 				const { data: post } = item.value;
 				if (post && !post.deleted) {
 					successItems.push(post);
-					// Cache the post for 5 minutes
-					const postCacheKey = `post:${postId}`;
-					await KV.put(postCacheKey, JSON.stringify(post), {
-						expirationTtl: CACHE_TTL,
-					});
 				}
 				// else: deleted/missing → drop; don't requeue
 			} else {
@@ -108,25 +74,11 @@ export const fetchPostBatch = createIsomorphicFn()
 
 export const fetchPosts = createIsomorphicFn()
 	.server(async (type: string, options?: Options) => {
-		const { KV } = getBindings();
-
 		// fetch post lists
 		const url = resolveCategory(type);
 
-		// Try to get cached post list
-		const cacheKey = `stories:${type}`;
-		const cachedStories = await KV.get(cacheKey);
-		let topStories: number[];
-
-		if (cachedStories) {
-			topStories = JSON.parse(cachedStories);
-		} else {
-			topStories = await firebaseFetcher.get(url, options).json<number[]>();
-			// Cache the post list for 5 minutes
-			await KV.put(cacheKey, JSON.stringify(topStories), {
-				expirationTtl: CACHE_TTL,
-			});
-		}
+		// Fetch post list directly
+		const topStories = await firebaseFetcher.get(url, options).json<number[]>();
 
 		// slices every 10 items
 		const slices: number[][] = [];
@@ -190,31 +142,13 @@ export const fetchPosts = createIsomorphicFn()
 
 export const fetchPost = createIsomorphicFn()
 	.server(async (postId: number): Promise<FirebasePostDetail> => {
-		const { KV } = getBindings();
-
-		// Try to get cached post
-		const postCacheKey = `post:${postId}`;
-		const cachedPost = await KV.get(postCacheKey);
-
-		if (cachedPost) {
-			const data = JSON.parse(cachedPost) as FirebasePostDetail;
-			if (!data.deleted) {
-				return data;
-			}
-		}
-
-		// Fetch from API if not cached or deleted
+		// Fetch from API directly
 		const data = await firebaseFetcher
 			.get(`item/${postId}.json`)
 			.json<FirebasePostDetail | null>();
 		if (!data || data.deleted) {
 			throw notFound();
 		}
-
-		// Cache the post for 5 minutes
-		await KV.put(postCacheKey, JSON.stringify(data), {
-			expirationTtl: CACHE_TTL,
-		});
 
 		return data;
 	})
