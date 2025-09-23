@@ -22,7 +22,7 @@ export default function NavLinks({
 	return (
 		<nav className="flex-1 space-y-2 p-2">
 			<Link
-				className="flex cursor-default items-center gap-3 rounded-lg bg-orange-600 p-2 text-gray-700 text-white transition-colors hover:bg-orange-700/90 dark:bg-orange-800 dark:text-gray-200 dark:hover:bg-orange-800/90"
+				className="flex cursor-default items-center gap-3 rounded-lg bg-sky-600 p-2 text-gray-700 text-white transition-colors hover:bg-sky-700/90 dark:bg-sky-800 dark:text-gray-200 dark:hover:bg-sky-800/90"
 				params={{ category }}
 				search={(prev) => prev}
 				state={(prev) => ({ ...prev, view: "post" })}
