@@ -50,7 +50,7 @@ export default function SearchSection({ origin }: SearchSectionProps) {
 		<div className="flex h-full w-full flex-col items-center overflow-y-auto">
 			<div className="flex w-full items-center justify-between p-2">
 				<div className="rounded bg-gradient-to-br from-orange-700 to-orange-800 px-2 py-1 font-medium text-white">
-					hnfd
+					BetterHN
 				</div>
 				<SettingsDialog />
 			</div>

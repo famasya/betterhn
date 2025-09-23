@@ -1,5 +1,3 @@
-import { SearchIcon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
 	createFileRoute,
 	Outlet,
@@ -10,10 +8,10 @@ import {
 import { useStore } from "@tanstack/react-store";
 import { useEffect, useState } from "react";
 import { z } from "zod";
+import DesktopNav from "~/components/desktop-nav";
 import MobileNav from "~/components/mobile-nav";
-import NavLinks from "~/components/nav-links";
 import PostList from "~/components/post-list";
-import { Button } from "~/components/ui/button";
+import { Skeleton } from "~/components/ui/skeleton";
 import { fetchPosts } from "~/lib/fetch-posts";
 import { useInfinitePosts } from "~/lib/hooks/use-infinite-posts";
 import { userSettingsStore } from "~/lib/user-settings";
@@ -149,25 +147,11 @@ function RouteComponent() {
 
 			{/* Desktop Posts sidebar */}
 			<div className="flex hidden flex-col border-gray-200 border-r bg-white md:block dark:border-zinc-800 dark:bg-zinc-900">
-				<NavLinks
+				<DesktopNav
 					category={category}
 					isLoadingCategory={isLoading ? category : null}
 					postId={postId}
 				/>
-				<div className="flex w-full items-center justify-center">
-					<Button
-						onClick={() =>
-							navigate({
-								to: "..",
-								search: (prev) => prev,
-								state: (prev) => ({ ...prev, view: "post" }),
-							})
-						}
-						variant={"ghost"}
-					>
-						<HugeiconsIcon icon={SearchIcon} />
-					</Button>
-				</div>
 			</div>
 
 			<div className="hidden w-1/4 min-w-[300px] overflow-y-auto border-gray-200 border-r bg-white md:block dark:border-zinc-800 dark:bg-zinc-900">
@@ -210,14 +194,14 @@ function RouteComponent() {
 
 function LoadingPosts() {
 	return (
-		<div className="flex flex-col items-center justify-center gap-2 p-4">
+		<div className="flex flex-col items-center justify-center gap-2">
 			{Array.from({ length: 10 }).map((_, index) => (
-				<div className="flex w-full flex-col gap-2" key={index.toString()}>
-					<div className="h-10 w-full animate-pulse rounded-md bg-gray-200 dark:bg-zinc-800" />
-					<div className="flex h-4 flex-row justify-between gap-2 border-gray-200 border-b pb-2 dark:border-zinc-800">
-						<div className="h-full w-1/4 animate-pulse rounded-md bg-gray-200 dark:bg-zinc-800" />
-						<div className="h-full w-3/4 animate-pulse rounded-md bg-gray-200 dark:bg-zinc-800" />
-					</div>
+				<div
+					className="flex w-full flex-col gap-2 border-gray-200 border-b p-2 dark:border-zinc-800"
+					key={index.toString()}
+				>
+					<Skeleton className="h-10 w-full rounded-md" />
+					<Skeleton className="h-4 w-3/4 rounded-md" />
 				</div>
 			))}
 		</div>
