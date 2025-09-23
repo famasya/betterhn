@@ -198,6 +198,7 @@ function RouteComponent() {
 				category={category}
 				isLoadingCategory={isLoading ? category : null}
 				postId={post ? `${lowerCaseTitle(post.title)}-${post.id}` : ""}
+				view={isMobilePostsOpen ? "post" : "nav"}
 			/>
 		</div>
 	);

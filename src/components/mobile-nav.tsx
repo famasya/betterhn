@@ -1,4 +1,8 @@
-import { Loading03Icon, SearchIcon } from "@hugeicons/core-free-icons";
+import {
+	LeftToRightListDashIcon,
+	Loading03Icon,
+	SearchIcon,
+} from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { navLinks } from "~/components/nav-links";
@@ -15,10 +19,12 @@ export default function MobileNav({
 	category,
 	postId,
 	isLoadingCategory,
+	view,
 }: {
 	category: string;
 	postId: string;
 	isLoadingCategory: string | null;
+	view: "nav" | "post";
 }) {
 	const navigate = useNavigate();
 	return (
@@ -69,11 +75,13 @@ export default function MobileNav({
 					state={(prev) => {
 						// if in reading post, back to search
 						if (prev.view === "post" && postId !== "") {
+							console.log(1);
 							return {
 								...prev,
 								view: "post",
 							};
 						}
+
 						return {
 							...prev,
 							view: prev.view === "nav" ? "post" : "nav",
@@ -82,7 +90,11 @@ export default function MobileNav({
 					to={"/$category/{-$postId}"}
 				>
 					<Button variant={"outline"}>
-						<HugeiconsIcon icon={SearchIcon} />
+						{view === "post" ? (
+							<HugeiconsIcon icon={SearchIcon} />
+						) : (
+							<HugeiconsIcon icon={LeftToRightListDashIcon} />
+						)}
 					</Button>
 				</Link>
 			</div>

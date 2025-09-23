@@ -197,7 +197,7 @@ export type FirebasePostDetail = {
 	kids?: number[];
 	score: number;
 	time: number;
-	title: string;
+	title?: string;
 	type: "job" | "story" | "comment" | "poll" | "pollopt";
 	url?: string;
 	text?: string;
