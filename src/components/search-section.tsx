@@ -50,7 +50,7 @@ export default function SearchSection({ origin }: SearchSectionProps) {
 		<div className="flex h-full w-full flex-col items-center overflow-y-auto">
 			<div className="flex w-full items-center justify-between p-2">
 				<div className="rounded bg-gradient-to-br from-orange-700 to-orange-800 px-2 py-1 font-medium text-white">
-					hnfd
+					BetterHN
 				</div>
 				<SettingsDialog />
 			</div>
@@ -62,12 +62,13 @@ export default function SearchSection({ origin }: SearchSectionProps) {
 			</div>
 			<div className="mx-auto w-full max-w-4xl p-6 md:px-16">
 				<Input
+					autoFocus
 					className="rounded-full border border-black/10 text-lg shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/20 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-zinc-800 dark:focus-visible:ring-orange-400/30 dark:focus-visible:ring-offset-zinc-950"
 					onChange={(e) => {
 						setInputValue(e.target.value);
 						debouncedSearch(e.target.value);
 					}}
-					placeholder="Search..."
+					placeholder="Search for something..."
 					value={inputValue}
 				/>
 

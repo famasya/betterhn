@@ -1,6 +1,6 @@
-# hnfd - Sleek and Fast HN Reader
+# BetterHN - Sleek and Fast HN Reader
 
-hnfd is a sleek, fast, minimal Hacker News reader built for the web. It gives you quick access to posts, comments, and discussions with clean, lightweight design. No fluff, just content.
+BetterHN is a sleek, fast, minimal Hacker News reader built for the web. It gives you quick access to posts, comments, and discussions with clean, lightweight design. No fluff, just content.
 
 ## Features
 

@@ -14,10 +14,10 @@ import MobileNav from "~/components/mobile-nav";
 import NavLinks from "~/components/nav-links";
 import PostList from "~/components/post-list";
 import { Button } from "~/components/ui/button";
-import { fetchPosts } from "~/lib/fetch-posts";
+import { Skeleton } from "~/components/ui/skeleton";
 import { useInfinitePosts } from "~/lib/hooks/use-infinite-posts";
 import { userSettingsStore } from "~/lib/user-settings";
-import { cn, lowerCaseTitle } from "~/lib/utils";
+import { cn } from "~/lib/utils";
 
 const searchSchema = z.object({
 	search: z.string().optional(),
@@ -26,42 +26,8 @@ const searchSchema = z.object({
 });
 
 export const Route = createFileRoute("/_app")({
-	loader: async ({ location, context: { queryClient }, abortController }) => {
-		const category = location.pathname.split("/")[1] || "top";
-		const postsData = await queryClient.ensureQueryData({
-			queryKey: ["posts", category],
-			queryFn: async () => {
-				const { first10, remainingItems } = await fetchPosts(category, {
-					signal: abortController.signal,
-				});
-
-				for (const post of first10) {
-					queryClient.setQueryData(
-						["post", `${lowerCaseTitle(post.title)}-${post.id}`],
-						{
-							post,
-							initialComments: [],
-							remainingCommentSlices: [],
-						}
-					);
-				}
-
-				return {
-					first10,
-					remainingItems,
-					category,
-				};
-			},
-		});
-
-		return {
-			...postsData,
-		};
-	},
 	validateSearch: (search) => searchSchema.parse(search),
 	component: RouteComponent,
-	staleTime: 5 * 60 * 1000, // 5 minutes
-	gcTime: 10 * 60 * 1000, // 10 minutes
 });
 
 function RouteComponent() {
@@ -73,11 +39,7 @@ function RouteComponent() {
 	const category = paths[1] || "top";
 	const postId = paths[2] || "";
 	const activePostId = postId?.split("-").pop();
-	const loaderData = Route.useLoaderData();
 	const compactMode = useStore(userSettingsStore, (state) => state.compactMode);
-
-	// Use loader data as initial data only if it matches current category
-	const shouldUseLoaderData = loaderData.category === category;
 
 	const {
 		posts,
@@ -88,8 +50,6 @@ function RouteComponent() {
 		error,
 	} = useInfinitePosts({
 		category,
-		initialPosts: shouldUseLoaderData ? loaderData.first10 : [],
-		remainingItems: shouldUseLoaderData ? loaderData.remainingItems : [],
 	});
 	const [isMobilePostsOpen, setIsMobilePostsOpen] = useState(false);
 	const navigate = useNavigate();
@@ -158,7 +118,10 @@ function RouteComponent() {
 					<Button
 						onClick={() =>
 							navigate({
-								to: "..",
+								to: "/$category",
+								params: {
+									category,
+								},
 								search: (prev) => prev,
 								state: (prev) => ({ ...prev, view: "post" }),
 							})
@@ -212,12 +175,12 @@ function LoadingPosts() {
 	return (
 		<div className="flex flex-col items-center justify-center gap-2 p-4">
 			{Array.from({ length: 10 }).map((_, index) => (
-				<div className="flex w-full flex-col gap-2" key={index.toString()}>
-					<div className="h-10 w-full animate-pulse rounded-md bg-gray-200 dark:bg-zinc-800" />
-					<div className="flex h-4 flex-row justify-between gap-2 border-gray-200 border-b pb-2 dark:border-zinc-800">
-						<div className="h-full w-1/4 animate-pulse rounded-md bg-gray-200 dark:bg-zinc-800" />
-						<div className="h-full w-3/4 animate-pulse rounded-md bg-gray-200 dark:bg-zinc-800" />
-					</div>
+				<div
+					className="flex w-full flex-col gap-2 border-gray-200 border-b pb-2 dark:border-zinc-800"
+					key={index.toString()}
+				>
+					<Skeleton className="h-10 w-full rounded-md" />
+					<Skeleton className="h-4 w-3/4 rounded-md" />
 				</div>
 			))}
 		</div>

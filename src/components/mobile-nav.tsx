@@ -71,7 +71,7 @@ export default function MobileNav({
 						if (prev.view === "post" && postId !== "") {
 							return {
 								...prev,
-								view: "post",
+								view: undefined,
 							};
 						}
 						return {
