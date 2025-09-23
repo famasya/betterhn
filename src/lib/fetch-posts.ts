@@ -3,6 +3,7 @@ import { createIsomorphicFn } from "@tanstack/react-start";
 import type { Options } from "ky";
 import { getBindings } from "./bindings";
 import { firebaseFetcher } from "./fetcher";
+import { getBrowserQueryClient } from "./query-client";
 import type { FirebasePostDetail } from "./types";
 
 const CACHE_TTL = 300; // 5 minutes in seconds
@@ -73,13 +74,19 @@ export const fetchPostBatch = createIsomorphicFn()
 		};
 	})
 	.client(async (ids: number[], options?: Options) => {
-		// Fetch posts directly without caching
+		// Fetch posts directly with queryClient
+		const queryClient = getBrowserQueryClient();
 		const getItems = await Promise.allSettled(
 			ids.map((postId) =>
-				firebaseFetcher
-					.get(`item/${postId}.json`, options)
-					.json<FirebasePostDetail | null>()
-					.then((data) => ({ postId, data }))
+				queryClient.ensureQueryData({
+					queryKey: ["post", postId],
+					staleTime: 5 * 60 * 1000, // 5 minutes
+					gcTime: 10 * 60 * 1000, // 10 minutes
+					queryFn: async () =>
+						await firebaseFetcher
+							.get(`item/${postId}.json`, options)
+							.json<FirebasePostDetail | null>(),
+				})
 			)
 		);
 
@@ -89,7 +96,7 @@ export const fetchPostBatch = createIsomorphicFn()
 		for (const [index, item] of getItems.entries()) {
 			const postId = ids[index];
 			if (item.status === "fulfilled") {
-				const { data: post } = item.value;
+				const post = item.value;
 				if (post && !post.deleted) {
 					successItems.push(post);
 				}
@@ -158,8 +165,14 @@ export const fetchPosts = createIsomorphicFn()
 		// fetch post lists
 		const url = resolveCategory(type);
 
-		// Direct fetch without caching on client
-		const topStories = await firebaseFetcher.get(url, options).json<number[]>();
+		// Direct fetch with queryClient
+		const queryClient = getBrowserQueryClient();
+		const topStories = await queryClient.ensureQueryData({
+			queryKey: ["stories", type],
+			staleTime: 5 * 60 * 1000, // 5 minutes
+			gcTime: 10 * 60 * 1000, // 10 minutes
+			queryFn: () => firebaseFetcher.get(url, options).json<number[]>(),
+		});
 
 		// slices every 10 items
 		const slices: number[][] = [];
@@ -189,46 +202,58 @@ export const fetchPosts = createIsomorphicFn()
 	});
 
 export const fetchPost = createIsomorphicFn()
-	.server(async (postId: number): Promise<FirebasePostDetail> => {
-		const { KV } = getBindings();
+	.server(
+		async (postId: number, options?: Options): Promise<FirebasePostDetail> => {
+			const { KV } = getBindings();
 
-		// Try to get cached post
-		const postCacheKey = `post:${postId}`;
-		const cachedPost = await KV.get(postCacheKey);
+			// Try to get cached post
+			const postCacheKey = `post:${postId}`;
+			const cachedPost = await KV.get(postCacheKey);
 
-		if (cachedPost) {
-			const data = JSON.parse(cachedPost) as FirebasePostDetail;
-			if (!data.deleted) {
-				return data;
+			if (cachedPost) {
+				const data = JSON.parse(cachedPost) as FirebasePostDetail;
+				if (!data.deleted) {
+					return data;
+				}
 			}
+
+			// Fetch from API if not cached or deleted
+			const data = await firebaseFetcher
+				.get(`item/${postId}.json`, options)
+				.json<FirebasePostDetail | null>();
+			if (!data || data.deleted) {
+				throw notFound();
+			}
+
+			// Cache the post for 5 minutes
+			await KV.put(postCacheKey, JSON.stringify(data), {
+				expirationTtl: CACHE_TTL,
+			});
+
+			return data;
 		}
-
-		// Fetch from API if not cached or deleted
-		const data = await firebaseFetcher
-			.get(`item/${postId}.json`)
-			.json<FirebasePostDetail | null>();
-		if (!data || data.deleted) {
-			throw notFound();
+	)
+	.client(
+		async (postId: number, options?: Options): Promise<FirebasePostDetail> => {
+			// Direct fetch with queryClient
+			const queryClient = getBrowserQueryClient();
+			const result = await queryClient.ensureQueryData({
+				queryKey: ["post", postId],
+				staleTime: 5 * 60 * 1000, // 5 minutes
+				gcTime: 10 * 60 * 1000, // 10 minutes
+				queryFn: async () => {
+					const data = await firebaseFetcher
+						.get(`item/${postId}.json`, options)
+						.json<FirebasePostDetail | null>();
+					if (!data || data.deleted) {
+						throw notFound();
+					}
+					return data;
+				},
+			});
+			return result;
 		}
-
-		// Cache the post for 5 minutes
-		await KV.put(postCacheKey, JSON.stringify(data), {
-			expirationTtl: CACHE_TTL,
-		});
-
-		return data;
-	})
-	.client(async (postId: number): Promise<FirebasePostDetail> => {
-		// Direct fetch without caching on client
-		const data = await firebaseFetcher
-			.get(`item/${postId}.json`)
-			.json<FirebasePostDetail | null>();
-		if (!data || data.deleted) {
-			throw notFound();
-		}
-
-		return data;
-	});
+	);
 
 const resolveCategory = (type: string) => {
 	let url = "topstories.json";

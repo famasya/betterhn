@@ -53,7 +53,7 @@ export default function NavLinks({
 								resetScroll={false}
 								search={(prev) => prev}
 								state={(prev) => ({ ...prev, view: "nav" })}
-								to={postId.length > 0 ? "/$category/$postId" : link.href}
+								to={postId.length > 0 ? "/$category/{-$postId}" : link.href}
 							>
 								{`/${isLoadingCategory}` === link.href ? (
 									<HugeiconsIcon

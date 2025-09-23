@@ -216,7 +216,7 @@ const SearchResultItem = memo(function SearchResultItemComponent({
 							}}
 							search={(prev) => prev}
 							state={(prev) => ({ ...prev, view: "post" })}
-							to={"/$category/$postId"}
+							to={"/$category/{-$postId}"}
 						>
 							<p className="font-medium">{post.title}</p>
 							<p className="mt-2 text-gray-500 text-sm">
