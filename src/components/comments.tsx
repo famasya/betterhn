@@ -30,9 +30,9 @@ type CommentsProps = {
 const borderColorLevel = (level: number) => {
 	switch (level % 6) {
 		case 0:
-			return "dark:border-teal-400/50 border-teal-400/70";
+			return "dark:border-amber-400/50 border-amber-400/70";
 		case 1:
-			return "dark:border-green-400/50 border-teal-400/70";
+			return "dark:border-green-400/50 border-green-400/70";
 		case 2:
 			return "dark:border-yellow-400/50 border-yellow-400/70";
 		case 3:
@@ -42,7 +42,7 @@ const borderColorLevel = (level: number) => {
 		case 5:
 			return "dark:border-purple-400/50 border-purple-400/70";
 		default:
-			return "dark:border-teal-400/50 border-teal-400/70";
+			return "dark:border-pink-400/50 border-pink-400/70";
 	}
 };
 
@@ -135,7 +135,7 @@ const CommentItem = memo(function CommentItemComponent({
 					<div className="flex items-center gap-1 font-medium">
 						<HugeiconsIcon icon={UserSquareIcon} size={18} />
 						<a
-							className="text-teal-600 no-underline hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300"
+							className="text-emerald-600 no-underline hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300"
 							href={`https://news.ycombinator.com/user?id=${comment.by}`}
 							rel="noopener noreferrer"
 							target="_blank"

@@ -3,6 +3,7 @@ import type { Options } from "ky";
 import type { CommentItem } from "~/functions/load-comments";
 import { firebaseFetcher } from "~/lib/fetcher";
 import { getBindings } from "./bindings";
+import { getBrowserQueryClient } from "./query-client";
 
 const CACHE_TTL = 300; // 5 minutes in seconds
 
@@ -62,23 +63,28 @@ export const fetchComments = createIsomorphicFn()
 		};
 	})
 	.client(async (commentIds: number[], options?: Options) => {
-		// Direct fetch without caching on client
-		const getItems = await Promise.allSettled(
-			commentIds.map((commentId) =>
-				firebaseFetcher
-					.get(`item/${commentId}.json`, options)
-					.json<CommentItem | null>()
-					.then((data) => ({ commentId, data }))
+		// fetch with queryClient
+		const queryClient = getBrowserQueryClient();
+		const comments = await Promise.allSettled(
+			commentIds.map(async (commentId) =>
+				queryClient.ensureQueryData({
+					queryKey: ["comment", commentId],
+					staleTime: 5 * 60 * 1000, // 5 minutes
+					gcTime: 10 * 60 * 1000, // 10 minutes
+					queryFn: async () =>
+						await firebaseFetcher
+							.get(`item/${commentId}.json`, options)
+							.json<CommentItem | null>(),
+				})
 			)
 		);
-
 		const successItems: CommentItem[] = [];
 		const failedItems: number[] = [];
 
-		for (const [index, item] of getItems.entries()) {
+		for (const [index, item] of comments.entries()) {
 			const commentId = commentIds[index];
 			if (item.status === "fulfilled") {
-				const { data: comment } = item.value;
+				const comment = item.value;
 				if (comment) {
 					successItems.push(comment);
 				}

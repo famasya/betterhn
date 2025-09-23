@@ -10,22 +10,14 @@ import DOMPurify from "isomorphic-dompurify";
 import Comments from "~/components/comments";
 import SearchSection from "~/components/search-section";
 import { Button } from "~/components/ui/button";
-import type { CommentItem } from "~/functions/load-comments";
 import type { FirebasePostDetail } from "~/lib/types";
 
 type MainContentProps = {
 	post?: FirebasePostDetail | null;
-	comments?: CommentItem[];
-	remainingCommentSlices?: number[][];
 	category: string;
 };
 
-export default function MainContent({
-	post,
-	comments = [],
-	remainingCommentSlices = [],
-	category,
-}: MainContentProps) {
+export default function MainContent({ post, category }: MainContentProps) {
 	if (!post) {
 		return <SearchSection origin={category} />;
 	}
@@ -43,9 +35,9 @@ export default function MainContent({
 			{/* Comments Section */}
 			<Comments
 				commentIds={post.kids}
-				initialComments={comments}
+				initialComments={[]}
 				postId={post.id}
-				remainingCommentSlices={remainingCommentSlices}
+				remainingCommentSlices={[]}
 				totalComments={post.descendants}
 			/>
 		</div>

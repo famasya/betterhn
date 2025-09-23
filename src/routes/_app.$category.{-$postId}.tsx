@@ -13,19 +13,22 @@ import MobileNav from "~/components/mobile-nav";
 import { NotFound } from "~/components/not-found";
 import PostList from "~/components/post-list";
 import { Skeleton } from "~/components/ui/skeleton";
-import { fetchComments } from "~/lib/fetch-comments";
 import { fetchPost, fetchPosts } from "~/lib/fetch-posts";
 import { useInfinitePosts } from "~/lib/hooks/use-infinite-posts";
+import type { FirebasePostDetail } from "~/lib/types";
 import { userSettingsStore } from "~/lib/user-settings";
 import { cn, lowerCaseTitle } from "~/lib/utils";
+
+type PostContent = {
+	post: FirebasePostDetail | null;
+};
 
 export const Route = createFileRoute("/_app/$category/{-$postId}")({
 	loader: async ({
 		params: { postId, category },
 		context: { queryClient },
-		preload,
 	}) => {
-		const postsData = await queryClient.ensureQueryData({
+		const posts = await queryClient.ensureQueryData({
 			queryKey: ["posts", category],
 			queryFn: async ({ signal }) => {
 				const { first10, remainingItems } = await fetchPosts(category, {
@@ -33,13 +36,11 @@ export const Route = createFileRoute("/_app/$category/{-$postId}")({
 				});
 
 				for (const post of first10) {
+					// fetch post comments
 					queryClient.setQueryData(
 						["post", `${lowerCaseTitle(post.title)}-${post.id}`],
 						{
 							post,
-							comments: [],
-							failedCommentIds: [],
-							remainingCommentSlices: [],
 						}
 					);
 				}
@@ -52,7 +53,7 @@ export const Route = createFileRoute("/_app/$category/{-$postId}")({
 			},
 		});
 
-		const content = await queryClient.ensureQueryData({
+		const content = await queryClient.ensureQueryData<PostContent>({
 			queryKey: ["post", postId],
 			staleTime: 5 * 60 * 1000, // 5 minutes
 			gcTime: 10 * 60 * 1000, // 10 minutes
@@ -60,9 +61,6 @@ export const Route = createFileRoute("/_app/$category/{-$postId}")({
 				if (!postId) {
 					return {
 						post: null,
-						comments: [],
-						failedCommentIds: [],
-						remainingCommentSlices: [],
 					};
 				}
 
@@ -72,32 +70,17 @@ export const Route = createFileRoute("/_app/$category/{-$postId}")({
 				}
 
 				const post = await fetchPost(postIdNum, { signal });
-
-				// only load comments if preload is true
-				if (post.kids && preload) {
-					const { comments, failedIds: failedCommentIds } = await fetchComments(
-						post.kids,
-						{ signal }
-					);
-					return {
-						post,
-						comments,
-						failedCommentIds,
-						remainingCommentSlices: [],
-					};
-				}
 				return {
 					post,
-					comments: [],
-					failedCommentIds: [],
-					remainingCommentSlices: [],
 				};
 			},
 		});
 
+		// console.log(content, 111)
+
 		return {
 			content,
-			...postsData,
+			...posts,
 		};
 	},
 	component: RouteComponent,
@@ -122,7 +105,7 @@ export const Route = createFileRoute("/_app/$category/{-$postId}")({
 
 function RouteComponent() {
 	const { content, category, first10, remainingItems } = Route.useLoaderData();
-	const { post, comments = [], remainingCommentSlices = [] } = content;
+	const { post } = content;
 
 	const view = useRouterState({
 		select: (state) => state.location.state?.view,
@@ -217,12 +200,7 @@ function RouteComponent() {
 
 			{/* Main content */}
 			<div className="flex-1 overflow-hidden">
-				<MainContent
-					category={category}
-					comments={comments}
-					post={post}
-					remainingCommentSlices={remainingCommentSlices}
-				/>
+				<MainContent category={category} post={post} />
 			</div>
 
 			<MobileNav
