@@ -42,10 +42,14 @@ export const useInfinitePosts = ({
 		number
 	>({
 		queryKey: ["infinite-posts", category],
-		queryFn: async ({ pageParam = 0, queryKey }): Promise<InfinitePageData> => {
+		queryFn: async ({
+			pageParam = 0,
+			queryKey,
+			signal,
+		}): Promise<InfinitePageData> => {
 			if (pageParam === 0) {
 				// Always fetch fresh data for page 0 to get current remainingItems
-				const freshData = await fetchPosts(category);
+				const freshData = await fetchPosts(category, { signal });
 				return {
 					posts: freshData.first10,
 					remainingItems: freshData.remainingItems,
@@ -76,7 +80,7 @@ export const useInfinitePosts = ({
 				};
 			}
 
-			const result = await fetchPostBatch(slice);
+			const result = await fetchPostBatch(slice, { signal });
 
 			// Handle both old and new response formats
 			const { posts, failedIds = [] } = result;

@@ -24,13 +24,13 @@ const searchSchema = z.object({
 });
 
 export const Route = createFileRoute("/_app")({
-	loader: async ({ location, context: { queryClient }, abortController }) => {
+	loader: async ({ location, context: { queryClient } }) => {
 		const category = location.pathname.split("/")[1] || "top";
 		const postsData = await queryClient.ensureQueryData({
 			queryKey: ["posts", category],
-			queryFn: async () => {
+			queryFn: async ({ signal }) => {
 				const { first10, remainingItems } = await fetchPosts(category, {
-					signal: abortController.signal,
+					signal,
 				});
 
 				for (const post of first10) {
