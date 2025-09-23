@@ -2,7 +2,6 @@ import {
 	createFileRoute,
 	Outlet,
 	useLocation,
-	useNavigate,
 	useRouterState,
 } from "@tanstack/react-router";
 import { useStore } from "@tanstack/react-store";
@@ -90,7 +89,6 @@ function RouteComponent() {
 		remainingItems: shouldUseLoaderData ? loaderData.remainingItems : [],
 	});
 	const [isMobilePostsOpen, setIsMobilePostsOpen] = useState(false);
-	const navigate = useNavigate();
 
 	useEffect(() => {
 		setIsMobilePostsOpen(view === "nav");
@@ -128,14 +126,6 @@ function RouteComponent() {
 										fetchNextPage={fetchNextPage}
 										hasNextPage={hasNextPage}
 										isFetchingNextPage={isFetchingNextPage}
-										onPostClick={() =>
-											navigate({
-												to: ".",
-												search: (prev) => ({
-													...prev,
-												}),
-											})
-										}
 										posts={posts}
 									/>
 								)}
@@ -165,14 +155,6 @@ function RouteComponent() {
 						fetchNextPage={fetchNextPage}
 						hasNextPage={hasNextPage}
 						isFetchingNextPage={isFetchingNextPage}
-						onPostClick={() =>
-							navigate({
-								to: ".",
-								search: (prev) => ({
-									...prev,
-								}),
-							})
-						}
 						posts={posts}
 					/>
 				)}

@@ -19,7 +19,6 @@ type Params = {
 	fetchNextPage?: () => void;
 	error?: Error | null;
 	activePostId?: number;
-	onPostClick?: () => void;
 };
 export default function PostList({
 	posts,
@@ -29,7 +28,6 @@ export default function PostList({
 	isFetchingNextPage,
 	fetchNextPage,
 	error,
-	onPostClick,
 }: Params) {
 	if (error) {
 		console.error(error);
@@ -47,7 +45,6 @@ export default function PostList({
 					)}
 					key={post.id}
 					onClick={() => {
-						onPostClick?.();
 						navigate({
 							params: {
 								category: category || "top",
@@ -60,7 +57,6 @@ export default function PostList({
 					onKeyDown={(e) => {
 						if (e.key === "Enter" || e.key === " ") {
 							e.preventDefault();
-							onPostClick?.();
 							navigate({
 								to: "/$category/$postId",
 								params: {
@@ -78,7 +74,6 @@ export default function PostList({
 						onClick={(e: SyntheticEvent) => {
 							if (post.url) {
 								e.stopPropagation();
-								onPostClick?.();
 							}
 						}}
 						params={{
@@ -104,9 +99,6 @@ export default function PostList({
 						<div className="flex items-center gap-2">
 							<Link
 								className="flex items-center gap-1"
-								onClick={() => {
-									onPostClick?.();
-								}}
 								params={{
 									category: category || "top",
 									postId: `${lowerCaseTitle(post.title)}-${post.id}`,
