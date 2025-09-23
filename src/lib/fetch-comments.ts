@@ -21,6 +21,14 @@ export const fetchComments = createIsomorphicFn()
 			})
 		);
 
+		// Fold cached data in the result
+		const cachedCommentData = cachedComments
+			.filter(
+				(item): item is { commentId: number; data: CommentItem } =>
+					item !== null
+			)
+			.map((item) => item.data);
+
 		const uncachedIds = commentIds.filter(
 			(commentId) =>
 				!cachedComments.some((item) => item?.commentId === commentId)
@@ -35,7 +43,7 @@ export const fetchComments = createIsomorphicFn()
 			)
 		);
 
-		const successItems: CommentItem[] = [];
+		const successItems: CommentItem[] = [...cachedCommentData];
 		const failedItems: number[] = [];
 
 		for (const [index, item] of getItems.entries()) {
