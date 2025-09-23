@@ -49,9 +49,9 @@ export default function SearchSection({ origin }: SearchSectionProps) {
 	return (
 		<div className="flex h-full w-full flex-col items-center overflow-y-auto">
 			<div className="flex w-full items-center justify-between p-2">
-				<div className="rounded bg-gradient-to-br from-orange-700 to-orange-800 px-2 py-1 font-medium text-white">
+				<Button className="rounded bg-gradient-to-br from-sky-700 to-sky-800 px-2 py-1 font-medium text-white">
 					BetterHN
-				</div>
+				</Button>
 				<SettingsDialog />
 			</div>
 			<div className="flex flex-col items-center pt-2">
@@ -216,7 +216,7 @@ const SearchResultItem = memo(function SearchResultItemComponent({
 							}}
 							search={(prev) => prev}
 							state={(prev) => ({ ...prev, view: "post" })}
-							to={"/$category/$postId"}
+							to={"/$category/{-$postId}"}
 						>
 							<p className="font-medium">{post.title}</p>
 							<p className="mt-2 text-gray-500 text-sm">

@@ -2,93 +2,26 @@ import {
 	AnalyticsUpIcon,
 	Comment01Icon,
 	LinkSquare02Icon,
-	Loading03Icon,
 	Time04Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { createFileRoute, notFound } from "@tanstack/react-router";
 import { formatRelative } from "date-fns";
 import DOMPurify from "isomorphic-dompurify";
 import Comments from "~/components/comments";
-import { NotFound } from "~/components/not-found";
+import SearchSection from "~/components/search-section";
 import { Button } from "~/components/ui/button";
-import { type CommentItem, loadComments } from "~/functions/load-comments";
-import { fetchPost } from "../lib/fetch-posts";
-import type { FirebasePostDetail } from "../lib/types";
+import type { FirebasePostDetail } from "~/lib/types";
 
-export const Route = createFileRoute("/_app/$category/$postId")({
-	loader: async ({
-		params: { postId, category },
-		context: { queryClient },
-		preload,
-		abortController,
-	}) => {
-		const content = await queryClient.ensureQueryData({
-			queryKey: ["post", postId],
-			staleTime: 5 * 60 * 1000, // 5 minutes
-			gcTime: 10 * 60 * 1000, // 10 minutes
-			queryFn: async () => {
-				const postIdNum = Number(postId?.split("-").pop());
-				if (!postIdNum) {
-					throw notFound();
-				}
+type MainContentProps = {
+	post?: FirebasePostDetail | null;
+	category: string;
+};
 
-				const post = await fetchPost(postIdNum);
+export default function MainContent({ post, category }: MainContentProps) {
+	if (!post) {
+		return <SearchSection origin={category} />;
+	}
 
-				// if preload, also fetch comments
-				const kids = post.kids || [];
-				const comments: CommentItem[] = [];
-				const remainingCommentSlices: number[][] = [];
-				if (preload && kids.length > 0) {
-					// get first 10 comments
-					const { comments: preloadComments } = await loadComments({
-						data: kids.slice(0, 10),
-						signal: abortController.signal,
-					});
-					queryClient.setQueryData(["comments", postId], preloadComments);
-					comments.push(...preloadComments);
-
-					// remaining comments
-					for (let i = 10; i < kids.length; i += 10) {
-						remainingCommentSlices.push(kids.slice(i, i + 10));
-					}
-				}
-				return {
-					post,
-					comments,
-					remainingCommentSlices,
-				};
-			},
-		});
-		return {
-			content,
-			category,
-		};
-	},
-	component: RouteComponent,
-	head: ({ loaderData }) => ({
-		meta: [
-			{
-				title:
-					loaderData?.content?.post?.title ||
-					"BetterHN - Sleek and Fast HN Reader",
-			},
-		],
-	}),
-	notFoundComponent: () => (
-		<NotFound>That post has been removed or does not exist.</NotFound>
-	),
-	pendingComponent: () => (
-		<div className="flex h-[100dvh] flex-1 items-center justify-center gap-2 overflow-y-auto bg-zinc-50 pb-14 md:pb-0 dark:bg-black dark:text-zinc-400">
-			<HugeiconsIcon className="animate-spin" icon={Loading03Icon} size={36} />
-		</div>
-	),
-});
-
-function RouteComponent() {
-	const { content } = Route.useLoaderData();
-
-	const { post, comments, remainingCommentSlices } = content;
 	return (
 		<div
 			className="h-[100dvh] flex-1 overflow-y-auto bg-zinc-50 pb-14 md:pb-0 dark:bg-black"
@@ -102,9 +35,9 @@ function RouteComponent() {
 			{/* Comments Section */}
 			<Comments
 				commentIds={post.kids}
-				initialComments={comments}
+				initialComments={[]}
 				postId={post.id}
-				remainingCommentSlices={remainingCommentSlices}
+				remainingCommentSlices={[]}
 				totalComments={post.descendants}
 			/>
 		</div>
@@ -161,7 +94,7 @@ function PostBody({ post }: { post: FirebasePostDetail }) {
 			{post.url && (
 				<div className="mt-3">
 					<a
-						className="flex w-fit items-center gap-2 rounded-md border border-emerald-200 bg-emerald-100/40 px-2 py-1 text-emerald-600 text-sm hover:text-emerald-700 dark:border-emerald-800 dark:bg-emerald-800/40 dark:text-emerald-200 dark:hover:text-emerald-300"
+						className="flex w-fit items-center gap-2 rounded-md border border-sky-200 bg-sky-100/40 px-2 py-1 text-sky-600 text-sm hover:text-sky-700 dark:border-sky-800 dark:bg-sky-800/40 dark:text-sky-200 dark:hover:text-sky-300"
 						href={post.url}
 						rel="noopener noreferrer"
 						target="_blank"

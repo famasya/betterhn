@@ -5,6 +5,6 @@ export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
 
-export function lowerCaseTitle(title: string) {
-	return title.toLowerCase().replace(/[^a-z0-9]/g, "-");
+export function lowerCaseTitle(title?: string) {
+	return title?.toLowerCase().replace(/[^a-z0-9]/g, "-");
 }

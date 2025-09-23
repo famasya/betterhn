@@ -102,7 +102,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 				</noscript>
 				<HeadContent />
 			</head>
-			<body className="flex min-h-dvh flex-col">
+			<body className="flex min-h-dvh flex-col bg-zinc-50 dark:bg-black">
 				<QueryClientProvider client={queryClient}>
 					<TooltipProvider delayDuration={0}>{children}</TooltipProvider>
 				</QueryClientProvider>

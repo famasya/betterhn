@@ -22,11 +22,11 @@ export default function NavLinks({
 	return (
 		<nav className="flex-1 space-y-2 p-2">
 			<Link
-				className="flex cursor-default items-center gap-3 rounded-lg bg-orange-600 p-2 text-gray-700 text-white transition-colors hover:bg-orange-700/90 dark:bg-orange-800 dark:text-gray-200 dark:hover:bg-orange-800/90"
-				params={{ category }}
+				className="flex cursor-default items-center gap-3 rounded-lg bg-sky-600 p-2 text-gray-700 text-white transition-colors hover:bg-sky-500 dark:bg-sky-700 dark:text-gray-200 dark:hover:bg-sky-600"
+				params={{ category, postId: undefined }}
 				search={(prev) => prev}
 				state={(prev) => ({ ...prev, view: "post" })}
-				to={"/$category"}
+				to={"/$category/{-$postId}"}
 			>
 				<HugeiconsIcon className="h-5 w-5" icon={SearchIcon} />
 			</Link>
@@ -53,7 +53,7 @@ export default function NavLinks({
 								resetScroll={false}
 								search={(prev) => prev}
 								state={(prev) => ({ ...prev, view: "nav" })}
-								to={postId.length > 0 ? "/$category/$postId" : link.href}
+								to={postId.length > 0 ? "/$category/{-$postId}" : link.href}
 							>
 								{`/${isLoadingCategory}` === link.href ? (
 									<HugeiconsIcon

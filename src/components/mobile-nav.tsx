@@ -1,4 +1,8 @@
-import { Loading03Icon, SearchIcon } from "@hugeicons/core-free-icons";
+import {
+	LeftToRightListDashIcon,
+	Loading03Icon,
+	SearchIcon,
+} from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { navLinks } from "~/components/nav-links";
@@ -15,10 +19,12 @@ export default function MobileNav({
 	category,
 	postId,
 	isLoadingCategory,
+	view,
 }: {
 	category: string;
 	postId: string;
 	isLoadingCategory: string | null;
+	view: "nav" | "post";
 }) {
 	const navigate = useNavigate();
 	return (
@@ -33,7 +39,7 @@ export default function MobileNav({
 				}}
 				value={`/${category}`}
 			>
-				<SelectTrigger className="flex flex-1 border-orange-300 bg-orange-200 text-orange-700 hover:bg-orange-200 focus:ring-orange-300 dark:border-orange-700/50 dark:bg-orange-800 dark:text-orange-200 dark:hover:bg-orange-800">
+				<SelectTrigger className="flex flex-1 border-orange-300 bg-orange-200 text-orange-800 hover:bg-orange-200 focus:ring-orange-300 dark:border-orange-700/50 dark:bg-orange-800 dark:text-orange-200 dark:hover:bg-orange-800">
 					<div className="flex w-full items-center justify-between">
 						<SelectValue placeholder="Navigate" />
 						{isLoadingCategory === category && (
@@ -64,25 +70,30 @@ export default function MobileNav({
 			</Select>
 			<div className="flex items-center">
 				<Link
-					params={{ category }}
+					params={{ category, postId: undefined }}
 					search={(prev) => prev}
 					state={(prev) => {
 						// if in reading post, back to search
 						if (prev.view === "post" && postId !== "") {
 							return {
 								...prev,
-								view: "post",
+								view: "nav",
 							};
 						}
+
 						return {
 							...prev,
 							view: prev.view === "nav" ? "post" : "nav",
 						};
 					}}
-					to={"/$category"}
+					to={"/$category/{-$postId}"}
 				>
 					<Button variant={"outline"}>
-						<HugeiconsIcon icon={SearchIcon} />
+						{view === "post" ? (
+							<HugeiconsIcon icon={SearchIcon} />
+						) : (
+							<HugeiconsIcon icon={LeftToRightListDashIcon} />
+						)}
 					</Button>
 				</Link>
 			</div>

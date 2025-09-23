@@ -15,9 +15,12 @@
 
 	html,
 	body {
-		@apply text-gray-900;
+		@apply text-gray-900 bg-zinc-50;
 		@apply dark:bg-black;
 		@apply dark:text-white;
+		height: 100%;
+		margin: 0;
+		padding: 0;
 	}
 
 	.using-mouse * {
@@ -167,7 +170,7 @@
 	}
 
 	body #post-description {
-		@apply font-sans break-words whitespace-pre-wrap text-gray-800 text-sm leading-relaxed dark:text-gray-300 [&_a]:break-words [&_a]:text-orange-600 [&_a]:hover:text-orange-700 [&_a]:dark:text-orange-400 [&_a]:dark:hover:text-orange-500;
+		@apply font-sans break-words whitespace-pre-wrap text-gray-800 text-sm leading-relaxed dark:text-gray-300 [&_a]:break-words [&_a]:text-orange-600 [&_a]:hover:text-orange-700 [&_a]:dark:text-orange-400 [&_a]:dark:hover:text-orange-500 [&_p]:mt-2;
 	}
 
 	#category-page {
