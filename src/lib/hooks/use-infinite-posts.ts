@@ -3,7 +3,6 @@ import {
 	useInfiniteQuery,
 	useQueryClient,
 } from "@tanstack/react-query";
-import { useEffect } from "react";
 import { fetchPostBatch, fetchPosts } from "~/lib/fetch-posts";
 import type { FirebasePostDetail } from "../types";
 
@@ -11,11 +10,6 @@ type UseInfinitePostsParams = {
 	category: string;
 	initialPosts?: FirebasePostDetail[];
 	remainingItems?: number[][];
-};
-
-type PostsQueryData = {
-	first10: FirebasePostDetail[];
-	remainingItems: number[][];
 };
 
 type InfinitePageData = {
@@ -31,22 +25,6 @@ export const useInfinitePosts = ({
 	remainingItems = [],
 }: UseInfinitePostsParams) => {
 	const queryClient = useQueryClient();
-
-	// Seed TanStack Query cache with SSR data on first mount
-	useEffect(() => {
-		if (initialPosts.length > 0 && remainingItems.length > 0) {
-			const cacheKey = ["posts", category];
-			const existingData = queryClient.getQueryData<PostsQueryData>(cacheKey);
-
-			// Only seed if we don't already have data for this category
-			if (!existingData) {
-				queryClient.setQueryData<PostsQueryData>(cacheKey, {
-					first10: initialPosts,
-					remainingItems,
-				});
-			}
-		}
-	}, [category, initialPosts, remainingItems, queryClient]);
 
 	const {
 		data,
@@ -101,12 +79,23 @@ export const useInfinitePosts = ({
 			const result = await fetchPostBatch(slice);
 
 			// Handle both old and new response formats
-			const posts = Array.isArray(result) ? result : result.posts;
-			const failedIds = Array.isArray(result) ? [] : result.failedIds || [];
-
-			// If there are failed IDs, we could handle them here
-			// For now, we'll just return the successful posts
-
+			const { posts, failedIds = [] } = result;
+			// Re-queue transient failures as another slice on page 0
+			if (failedIds.length > 0) {
+				queryClient.setQueryData<InfiniteData<InfinitePageData, number>>(
+					["infinite-posts", category],
+					(pageData) => {
+						if (!pageData?.pages?.[0]) {
+							return pageData;
+						}
+						const pages = [...pageData.pages];
+						const first = { ...pages[0] };
+						first.remainingItems = [...first.remainingItems, failedIds];
+						pages[0] = first;
+						return { ...pageData, pages };
+					}
+				);
+			}
 			return {
 				posts,
 				remainingItems: firstPageData.remainingItems,
@@ -115,20 +104,30 @@ export const useInfinitePosts = ({
 			};
 		},
 		initialPageParam: 0,
-		getNextPageParam: (
-			lastPage: InfinitePageData,
-			allPages: InfinitePageData[]
-		) => {
-			// Check if we have more slices to load
-			const firstPageData = allPages[0];
+		initialData:
+			initialPosts.length > 0 && remainingItems.length > 0
+				? {
+						pages: [
+							{
+								posts: initialPosts,
+								remainingItems,
+								pageIndex: 0,
+								failedIds: [],
+							},
+						],
+						pageParams: [0],
+					}
+				: undefined,
+		getNextPageParam: (lastPage: InfinitePageData) => {
+			/// Check if we have more slices to load (consult updated cache)
+			const queryData = queryClient.getQueryData<
+				InfiniteData<InfinitePageData, number>
+			>(["infinite-posts", category]);
+			const firstPageData = queryData?.pages?.[0];
 			if (!firstPageData?.remainingItems) {
 				return;
 			}
-
-			const currentPageIndex = lastPage.pageIndex;
-			const nextPageIndex = currentPageIndex + 1;
-
-			// We have more pages if there are more slices
+			const nextPageIndex = lastPage.pageIndex + 1;
 			return nextPageIndex <= firstPageData.remainingItems.length
 				? nextPageIndex
 				: undefined;
