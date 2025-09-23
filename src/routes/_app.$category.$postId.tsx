@@ -161,7 +161,7 @@ function PostBody({ post }: { post: FirebasePostDetail }) {
 			{post.url && (
 				<div className="mt-3">
 					<a
-						className="flex w-fit items-center gap-2 rounded-md border border-emerald-200 bg-emerald-100/40 px-2 py-1 text-emerald-600 text-sm hover:text-emerald-700 dark:border-emerald-800 dark:bg-emerald-800/40 dark:text-emerald-200 dark:hover:text-emerald-300"
+						className="flex w-fit items-center gap-2 rounded-md border border-sky-200 bg-sky-100/40 px-2 py-1 text-sky-600 text-sm hover:text-sky-700 dark:border-sky-800 dark:bg-sky-800/40 dark:text-sky-200 dark:hover:text-sky-300"
 						href={post.url}
 						rel="noopener noreferrer"
 						target="_blank"

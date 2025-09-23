@@ -97,7 +97,7 @@ function RouteComponent() {
 	return (
 		<div
 			className={cn(
-				"flex h-dvh flex-col overflow-hidden bg-zinc-50 md:flex-row dark:bg-black",
+				"flex h-dvh flex-col overflow-hidden overscroll-contain bg-zinc-50 md:flex-row dark:bg-black",
 				compactMode &&
 					"mx-auto w-full max-w-6xl border-black/20 border-r border-l dark:border-white/20"
 			)}
@@ -113,7 +113,7 @@ function RouteComponent() {
 									{category.charAt(0).toUpperCase() + category.slice(1)}
 								</h2>
 							</div>
-							<div className="flex-1 overflow-y-auto">
+							<div className="flex-1 overflow-y-auto overscroll-contain">
 								{isLoading ? (
 									<LoadingPosts />
 								) : (
@@ -144,7 +144,7 @@ function RouteComponent() {
 				/>
 			</div>
 
-			<div className="hidden w-1/4 min-w-[300px] overflow-y-auto border-gray-200 border-r bg-white md:block dark:border-zinc-800 dark:bg-zinc-900">
+			<div className="hidden w-1/4 min-w-[300px] overflow-y-auto overscroll-contain border-gray-200 border-r bg-white md:block dark:border-zinc-800 dark:bg-zinc-900">
 				{isLoading ? (
 					<LoadingPosts />
 				) : (

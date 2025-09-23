@@ -3,6 +3,7 @@ import {
 	Comment01Icon,
 	InformationCircleIcon,
 	Loading03FreeIcons,
+	MoveToIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Link, useNavigate } from "@tanstack/react-router";
@@ -130,7 +131,10 @@ export default function PostList({
 								size={16}
 							/>
 						) : (
-							"Load More Posts"
+							<div className="flex items-center gap-2">
+								<HugeiconsIcon icon={MoveToIcon} size={16} />{" "}
+								<span>Load More Posts</span>
+							</div>
 						)}
 					</Button>
 				</div>

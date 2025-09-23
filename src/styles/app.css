@@ -15,9 +15,12 @@
 
 	html,
 	body {
-		@apply text-gray-900;
+		@apply text-gray-900 bg-zinc-50;
 		@apply dark:bg-black;
 		@apply dark:text-white;
+		height: 100%;
+		margin: 0;
+		padding: 0;
 	}
 
 	.using-mouse * {
