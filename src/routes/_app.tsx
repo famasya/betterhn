@@ -146,7 +146,7 @@ function RouteComponent() {
 			)}
 
 			{/* Desktop Posts sidebar */}
-			<div className="flex hidden flex-col border-gray-200 border-r bg-white md:block dark:border-zinc-800 dark:bg-zinc-900">
+			<div className="hidden flex-col border-gray-200 border-r bg-white md:flex dark:border-zinc-800 dark:bg-zinc-900">
 				<DesktopNav
 					category={category}
 					isLoadingCategory={isLoading ? category : null}

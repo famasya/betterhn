@@ -78,15 +78,15 @@ export default function SettingsDialog() {
 							distraction-free interface to read Hacker News stories, comments,
 							and discussions.
 						</div>
-						<a
-							href="https://github.com/famasya/betterhn"
-							rel="noopener noreferrer"
-							target="_blank"
-						>
-							<Button className="mt-2" size="xs">
+						<Button asChild className="mt-2" size="xs">
+							<a
+								href="https://github.com/famasya/betterhn"
+								rel="noopener noreferrer"
+								target="_blank"
+							>
 								<HugeiconsIcon icon={GithubIcon} /> Source Code
-							</Button>
-						</a>
+							</a>
+						</Button>
 					</div>
 				</DialogDescription>
 			</DialogContent>

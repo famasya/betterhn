@@ -1,5 +1,9 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { useMemo, useRef, useState } from "react";
+import {
+	type InfiniteData,
+	useInfiniteQuery,
+	useQueryClient,
+} from "@tanstack/react-query";
+import { useEffect } from "react";
 import { fetchPostBatch, fetchPosts } from "~/lib/fetch-posts";
 import type { FirebasePostDetail } from "../types";
 
@@ -9,40 +13,40 @@ type UseInfinitePostsParams = {
 	remainingItems?: number[][];
 };
 
+type PostsQueryData = {
+	first10: FirebasePostDetail[];
+	remainingItems: number[][];
+};
+
+type InfinitePageData = {
+	posts: FirebasePostDetail[];
+	remainingItems: number[][];
+	pageIndex: number;
+	failedIds?: number[];
+};
+
 export const useInfinitePosts = ({
 	category,
 	initialPosts = [],
 	remainingItems = [],
 }: UseInfinitePostsParams) => {
-	const [failedIds, setFailedIds] = useState<Set<number>>(new Set());
-	const freshRemainingItemsRef = useRef<number[][]>([]);
-	const [initialLoad, setInitialLoad] = useState(true);
+	const queryClient = useQueryClient();
 
-	// If no initial data is provided, we'll fetch it in the query
-	const hasInitialData = initialPosts.length > 0 || remainingItems.length > 0;
+	// Seed TanStack Query cache with SSR data on first mount
+	useEffect(() => {
+		if (initialPosts.length > 0 && remainingItems.length > 0) {
+			const cacheKey = ["posts", category];
+			const existingData = queryClient.getQueryData<PostsQueryData>(cacheKey);
 
-	// Memoized slices with failed IDs re-added to the front
-	const enhancedSlices = useMemo(() => {
-		// Use fresh remaining items if available, otherwise use props
-		const actualRemainingItems =
-			freshRemainingItemsRef.current.length > 0
-				? freshRemainingItemsRef.current
-				: remainingItems;
-
-		if (failedIds.size === 0) {
-			return actualRemainingItems;
+			// Only seed if we don't already have data for this category
+			if (!existingData) {
+				queryClient.setQueryData<PostsQueryData>(cacheKey, {
+					first10: initialPosts,
+					remainingItems,
+				});
+			}
 		}
-
-		const failedIdsArray = Array.from(failedIds);
-		const failedSlices: number[][] = [];
-
-		// Group failed IDs into slices of 10
-		for (let i = 0; i < failedIdsArray.length; i += 10) {
-			failedSlices.push(failedIdsArray.slice(i, i + 10));
-		}
-
-		return [...failedSlices, ...actualRemainingItems];
-	}, [remainingItems, failedIds]);
+	}, [category, initialPosts, remainingItems, queryClient]);
 
 	const {
 		data,
@@ -51,96 +55,98 @@ export const useInfinitePosts = ({
 		isFetchingNextPage,
 		isLoading,
 		error,
-	} = useInfiniteQuery({
-		queryKey: [
-			"infinite-posts",
-			category,
-			enhancedSlices.length,
-			failedIds.size,
-		],
-		queryFn: async ({ pageParam }) => {
+		hasNextPage,
+	} = useInfiniteQuery<
+		InfinitePageData,
+		Error,
+		InfiniteData<InfinitePageData, number>,
+		["infinite-posts", string],
+		number
+	>({
+		queryKey: ["infinite-posts", category],
+		queryFn: async ({ pageParam = 0, queryKey }): Promise<InfinitePageData> => {
 			if (pageParam === 0) {
-				// If we have initial posts, use them
-				if (hasInitialData && initialLoad) {
-					setInitialLoad(false);
-					return { posts: initialPosts, sliceIndex: -1, failedIds: [] };
-				}
-				// Otherwise, fetch fresh data for this category
+				// Always fetch fresh data for page 0 to get current remainingItems
 				const freshData = await fetchPosts(category);
-
-				// Store fresh remaining items in ref
-				freshRemainingItemsRef.current = freshData.remainingItems;
 				return {
 					posts: freshData.first10,
-					sliceIndex: -1,
-					failedIds: [],
+					remainingItems: freshData.remainingItems,
+					pageIndex: 0,
 				};
 			}
 
+			// For subsequent pages, we need the remainingItems from page 0
+			// Get existing query data to access the first page's remainingItems
+			const existingData =
+				queryClient.getQueryData<InfiniteData<InfinitePageData, number>>(
+					queryKey
+				);
+
+			const firstPageData = existingData?.pages[0];
+			if (!firstPageData?.remainingItems) {
+				return { posts: [], remainingItems: [], pageIndex: pageParam };
+			}
+
 			const sliceIndex = pageParam - 1;
-			const slice = enhancedSlices[sliceIndex];
+			const slice = firstPageData.remainingItems[sliceIndex];
 
 			if (!slice) {
-				return { posts: [], sliceIndex, failedIds: [] };
+				return {
+					posts: [],
+					remainingItems: firstPageData.remainingItems,
+					pageIndex: pageParam,
+				};
 			}
 
 			const result = await fetchPostBatch(slice);
 
 			// Handle both old and new response formats
-			if (Array.isArray(result)) {
-				// Old format - just posts array
-				return { posts: result, sliceIndex, failedIds: [] };
-			}
-			// New format - object with posts and failedIds
-			const newFailedIds = result.failedIds || [];
+			const posts = Array.isArray(result) ? result : result.posts;
+			const failedIds = Array.isArray(result) ? [] : result.failedIds || [];
 
-			// Update our failed IDs state - remove successful ones, add new failed ones
-			setFailedIds((prev) => {
-				const updated = new Set(prev);
-				// Remove IDs that were successfully fetched this time
-				for (const id of slice) {
-					if (!newFailedIds.includes(id)) {
-						updated.delete(id);
-					}
-				}
-				// Add newly failed IDs
-				for (const id of newFailedIds) {
-					updated.add(id);
-				}
-				return updated;
-			});
+			// If there are failed IDs, we could handle them here
+			// For now, we'll just return the successful posts
 
-			return { posts: result.posts, sliceIndex, failedIds: newFailedIds };
+			return {
+				posts,
+				remainingItems: firstPageData.remainingItems,
+				pageIndex: pageParam,
+				failedIds,
+			};
 		},
 		initialPageParam: 0,
-		getNextPageParam: (lastPage, _allPages) => {
-			const nextSliceIndex = lastPage.sliceIndex + 1;
-			return nextSliceIndex < enhancedSlices.length
-				? nextSliceIndex + 1
+		getNextPageParam: (
+			lastPage: InfinitePageData,
+			allPages: InfinitePageData[]
+		) => {
+			// Check if we have more slices to load
+			const firstPageData = allPages[0];
+			if (!firstPageData?.remainingItems) {
+				return;
+			}
+
+			const currentPageIndex = lastPage.pageIndex;
+			const nextPageIndex = currentPageIndex + 1;
+
+			// We have more pages if there are more slices
+			return nextPageIndex <= firstPageData.remainingItems.length
+				? nextPageIndex
 				: undefined;
 		},
-		initialData: hasInitialData
-			? {
-					pages: [{ posts: initialPosts, sliceIndex: -1, failedIds: [] }],
-					pageParams: [0],
-				}
-			: undefined,
 		staleTime: 5 * 60 * 1000, // 5 minutes
 		gcTime: 30 * 60 * 1000, // 30 minutes
 	});
 
-	const allPosts = data?.pages.flatMap((page) => page.posts) || initialPosts;
-
-	// Calculate hasNextPage based on enhanced slices
-	// Page 0 contains initial posts, then we need one page per slice
-	const actualHasNextPage = (data?.pages.length || 0) <= enhancedSlices.length;
+	// Get all posts from all pages
+	const allPosts =
+		data?.pages?.flatMap((page: InfinitePageData) => page.posts) || [];
 
 	return {
 		posts: allPosts,
 		fetchNextPage,
 		isFetching,
 		isLoading,
-		hasNextPage: actualHasNextPage,
+		hasNextPage,
 		isFetchingNextPage,
 		error,
 	};
