@@ -75,10 +75,9 @@ export default function MobileNav({
 					state={(prev) => {
 						// if in reading post, back to search
 						if (prev.view === "post" && postId !== "") {
-							console.log(1);
 							return {
 								...prev,
-								view: "post",
+								view: "nav",
 							};
 						}
 

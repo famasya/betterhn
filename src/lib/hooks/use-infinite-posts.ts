@@ -84,6 +84,13 @@ export const useInfinitePosts = ({
 
 			// Handle both old and new response formats
 			const { posts, failedIds = [] } = result;
+
+			// Cache individual posts for direct access when navigating to post pages
+			for (const post of posts) {
+				queryClient.setQueryData(["post", post.id], {
+					post,
+				});
+			}
 			// Re-queue transient failures as another slice on page 0
 			if (failedIds.length > 0) {
 				queryClient.setQueryData<InfiniteData<InfinitePageData, number>>(
