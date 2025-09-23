@@ -33,7 +33,7 @@ export default function MobileNav({
 				}}
 				value={`/${category}`}
 			>
-				<SelectTrigger className="flex flex-1 border-orange-300 bg-orange-200 text-orange-700 hover:bg-orange-200 focus:ring-orange-300 dark:border-orange-700/50 dark:bg-orange-800 dark:text-orange-200 dark:hover:bg-orange-800">
+				<SelectTrigger className="flex flex-1 border-orange-300 bg-orange-200 text-orange-800 hover:bg-orange-200 focus:ring-orange-300 dark:border-orange-700/50 dark:bg-orange-800 dark:text-orange-200 dark:hover:bg-orange-800">
 					<div className="flex w-full items-center justify-between">
 						<SelectValue placeholder="Navigate" />
 						{isLoadingCategory === category && (

@@ -1,10 +1,6 @@
 import { Loading03Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import {
-	createFileRoute,
-	notFound,
-	useRouterState,
-} from "@tanstack/react-router";
+import { createFileRoute, useRouterState } from "@tanstack/react-router";
 import { useStore } from "@tanstack/react-store";
 import { useEffect, useState } from "react";
 import DesktopNav from "~/components/desktop-nav";
@@ -27,22 +23,20 @@ export const Route = createFileRoute("/_app/$category/{-$postId}")({
 	loader: async ({
 		params: { postId, category },
 		context: { queryClient },
+		abortController,
 	}) => {
+		const postIdNum = postId ? Number(postId?.split("-").pop()) : null;
 		const posts = await queryClient.ensureQueryData({
 			queryKey: ["posts", category],
-			queryFn: async ({ signal }) => {
+			queryFn: async () => {
 				const { first10, remainingItems } = await fetchPosts(category, {
-					signal,
+					signal: abortController.signal,
 				});
 
 				for (const post of first10) {
-					// fetch post comments
-					queryClient.setQueryData(
-						["post", `${lowerCaseTitle(post.title)}-${post.id}`],
-						{
-							post,
-						}
-					);
+					queryClient.setQueryData(["post", post.id], {
+						post,
+					});
 				}
 
 				return {
@@ -54,22 +48,19 @@ export const Route = createFileRoute("/_app/$category/{-$postId}")({
 		});
 
 		const content = await queryClient.ensureQueryData<PostContent>({
-			queryKey: ["post", postId],
+			queryKey: ["post", postIdNum],
 			staleTime: 5 * 60 * 1000, // 5 minutes
 			gcTime: 10 * 60 * 1000, // 10 minutes
-			queryFn: async ({ signal }) => {
-				if (!postId) {
+			queryFn: async () => {
+				if (!postIdNum) {
 					return {
 						post: null,
 					};
 				}
 
-				const postIdNum = Number(postId?.split("-").pop());
-				if (!postIdNum) {
-					throw notFound();
-				}
-
-				const post = await fetchPost(postIdNum, { signal });
+				const post = await fetchPost(postIdNum, {
+					signal: abortController.signal,
+				});
 				return {
 					post,
 				};
