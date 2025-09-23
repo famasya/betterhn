@@ -64,7 +64,7 @@ export default function MobileNav({
 			</Select>
 			<div className="flex items-center">
 				<Link
-					params={{ category }}
+					params={{ category, postId: undefined }}
 					search={(prev) => prev}
 					state={(prev) => {
 						// if in reading post, back to search
@@ -79,7 +79,7 @@ export default function MobileNav({
 							view: prev.view === "nav" ? "post" : "nav",
 						};
 					}}
-					to={"/$category"}
+					to={"/$category/{-$postId}"}
 				>
 					<Button variant={"outline"}>
 						<HugeiconsIcon icon={SearchIcon} />

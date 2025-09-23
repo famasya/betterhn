@@ -23,10 +23,10 @@ export default function NavLinks({
 		<nav className="flex-1 space-y-2 p-2">
 			<Link
 				className="flex cursor-default items-center gap-3 rounded-lg bg-sky-600 p-2 text-gray-700 text-white transition-colors hover:bg-sky-500 dark:bg-sky-700 dark:text-gray-200 dark:hover:bg-sky-600"
-				params={{ category }}
+				params={{ category, postId: undefined }}
 				search={(prev) => prev}
 				state={(prev) => ({ ...prev, view: "post" })}
-				to={"/$category"}
+				to={"/$category/{-$postId}"}
 			>
 				<HugeiconsIcon className="h-5 w-5" icon={SearchIcon} />
 			</Link>
