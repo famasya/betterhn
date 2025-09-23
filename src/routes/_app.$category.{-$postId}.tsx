@@ -8,7 +8,6 @@ import MainContent from "~/components/main-content";
 import MobileNav from "~/components/mobile-nav";
 import { NotFound } from "~/components/not-found";
 import PostList from "~/components/post-list";
-import { Button } from "~/components/ui/button";
 import { Skeleton } from "~/components/ui/skeleton";
 import { fetchPost, fetchPosts } from "~/lib/fetch-posts";
 import { useInfinitePosts } from "~/lib/hooks/use-infinite-posts";
@@ -219,16 +218,6 @@ function PendingComponent() {
 	return (
 		<div className="flex h-[100dvh] flex-1 flex-col items-center justify-center gap-2 overflow-y-auto bg-zinc-50 pb-14 md:pb-0 dark:bg-black dark:text-zinc-400">
 			<HugeiconsIcon className="animate-spin" icon={Loading03Icon} size={24} />
-			<div className="flex flex-row items-center gap-2">
-				<p className="text-sm">Took too long?</p>
-				<Button
-					onClick={() => window.location.reload()}
-					size="sm"
-					variant="orange"
-				>
-					Reload
-				</Button>
-			</div>
 		</div>
 	);
 }
