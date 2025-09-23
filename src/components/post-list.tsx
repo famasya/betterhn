@@ -41,7 +41,7 @@ export default function PostList({
 				// biome-ignore lint/a11y/useSemanticElements: clickable div
 				<div
 					className={cn(
-						"w-full border-gray-200 border-b p-3 text-left text-sm hover:bg-zinc-100 dark:border-gray-700 dark:hover:bg-zinc-800",
+						"min-h-16 w-full border-gray-200 border-b p-3 text-left text-sm hover:bg-zinc-100 dark:border-gray-700 dark:hover:bg-zinc-800",
 						activePostId === post.id &&
 							"border-orange-700/70 bg-orange-50 hover:bg-orange-50 dark:border-orange-700/70 dark:bg-orange-50/10 dark:hover:bg-orange-50/10"
 					)}

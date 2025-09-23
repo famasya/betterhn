@@ -111,24 +111,7 @@ export const fetchPosts = createIsomorphicFn()
 		const { KV } = getBindings();
 
 		// fetch post lists
-		let url = "topstories.json";
-		switch (type) {
-			case "best":
-				url = "beststories.json";
-				break;
-			case "new":
-				url = "newstories.json";
-				break;
-			case "ask":
-				url = "askstories.json";
-				break;
-			case "show":
-				url = "showstories.json";
-				break;
-			default:
-				url = "topstories.json";
-				break;
-		}
+		const url = resolveCategory(type);
 
 		// Try to get cached post list
 		const cacheKey = `stories:${type}`;
@@ -173,24 +156,7 @@ export const fetchPosts = createIsomorphicFn()
 	})
 	.client(async (type: string, options?: Options) => {
 		// fetch post lists
-		let url = "topstories.json";
-		switch (type) {
-			case "best":
-				url = "beststories.json";
-				break;
-			case "new":
-				url = "newstories.json";
-				break;
-			case "ask":
-				url = "askstories.json";
-				break;
-			case "show":
-				url = "showstories.json";
-				break;
-			default:
-				url = "topstories.json";
-				break;
-		}
+		const url = resolveCategory(type);
 
 		// Direct fetch without caching on client
 		const topStories = await firebaseFetcher.get(url, options).json<number[]>();
@@ -263,3 +229,28 @@ export const fetchPost = createIsomorphicFn()
 
 		return data;
 	});
+
+const resolveCategory = (type: string) => {
+	let url = "topstories.json";
+	switch (type) {
+		case "best":
+			url = "beststories.json";
+			break;
+		case "new":
+			url = "newstories.json";
+			break;
+		case "ask":
+			url = "askstories.json";
+			break;
+		case "show":
+			url = "showstories.json";
+			break;
+		case "job":
+			url = "jobstories.json";
+			break;
+		default:
+			url = "topstories.json";
+			break;
+	}
+	return url;
+};

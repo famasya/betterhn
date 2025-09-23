@@ -1,11 +1,4 @@
-import {
-	FireIcon,
-	Loading03Icon,
-	QuestionIcon,
-	RocketIcon,
-	StarIcon,
-	TargetIcon,
-} from "@hugeicons/core-free-icons";
+import { Loading03Icon, SearchIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Link } from "@tanstack/react-router";
 import {
@@ -14,14 +7,7 @@ import {
 	TooltipTrigger,
 } from "~/components/ui/tooltip";
 import { cn } from "~/lib/utils";
-
-export const navLinks = [
-	{ label: "Front Page", href: "/top", icon: FireIcon, showMobile: true },
-	{ label: "Best", href: "/best", icon: StarIcon, showMobile: true },
-	{ label: "New", href: "/new", icon: TargetIcon, showMobile: true },
-	{ label: "Ask", href: "/ask", icon: QuestionIcon, showMobile: true },
-	{ label: "Show", href: "/show", icon: RocketIcon, showMobile: true },
-];
+import { navLinks } from "./nav-links";
 
 type Params = {
 	category: string;
@@ -34,7 +20,16 @@ export default function NavLinks({
 	isLoadingCategory,
 }: Params) {
 	return (
-		<nav className="space-y-2 p-2">
+		<nav className="flex-1 space-y-2 p-2">
+			<Link
+				className="flex cursor-default items-center gap-3 rounded-lg bg-orange-600 p-2 text-gray-700 text-white transition-colors hover:bg-orange-700/90 dark:bg-orange-800 dark:text-gray-200 dark:hover:bg-orange-800/90"
+				params={{ category }}
+				search={(prev) => prev}
+				state={(prev) => ({ ...prev, view: "post" })}
+				to={"/$category"}
+			>
+				<HugeiconsIcon className="h-5 w-5" icon={SearchIcon} />
+			</Link>
 			{navLinks.map((link) => {
 				const itemCategory = link.href.split("/")[1];
 				return (
@@ -56,6 +51,7 @@ export default function NavLinks({
 									postId: itemCategory === "search" ? undefined : postId,
 								}}
 								resetScroll={false}
+								search={(prev) => prev}
 								state={(prev) => ({ ...prev, view: "nav" })}
 								to={postId.length > 0 ? "/$category/$postId" : link.href}
 							>

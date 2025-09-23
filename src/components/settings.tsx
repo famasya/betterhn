@@ -1,7 +1,6 @@
-import { Settings01Icon } from "@hugeicons/core-free-icons";
+import { GithubIcon, Settings01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { DialogDescription } from "@radix-ui/react-dialog";
-import { useRouteContext } from "@tanstack/react-router";
 import { useStore } from "@tanstack/react-store";
 import {
 	updateUserSettings,
@@ -20,7 +19,6 @@ import { Label } from "./ui/label";
 import { Switch } from "./ui/switch";
 
 export default function SettingsDialog() {
-	const { buildID } = useRouteContext({ from: "__root__" });
 	const { resolvedTheme, setTheme } = useTheme();
 	const isDark = resolvedTheme === "dark";
 	const compactMode = useStore(userSettingsStore, (state) => state.compactMode);
@@ -74,9 +72,21 @@ export default function SettingsDialog() {
 								</div>
 							</div>
 						</div>
-						<div className="mt-8 border-black/20 border-t border-dashed p-2 font-mono text-xs dark:border-white/20">
-							Build: {buildID}
+						<div className="mt-8 border-black/20 border-t border-dashed bg-zinc-200 p-2 font-mono text-xs dark:border-white/20 dark:bg-zinc-800">
+							<strong>About</strong> <br />
+							BetterHN is a Hacker News reader with a modern UI. Enjoy a clean,
+							distraction-free interface to read Hacker News stories, comments,
+							and discussions.
 						</div>
+						<Button asChild className="mt-2" size="xs">
+							<a
+								href="https://github.com/famasya/betterhn"
+								rel="noopener noreferrer"
+								target="_blank"
+							>
+								<HugeiconsIcon icon={GithubIcon} /> Source Code
+							</a>
+						</Button>
 					</div>
 				</DialogDescription>
 			</DialogContent>

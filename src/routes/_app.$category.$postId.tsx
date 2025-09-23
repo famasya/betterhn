@@ -11,7 +11,6 @@ import { formatRelative } from "date-fns";
 import DOMPurify from "isomorphic-dompurify";
 import Comments from "~/components/comments";
 import { NotFound } from "~/components/not-found";
-import SearchButton from "~/components/search-button";
 import { Button } from "~/components/ui/button";
 import { type CommentItem, loadComments } from "~/functions/load-comments";
 import { fetchPost } from "../lib/fetch-posts";
@@ -71,7 +70,8 @@ export const Route = createFileRoute("/_app/$category/$postId")({
 		meta: [
 			{
 				title:
-					loaderData?.content?.post?.title || "hnfd - Sleek and Fast HN Reader",
+					loaderData?.content?.post?.title ||
+					"BetterHN - Sleek and Fast HN Reader",
 			},
 		],
 	}),
@@ -122,21 +122,21 @@ function PostBody({ post }: { post: FirebasePostDetail }) {
 					{post.title}
 				</h1>
 				<div className="flex items-center gap-2 md:flex-row">
-					<SearchButton />
-					<a
-						href={`https://news.ycombinator.com/item?id=${post.id}`}
-						rel="noopener noreferrer"
-						target="_blank"
+					<Button
+						asChild
+						className="flex items-center gap-2 text-xs"
+						size={"sm"}
+						variant={"outline"}
 					>
-						<Button
-							className="flex items-center gap-2 text-xs"
-							size={"sm"}
-							variant={"outline"}
+						<a
+							href={`https://news.ycombinator.com/item?id=${post.id}`}
+							rel="noopener noreferrer"
+							target="_blank"
 						>
 							<HugeiconsIcon icon={LinkSquare02Icon} size={16} />
 							OP
-						</Button>
-					</a>
+						</a>
+					</Button>
 				</div>
 			</div>
 			<div className="flex flex-wrap items-center gap-3 text-gray-600 text-sm sm:gap-4 dark:text-zinc-400">

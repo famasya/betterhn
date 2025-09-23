@@ -349,13 +349,6 @@ export default function Comments({
 					</div>
 				</div>
 			)}
-
-			{/* That's All State */}
-			{!(hasNextPage || error) && remainingCommentSlices.length > 0 && (
-				<div className="mt-4 pt-3 text-center text-gray-500 text-sm">
-					That's all
-				</div>
-			)}
 		</div>
 	);
 }
