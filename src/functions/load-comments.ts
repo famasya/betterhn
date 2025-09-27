@@ -15,9 +15,8 @@ export type CommentItem = {
 
 export const loadComments = createServerFn({
 	method: "GET",
-	response: "data",
 })
-	.validator((input: number[]) =>
+	.inputValidator((input: number[]) =>
 		z.array(z.number().int().positive()).parse(input)
 	)
 	.handler(async ({ data, signal }) => {

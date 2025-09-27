@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "hnfd",
-  "main": ".output/server/index.mjs",
+  "main": "@tanstack/react-start/server-entry",
   "preview_urls": true,
   "compatibility_date": "2025-09-20",
   "compatibility_flags": ["nodejs_compat"],

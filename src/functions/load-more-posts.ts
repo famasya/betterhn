@@ -4,11 +4,8 @@ import type { FirebasePostDetail } from "~/lib/types";
 
 export const loadMorePosts = createServerFn({
 	method: "GET",
-	response: "data",
 })
-	.validator((slices: number[]) => {
-		return slices;
-	})
+	.inputValidator((slices: number[]) => slices)
 	.handler(async ({ data, signal }) => {
 		const results = await Promise.all(
 			data.map(async (postId) => {

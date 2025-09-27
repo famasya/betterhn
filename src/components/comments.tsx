@@ -8,7 +8,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useQuery } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
-import DOMPurify from "isomorphic-dompurify";
+import DomPurify from "isomorphic-dompurify";
 import { memo, useState } from "react";
 import {
 	type CommentItem as CommentItemType,
@@ -151,7 +151,7 @@ const CommentItem = memo(function CommentItemComponent({
 					className="comment-item"
 					// biome-ignore lint/security/noDangerouslySetInnerHtml: ignored
 					dangerouslySetInnerHTML={{
-						__html: DOMPurify.sanitize(
+						__html: DomPurify.sanitize(
 							comment.deleted ? "Deleted" : commentText || "",
 							{
 								USE_PROFILES: { html: true },
