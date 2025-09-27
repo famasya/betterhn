@@ -4,7 +4,7 @@ import { NotFound } from "./components/not-found";
 import { createQueryClient, getBrowserQueryClient } from "./lib/query-client";
 import { routeTree } from "./routeTree.gen";
 
-export function createRouter() {
+export function getRouter() {
 	const router = createTanStackRouter({
 		routeTree,
 		defaultPreload: "render",
@@ -27,7 +27,7 @@ export function createRouter() {
 declare module "@tanstack/react-router" {
 	// biome-ignore lint/nursery/useConsistentTypeDefinitions: ignored
 	interface Register {
-		router: ReturnType<typeof createRouter>;
+		router: ReturnType<typeof getRouter>;
 	}
 	// biome-ignore lint/nursery/useConsistentTypeDefinitions: ignored
 	interface HistoryState {

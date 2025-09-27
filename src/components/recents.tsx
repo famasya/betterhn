@@ -14,11 +14,10 @@ export default function Recents() {
 	const category = pathname.split("/")[1] || "top";
 	const { data: recentPosts, isLoading } = useQuery({
 		queryKey: ["recents"],
-		queryFn: async ({ signal }) => {
-			return await algoliaFetcher
+		queryFn: async ({ signal }) =>
+			await algoliaFetcher
 				.get("search_by_date?tags=story", { signal })
-				.json<AlgoliaPostApiResponse>();
-		},
+				.json<AlgoliaPostApiResponse>(),
 	});
 	const { data: activePosts, isLoading: activePostsLoading } = useQuery({
 		queryKey: ["active-posts"],
