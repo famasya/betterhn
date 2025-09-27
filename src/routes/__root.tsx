@@ -37,6 +37,8 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 			},
 			...seo({
 				title: "BetterHN - Sleek and Clean HN Reader",
+				description:
+					"BetterHN is a sleek, clean, minimal Hacker News reader built for the web. It gives you quick access to posts, comments, and discussions with clean, lightweight design",
 			}),
 		],
 		links: [
