@@ -16,11 +16,10 @@ export const fetchComment = async (
 	return data;
 };
 
-export const useComment = (commentId: number) => {
-	return useQuery({
+export const useComment = (commentId: number) =>
+	useQuery({
 		queryKey: ["comment", commentId],
 		queryFn: () => fetchComment(commentId),
 		staleTime: 5 * 60 * 1000,
 		gcTime: 30 * 60 * 1000,
 	});
-};

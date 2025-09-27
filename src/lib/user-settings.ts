@@ -62,11 +62,11 @@ export const updateUserSettings = (
 // Theme utilities
 export const getSystemTheme = createIsomorphicFn()
 	.server(() => "light" as const)
-	.client(() => {
-		return window.matchMedia("(prefers-color-scheme: dark)").matches
+	.client(() =>
+		window.matchMedia("(prefers-color-scheme: dark)").matches
 			? ("dark" as const)
-			: ("light" as const);
-	});
+			: ("light" as const)
+	);
 
 export const getResolvedTheme = (
 	theme: UserSettings["theme"]

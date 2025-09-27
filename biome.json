@@ -26,6 +26,7 @@
       "recommended": true,
       "style": {
         "noMagicNumbers": "off",
+        "useNamingConvention": "off",
         "noHeadElement": "off"
       },
       "suspicious": {

@@ -203,29 +203,27 @@ const SearchResultItem = memo(function SearchResultItemComponent({
 	}
 	return (
 		<>
-			{results?.hits.map((post) => {
-				return (
-					<div
-						className="rounded-sm border border-gray-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900"
-						key={post.objectID}
+			{results?.hits.map((post) => (
+				<div
+					className="rounded-sm border border-gray-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900"
+					key={post.objectID}
+				>
+					<Link
+						params={{
+							category: origin,
+							postId: `${lowerCaseTitle(post.title)}-${post.objectID}`,
+						}}
+						search={(prev) => prev}
+						state={(prev) => ({ ...prev, view: "post" })}
+						to={"/$category/$postId"}
 					>
-						<Link
-							params={{
-								category: origin,
-								postId: `${lowerCaseTitle(post.title)}-${post.objectID}`,
-							}}
-							search={(prev) => prev}
-							state={(prev) => ({ ...prev, view: "post" })}
-							to={"/$category/$postId"}
-						>
-							<p className="font-medium">{post.title}</p>
-							<p className="mt-2 text-gray-500 text-sm">
-								{`${post.points} points by ${post.author} ${formatRelative(post.created_at_i * 1000, Date.now())}`}
-							</p>
-						</Link>
-					</div>
-				);
-			})}
+						<p className="font-medium">{post.title}</p>
+						<p className="mt-2 text-gray-500 text-sm">
+							{`${post.points} points by ${post.author} ${formatRelative(post.created_at_i * 1000, Date.now())}`}
+						</p>
+					</Link>
+				</div>
+			))}
 		</>
 	);
 });
