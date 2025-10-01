@@ -92,6 +92,11 @@ export default function PostList({
 					>
 						<span>{post.title}</span>
 					</Link>
+					{post.url && (
+						<span className="ml-2 text-gray-500 text-xs">
+							({new URL(post.url).hostname})
+						</span>
+					)}
 					<div
 						className={cn(
 							"mt-1 flex items-center justify-between gap-2 text-gray-500 text-xs"
