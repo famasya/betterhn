@@ -1,9 +1,8 @@
 import type { ErrorComponentProps } from "@tanstack/react-router";
-import { Link, rootRouteId, useMatch, useRouter } from "@tanstack/react-router";
+import { Link, rootRouteId, useMatch } from "@tanstack/react-router";
 import { Button } from "./ui/button";
 
 export function DefaultCatchBoundary({ error }: ErrorComponentProps) {
-	const router = useRouter();
 	const isRoot = useMatch({
 		strict: false,
 		select: (state) => state.id === rootRouteId,
@@ -17,12 +16,12 @@ export function DefaultCatchBoundary({ error }: ErrorComponentProps) {
 			<div className="flex flex-wrap items-center gap-2">
 				<Button
 					onClick={() => {
-						router.invalidate();
+						window.location.reload();
 					}}
 					size="sm"
 					variant={"orange"}
 				>
-					Try Again
+					Reload
 				</Button>
 				{isRoot ? (
 					<Link to="/">

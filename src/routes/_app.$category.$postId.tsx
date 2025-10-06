@@ -35,6 +35,10 @@ export const Route = createFileRoute("/_app/$category/$postId")({
 
 				const post = await fetchPost(postIdNum);
 
+				if (!post) {
+					throw notFound();
+				}
+
 				// if preload, also fetch comments
 				const kids = post.kids || [];
 				const comments: CommentItem[] = [];

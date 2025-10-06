@@ -4,6 +4,7 @@ import {
 	useQueryClient,
 } from "@tanstack/react-query";
 import { fetchPostBatch, fetchPosts } from "~/lib/fetch-posts";
+import { lowerCaseTitle } from "~/lib/utils";
 import type { FirebasePostDetail } from "../types";
 
 type UseInfinitePostsParams = {
@@ -25,6 +26,20 @@ export const useInfinitePosts = ({
 	remainingItems = [],
 }: UseInfinitePostsParams) => {
 	const queryClient = useQueryClient();
+
+	// Helper function to prefetch post data
+	const prefetchPosts = (posts: FirebasePostDetail[]) => {
+		for (const post of posts) {
+			queryClient.setQueryData(
+				["post", `${lowerCaseTitle(post.title)}-${post.id}`],
+				{
+					post,
+					comments: [],
+					remainingCommentSlices: [],
+				}
+			);
+		}
+	};
 
 	const {
 		data,
@@ -50,6 +65,8 @@ export const useInfinitePosts = ({
 			if (pageParam === 0) {
 				// Always fetch fresh data for page 0 to get current remainingItems
 				const freshData = await fetchPosts(category, { signal });
+				// Prefetch the first batch of posts
+				prefetchPosts(freshData.first10);
 				return {
 					posts: freshData.first10,
 					remainingItems: freshData.remainingItems,
@@ -84,6 +101,10 @@ export const useInfinitePosts = ({
 
 			// Handle both old and new response formats
 			const { posts, failedIds = [] } = result;
+
+			// Prefetch the newly loaded posts
+			prefetchPosts(posts);
+
 			// Re-queue transient failures as another slice on page 0
 			if (failedIds.length > 0) {
 				queryClient.setQueryData<InfiniteData<InfinitePageData, number>>(

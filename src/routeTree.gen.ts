@@ -9,12 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AppCategoryRouteImport } from './routes/_app.$category'
 import { Route as AppCategoryPostIdRouteImport } from './routes/_app.$category.$postId'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
   id: '/robots.txt',
   path: '/robots.txt',
@@ -42,12 +48,14 @@ const AppCategoryPostIdRoute = AppCategoryPostIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/$category': typeof AppCategoryRouteWithChildren
   '/': typeof AppIndexRoute
   '/$category/$postId': typeof AppCategoryPostIdRoute
 }
 export interface FileRoutesByTo {
   '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/$category': typeof AppCategoryRouteWithChildren
   '/': typeof AppIndexRoute
   '/$category/$postId': typeof AppCategoryPostIdRoute
@@ -56,19 +64,26 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
   '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_app/$category': typeof AppCategoryRouteWithChildren
   '/_app/': typeof AppIndexRoute
   '/_app/$category/$postId': typeof AppCategoryPostIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/robots.txt' | '/$category' | '/' | '/$category/$postId'
+  fullPaths:
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/$category'
+    | '/'
+    | '/$category/$postId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/robots.txt' | '/$category' | '/' | '/$category/$postId'
+  to: '/robots.txt' | '/sitemap.xml' | '/$category' | '/' | '/$category/$postId'
   id:
     | '__root__'
     | '/_app'
     | '/robots.txt'
+    | '/sitemap.xml'
     | '/_app/$category'
     | '/_app/'
     | '/_app/$category/$postId'
@@ -77,10 +92,18 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   RobotsDottxtRoute: typeof RobotsDottxtRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/robots.txt': {
       id: '/robots.txt'
       path: '/robots.txt'
@@ -146,6 +169,7 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   RobotsDottxtRoute: RobotsDottxtRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
