@@ -87,6 +87,9 @@ function RecentsList({
 						to={post.url}
 					>
 						<h1>{post.title}</h1>
+						<span className="text-xs text-zinc-500 dark:text-zinc-300">
+							({new URL(post.url).hostname})
+						</span>
 					</Link>
 				) : (
 					<h1>{post.title}</h1>
@@ -134,6 +137,9 @@ function RecentCommentsList({
 						to={comment.story_url}
 					>
 						<h1>{comment.story_title || "HN Discussions"}</h1>
+						<span className="text-xs text-zinc-500 dark:text-zinc-300">
+							({new URL(comment.story_url).hostname})
+						</span>
 					</Link>
 				) : (
 					<h1>{comment.story_title || "HN Discussions"}</h1>
