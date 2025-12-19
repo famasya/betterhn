@@ -1,1 +1,0 @@
-import{o}from"./worker-entry-BFFzWMHV.js";import{a6 as e}from"./router-DwtiA2Gk.js";import"node:events";import"node:stream";import"node:async_hooks";import"node:stream/web";import"./fetcher-C0qtPk9m.js";const r=()=>o.jsx(e,{children:"That post has been removed or does not exist."});export{r as notFoundComponent};
