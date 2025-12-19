@@ -1,6 +1,7 @@
 import {
 	Comment01FreeIcons,
 	CommentAdd01Icon,
+	Loading03FreeIcons,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Button } from "~/components/ui/button";
@@ -11,6 +12,7 @@ type CommentActionsProps = {
 	deleted?: boolean;
 	hasReplies: boolean;
 	repliesCount?: number;
+	isLoadingReplies?: boolean;
 	onToggleReplies: () => void;
 };
 
@@ -20,6 +22,7 @@ export function CommentActions({
 	deleted,
 	hasReplies,
 	repliesCount = 0,
+	isLoadingReplies = false,
 	onToggleReplies,
 }: CommentActionsProps) {
 	return (
@@ -61,7 +64,11 @@ export function CommentActions({
 					type="button"
 					variant="ghost"
 				>
-					<HugeiconsIcon icon={Comment01FreeIcons} size={14} />
+					<HugeiconsIcon
+						className={isLoadingReplies ? "animate-spin" : ""}
+						icon={isLoadingReplies ? Loading03FreeIcons : Comment01FreeIcons}
+						size={14}
+					/>
 					<span>
 						{repliesCount} {repliesCount === 1 ? "reply" : "replies"}
 					</span>

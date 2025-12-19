@@ -6,6 +6,9 @@ type CommentContentProps = {
 };
 
 export function CommentContent({ text, deleted }: CommentContentProps) {
+	if (text === "[delayed]") {
+		return <div className="comment-item italic">this comment is delayed</div>;
+	}
 	return (
 		<div
 			className="comment-item"

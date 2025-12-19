@@ -1,36 +1,27 @@
 import { Loading03FreeIcons } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Button } from "~/components/ui/button";
-import { loadComments } from "~/functions/load-comments";
+import type { loadComments } from "~/functions/load-comments";
 import { cn } from "~/lib/utils";
 import { CommentItem } from "./comment-item";
 import { borderColorLevel, INITIAL_REPLIES_LIMIT } from "./utils";
 
 type CommentRepliesProps = {
-	commentIds: number[];
 	depth: number;
+	commentsData: Awaited<ReturnType<typeof loadComments>> | undefined;
+	isLoading: boolean;
+	error: Error | null;
 };
 
-export function CommentReplies({ commentIds, depth }: CommentRepliesProps) {
+export function CommentReplies({
+	depth,
+	commentsData,
+	isLoading,
+	error,
+}: CommentRepliesProps) {
 	const [showAllReplies, setShowAllReplies] = useState(false);
 	const isFirstLevel = depth === 0;
-
-	// Keep existing pattern for nested replies - they load all at once since they're typically smaller
-	const { data, isLoading, error } = useQuery({
-		queryKey: [
-			"comment-replies",
-			{ ids: [...commentIds].sort((a, b) => a - b) },
-		],
-		queryFn: async () => {
-			const result = await loadComments({ data: commentIds });
-			return result;
-		},
-		enabled: commentIds.length > 0,
-		staleTime: 5 * 60 * 1000, // 5 minutes
-		gcTime: 30 * 60 * 1000, // 30 minutes
-	});
 
 	if (isLoading) {
 		return (
@@ -60,7 +51,7 @@ export function CommentReplies({ commentIds, depth }: CommentRepliesProps) {
 		);
 	}
 
-	const comments = data?.comments || [];
+	const comments = commentsData?.comments || [];
 	const shouldLimitReplies =
 		isFirstLevel && comments.length > INITIAL_REPLIES_LIMIT;
 	const visibleComments =
