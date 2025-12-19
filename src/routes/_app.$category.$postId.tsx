@@ -162,7 +162,7 @@ function PostBody({ post }: { post: FirebasePostDetail }) {
 					</div>
 				)}
 			</div>
-			{post.url && (
+			{post.url ? (
 				<div className="mt-3">
 					<a
 						className="flex w-fit items-center gap-2 rounded-md border border-emerald-200 bg-emerald-100/40 px-2 py-1 text-emerald-600 text-sm hover:text-emerald-700 dark:border-emerald-800 dark:bg-emerald-800/40 dark:text-emerald-200 dark:hover:text-emerald-300"
@@ -181,9 +181,9 @@ function PostBody({ post }: { post: FirebasePostDetail }) {
 						<HugeiconsIcon icon={LinkSquare02Icon} size={16} />
 					</a>
 				</div>
-			)}
+			) : null}
 
-			{post.text && (
+			{post.text ? (
 				<div className="mt-4 border-gray-200 border-t border-dashed pt-4 dark:border-zinc-800">
 					<div
 						// biome-ignore lint/security/noDangerouslySetInnerHtml: ignored
@@ -197,7 +197,7 @@ function PostBody({ post }: { post: FirebasePostDetail }) {
 						id="post-description"
 					/>
 				</div>
-			)}
+			) : null}
 		</>
 	);
 }

@@ -25,11 +25,11 @@ export function getRouter() {
 }
 
 declare module "@tanstack/react-router" {
-	// biome-ignore lint/nursery/useConsistentTypeDefinitions: ignored
+	// biome-ignore lint/style/useConsistentTypeDefinitions: TanStack Router requires interface augmentation
 	interface Register {
 		router: ReturnType<typeof getRouter>;
 	}
-	// biome-ignore lint/nursery/useConsistentTypeDefinitions: ignored
+	// biome-ignore lint/style/useConsistentTypeDefinitions: TanStack Router requires interface augmentation
 	interface HistoryState {
 		view?: "nav" | "post";
 	}

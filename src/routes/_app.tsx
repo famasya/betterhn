@@ -105,7 +105,7 @@ function RouteComponent() {
 			)}
 		>
 			{/* Mobile Posts Overlay */}
-			{isMobilePostsOpen && (
+			{isMobilePostsOpen ? (
 				<div className="fixed top-0 right-0 bottom-16 left-0 z-40 h-[calc(100dvh-3.3rem)] md:hidden">
 					{/* Posts Container */}
 					<div className="absolute top-0 right-0 bottom-16 left-0 h-full bg-white dark:bg-zinc-900">
@@ -143,7 +143,7 @@ function RouteComponent() {
 						</div>
 					</div>
 				</div>
-			)}
+			) : null}
 
 			{/* Desktop Posts sidebar */}
 			<div className="hidden flex-col border-gray-200 border-r bg-white md:flex dark:border-zinc-800 dark:bg-zinc-900">

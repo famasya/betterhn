@@ -1,0 +1,30 @@
+import { UserSquareIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { formatDistanceToNow } from "date-fns";
+
+type CommentHeaderProps = {
+	by: string;
+	time: number;
+};
+
+export function CommentHeader({ by, time }: CommentHeaderProps) {
+	return (
+		<div className="mb-2 flex items-center gap-3 text-gray-600 text-sm">
+			<div className="flex items-center gap-1 font-medium">
+				<HugeiconsIcon icon={UserSquareIcon} size={18} />
+				<a
+					className="text-blue-600 no-underline hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+					href={`https://news.ycombinator.com/user?id=${by}`}
+					rel="noopener noreferrer"
+					target="_blank"
+					title={by}
+				>
+					{by}
+				</a>
+			</div>
+			<div className="flex items-center gap-1 dark:text-gray-400">
+				[ {formatDistanceToNow(time * 1000, { addSuffix: true })} ]
+			</div>
+		</div>
+	);
+}

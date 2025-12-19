@@ -92,11 +92,11 @@ export default function PostList({
 					>
 						<span>{post.title}</span>
 					</Link>
-					{post.url && (
+					{post.url ? (
 						<span className="ml-2 text-gray-500 text-xs">
 							({new URL(post.url).hostname})
 						</span>
-					)}
+					) : null}
 					<div
 						className={cn(
 							"mt-1 flex items-center justify-between gap-2 text-gray-500 text-xs"
@@ -126,7 +126,7 @@ export default function PostList({
 				</div>
 			))}
 
-			{hasNextPage && (
+			{hasNextPage ? (
 				<div className="p-3">
 					<Button
 						className="w-full"
@@ -147,9 +147,9 @@ export default function PostList({
 						)}
 					</Button>
 				</div>
-			)}
+			) : null}
 
-			{error && (
+			{error ? (
 				<div className="border-gray-200 border-b p-3 dark:border-gray-700">
 					<div className="flex items-center gap-2 rounded-sm border border-red-200 bg-red-50 p-3 text-red-700 text-sm dark:border-red-700 dark:bg-red-950 dark:text-red-300">
 						<HugeiconsIcon icon={InformationCircleIcon} size={16} />
@@ -159,7 +159,7 @@ export default function PostList({
 								Some posts may be temporarily unavailable
 							</div>
 						</div>
-						{fetchNextPage && (
+						{fetchNextPage ? (
 							<Button
 								onClick={fetchNextPage}
 								size={"sm"}
@@ -168,10 +168,10 @@ export default function PostList({
 							>
 								Retry
 							</Button>
-						)}
+						) : null}
 					</div>
 				</div>
-			)}
+			) : null}
 
 			{!(hasNextPage || error) && fetchNextPage && (
 				<div className="p-3 text-center text-gray-500 text-sm">That's all</div>
