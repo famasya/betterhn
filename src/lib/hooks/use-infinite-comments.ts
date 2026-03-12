@@ -7,6 +7,7 @@ type UseInfiniteCommentsParams = {
 	remainingCommentSlices: number[][];
 	postId: number;
 	commentIds?: number[];
+	enabled?: boolean;
 };
 
 // Helper function to create slices from array of IDs
@@ -35,6 +36,7 @@ export const useInfiniteComments = ({
 	remainingCommentSlices,
 	postId,
 	commentIds,
+	enabled = true,
 }: UseInfiniteCommentsParams) => {
 	const [failedIds, setFailedIds] = useState<Set<number>>(new Set());
 
@@ -72,6 +74,7 @@ export const useInfiniteComments = ({
 			remainingCommentSlices.length,
 			commentIds ? commentIds.join(",") : "",
 		],
+		enabled,
 		queryFn: async ({ pageParam }) => {
 			if (pageParam === 0) {
 				// If we have initialComments, return them

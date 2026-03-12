@@ -36,7 +36,28 @@ export default function Comments({
 		remainingCommentSlices,
 		postId,
 		commentIds,
+		enabled: initialComments.length > 0 || typeof window !== "undefined",
 	});
+
+	if (
+		typeof window === "undefined" &&
+		initialComments.length === 0 &&
+		totalComments > 0
+	) {
+		return (
+			<div className="px-3 sm:px-4">
+				<div className="mb-4 font-medium text-base sm:text-lg">Comments</div>
+				<div className="flex items-center gap-2 text-gray-500">
+					<HugeiconsIcon
+						className="animate-spin"
+						icon={Loading03FreeIcons}
+						size={16}
+					/>
+					Loading comments...
+				</div>
+			</div>
+		);
+	}
 
 	if (error && comments.length === 0) {
 		return (

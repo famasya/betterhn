@@ -1,190 +1,117 @@
 import { notFound } from "@tanstack/react-router";
 import { createIsomorphicFn } from "@tanstack/react-start";
-import type { Options } from "ky";
-import { firebaseFetcher } from "./fetcher";
-import type { FirebasePostDetail } from "./types";
+import type { CommentItem } from "~/functions/load-comments";
+import { fetchAlgoliaJson } from "./fetcher";
+import type {
+	AlgoliaItemChild,
+	AlgoliaPostApiResponse,
+	AlgoliaSinglePostApiResponse,
+	FirebasePostDetail,
+} from "./types";
 
-export const fetchPostBatch = createIsomorphicFn()
-	.server(async (ids: number[], options?: Options) => {
-		// Fetch all posts directly
-		const getItems = await Promise.allSettled(
-			ids.map((postId) =>
-				firebaseFetcher
-					.get(`item/${postId}.json`, options)
-					.json<FirebasePostDetail | null>()
-					.then((data) => ({ postId, data }))
-			)
-		);
+type FetchOptions = {
+	signal?: AbortSignal;
+};
 
-		const successItems: FirebasePostDetail[] = [];
-		const failedItems: number[] = [];
+const POSTS_PER_PAGE = 10;
 
-		for (const [index, item] of getItems.entries()) {
-			const postId = ids[index];
-			if (item.status === "fulfilled") {
-				const { data: post } = item.value;
-				if (post && !post.deleted) {
-					successItems.push(post);
-				}
-				// else: deleted/missing → drop; don't requeue
-			} else {
-				// transient failure → requeue
-				failedItems.push(postId);
-			}
-		}
+const mapAlgoliaHitToPost = (
+	hit: AlgoliaPostApiResponse["hits"][0]
+): FirebasePostDetail => ({
+	id: Number(hit.objectID),
+	title: hit.title,
+	url: hit.url || undefined,
+	score: hit.points,
+	by: hit.author,
+	time: hit.created_at_i,
+	descendants: hit.num_comments,
+	type: "story",
+	text: hit.story_text,
+	kids: hit.children,
+});
 
-		return {
-			posts: successItems,
-			failedIds: failedItems,
-		};
-	})
-	.client(async (ids: number[], options?: Options) => {
-		// Fetch posts directly without caching
-		const getItems = await Promise.allSettled(
-			ids.map((postId) =>
-				firebaseFetcher
-					.get(`item/${postId}.json`, options)
-					.json<FirebasePostDetail | null>()
-					.then((data) => ({ postId, data }))
-			)
-		);
+export const mapAlgoliaChildToComment = (
+	child: AlgoliaItemChild
+): CommentItem => ({
+	by: child.author,
+	id: child.id,
+	kids: child.children?.map((c) => c.id) ?? [],
+	parent: child.parent_id,
+	text: child.text,
+	time: child.created_at_i,
+	type: child.type,
+});
 
-		const successItems: FirebasePostDetail[] = [];
-		const failedItems: number[] = [];
+const resolveAlgoliaUrl = (type: string): string => {
+	switch (type) {
+		case "new":
+			return `search_by_date?tags=story&hitsPerPage=${POSTS_PER_PAGE}`;
+		case "ask":
+			return `search_by_date?tags=ask_hn&hitsPerPage=${POSTS_PER_PAGE}`;
+		case "show":
+			return `search_by_date?tags=show_hn&hitsPerPage=${POSTS_PER_PAGE}`;
+		case "job":
+			return `search_by_date?tags=job&hitsPerPage=${POSTS_PER_PAGE}`;
+		case "best":
+			return `search?tags=front_page&hitsPerPage=${POSTS_PER_PAGE}`;
+		case "top":
+		default:
+			return `search?tags=front_page&hitsPerPage=${POSTS_PER_PAGE}`;
+	}
+};
 
-		for (const [index, item] of getItems.entries()) {
-			const postId = ids[index];
-			if (item.status === "fulfilled") {
-				const { data: post } = item.value;
-				if (post && !post.deleted) {
-					successItems.push(post);
-				}
-				// else: deleted/missing → drop; don't requeue
-			} else {
-				// transient failure → requeue
-				failedItems.push(postId);
-			}
-		}
+const fetchPostsInternal = async (
+	category: string,
+	page = 0,
+	options?: FetchOptions
+) => {
+	const baseUrl = resolveAlgoliaUrl(category);
+	const data = await fetchAlgoliaJson<AlgoliaPostApiResponse>(
+		`${baseUrl}&page=${page}`,
+		{ signal: options?.signal, cacheTtl: 30 }
+	);
 
-		return {
-			posts: successItems,
-			failedIds: failedItems,
-		};
-	});
+	return {
+		posts: data.hits.map(mapAlgoliaHitToPost),
+		page: data.page,
+		nbPages: data.nbPages,
+		hasMore: data.page < data.nbPages - 1,
+	};
+};
 
 export const fetchPosts = createIsomorphicFn()
-	.server(async (type: string, options?: Options) => {
-		// fetch post lists
-		const url = resolveCategory(type);
+	.server(fetchPostsInternal)
+	.client(fetchPostsInternal);
 
-		// Fetch post list directly
-		const topStories = await firebaseFetcher.get(url, options).json<number[]>();
+const fetchPostInternal = async (postId: number, options?: FetchOptions) => {
+	const data = await fetchAlgoliaJson<AlgoliaSinglePostApiResponse>(
+		`items/${postId}`,
+		{ signal: options?.signal, cacheTtl: 60 }
+	);
 
-		// slices every 10 items
-		const slices: number[][] = [];
-		for (let i = 0; i < topStories.length; i += 10) {
-			slices.push(topStories.slice(i, i + 10));
-		}
+	if (!data) {
+		throw notFound();
+	}
 
-		// fetch post details for first 10
-		const [first10Items, ...remainingItems] = slices;
+	const post: FirebasePostDetail = {
+		id: data.id,
+		title: data.title,
+		url: data.url || undefined,
+		score: data.points,
+		by: data.author,
+		time: data.created_at_i,
+		descendants: 0,
+		type: data.type as FirebasePostDetail["type"],
+		text: typeof data.text === "string" ? data.text : undefined,
+		kids: data.children.map((c) => c.id),
+	};
 
-		const batchResult = await fetchPostBatch(first10Items, options);
+	const topLevelComments = data.children.map(mapAlgoliaChildToComment);
+	post.descendants = topLevelComments.length;
 
-		const successItems = batchResult.posts;
-		const failedItems = batchResult.failedIds;
-
-		// re add failed items to remaining items
-		if (failedItems.length > 0) {
-			remainingItems.push(failedItems);
-		}
-
-		const result = {
-			first10: successItems,
-			remainingItems,
-		};
-
-		return result;
-	})
-	.client(async (type: string, options?: Options) => {
-		// fetch post lists
-		const url = resolveCategory(type);
-
-		// Direct fetch without caching on client
-		const topStories = await firebaseFetcher.get(url, options).json<number[]>();
-
-		// slices every 10 items
-		const slices: number[][] = [];
-		for (let i = 0; i < topStories.length; i += 10) {
-			slices.push(topStories.slice(i, i + 10));
-		}
-
-		// fetch post details for first 10
-		const [first10Items, ...remainingItems] = slices;
-
-		const batchResult = await fetchPostBatch(first10Items, options);
-
-		const successItems = batchResult.posts;
-		const failedItems = batchResult.failedIds;
-
-		// re add failed items to remaining items
-		if (failedItems.length > 0) {
-			remainingItems.push(failedItems);
-		}
-
-		const result = {
-			first10: successItems,
-			remainingItems,
-		};
-
-		return result;
-	});
+	return { post, topLevelComments };
+};
 
 export const fetchPost = createIsomorphicFn()
-	.server(async (postId: number): Promise<FirebasePostDetail> => {
-		// Fetch from API directly
-		const data = await firebaseFetcher
-			.get(`item/${postId}.json`)
-			.json<FirebasePostDetail | null>();
-		if (!data || data.deleted) {
-			throw notFound();
-		}
-
-		return data;
-	})
-	.client(async (postId: number): Promise<FirebasePostDetail> => {
-		// Direct fetch without caching on client
-		const data = await firebaseFetcher
-			.get(`item/${postId}.json`)
-			.json<FirebasePostDetail | null>();
-		if (!data || data.deleted) {
-			throw notFound();
-		}
-
-		return data;
-	});
-
-const resolveCategory = (type: string) => {
-	let url = "topstories.json";
-	switch (type) {
-		case "best":
-			url = "beststories.json";
-			break;
-		case "new":
-			url = "newstories.json";
-			break;
-		case "ask":
-			url = "askstories.json";
-			break;
-		case "show":
-			url = "showstories.json";
-			break;
-		case "job":
-			url = "jobstories.json";
-			break;
-		default:
-			url = "topstories.json";
-			break;
-	}
-	return url;
-};
+	.server(fetchPostInternal)
+	.client(fetchPostInternal);

@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { memo, useState } from "react";
 import type { CommentItem as CommentItemType } from "~/functions/load-comments";
-import { loadComments } from "~/functions/load-comments";
+import { loadReplies } from "~/functions/load-comments";
 import { CommentActions } from "./comment-actions";
 import { CommentContent } from "./comment-content";
 import { CommentHeader } from "./comment-header";
@@ -20,20 +20,18 @@ export const CommentItem = memo(function CommentItemComponent({
 	// Auto-expand first level of replies (depth === 0 means top-level comment)
 	const [showReplies, setShowReplies] = useState(depth === 0 && hasReplies);
 
-	// Fetch replies data when needed
+	// Fetch replies via single Algolia items/:id request
 	const { data, isLoading, error } = useQuery({
-		queryKey: [
-			"comment-replies",
-			{ ids: comment.kids ? [...comment.kids].sort((a, b) => a - b) : [] },
-		],
+		queryKey: ["comment-replies", comment.id],
 		queryFn: async () => {
-			if (!comment.kids) {
-				return { comments: [], failedIds: [] };
-			}
-			const result = await loadComments({ data: comment.kids });
+			const result = await loadReplies({ data: comment.id });
 			return result;
 		},
-		enabled: showReplies && hasReplies && !!comment.kids,
+		enabled:
+			typeof window !== "undefined" &&
+			showReplies &&
+			hasReplies &&
+			!!comment.kids,
 		staleTime: 5 * 60 * 1000, // 5 minutes
 		gcTime: 30 * 60 * 1000, // 30 minutes
 	});

@@ -12,7 +12,6 @@ import DOMPurify from "isomorphic-dompurify";
 import Comments from "~/components/comments";
 import { NotFound } from "~/components/not-found";
 import { Button } from "~/components/ui/button";
-import { type CommentItem, loadComments } from "~/functions/load-comments";
 import { fetchPost } from "../lib/fetch-posts";
 import type { FirebasePostDetail } from "../lib/types";
 
@@ -20,8 +19,6 @@ export const Route = createFileRoute("/_app/$category/$postId")({
 	loader: async ({
 		params: { postId, category },
 		context: { queryClient },
-		preload,
-		abortController,
 	}) => {
 		const content = await queryClient.ensureQueryData({
 			queryKey: ["post", postId],
@@ -33,34 +30,12 @@ export const Route = createFileRoute("/_app/$category/$postId")({
 					throw notFound();
 				}
 
-				const post = await fetchPost(postIdNum);
+				const { post, topLevelComments } = await fetchPost(postIdNum);
 
-				if (!post) {
-					throw notFound();
-				}
-
-				// if preload, also fetch comments
-				const kids = post.kids || [];
-				const comments: CommentItem[] = [];
-				const remainingCommentSlices: number[][] = [];
-				if (preload && kids.length > 0) {
-					// get first 10 comments
-					const { comments: preloadComments } = await loadComments({
-						data: kids.slice(0, 10),
-						signal: abortController.signal,
-					});
-					queryClient.setQueryData(["comments", postId], preloadComments);
-					comments.push(...preloadComments);
-
-					// remaining comments
-					for (let i = 10; i < kids.length; i += 10) {
-						remainingCommentSlices.push(kids.slice(i, i + 10));
-					}
-				}
 				return {
 					post,
-					comments,
-					remainingCommentSlices,
+					comments: topLevelComments,
+					remainingCommentSlices: [] as number[][],
 				};
 			},
 		});

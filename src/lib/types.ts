@@ -130,51 +130,25 @@ export type AlgoliaCommentApiResponse = {
 	serverTimeMS: number;
 };
 
+export type AlgoliaItemChild = {
+	author: string;
+	children: AlgoliaItemChild[];
+	created_at: string;
+	created_at_i: number;
+	id: number;
+	options: unknown[];
+	parent_id: number;
+	points: number | null;
+	story_id: number;
+	text: string | null;
+	title: string | null;
+	type: string;
+	url: string | null;
+};
+
 export type AlgoliaSinglePostApiResponse = {
 	author: string;
-	children: Array<{
-		author: string;
-		children: Array<{
-			author: string;
-			children: Array<{
-				author: string;
-				children: unknown[];
-				created_at: string;
-				created_at_i: number;
-				id: number;
-				options: unknown[];
-				parent_id: number;
-				points: unknown;
-				story_id: number;
-				text: string;
-				title: unknown;
-				type: string;
-				url: unknown;
-			}>;
-			created_at: string;
-			created_at_i: number;
-			id: number;
-			options: unknown[];
-			parent_id: number;
-			points: unknown;
-			story_id: number;
-			text: string;
-			title: unknown;
-			type: string;
-			url: unknown;
-		}>;
-		created_at: string;
-		created_at_i: number;
-		id: number;
-		options: unknown[];
-		parent_id: number;
-		points: unknown;
-		story_id: number;
-		text: string;
-		title: unknown;
-		type: string;
-		url: unknown;
-	}>;
+	children: AlgoliaItemChild[];
 	created_at: string;
 	created_at_i: number;
 	id: number;
@@ -182,7 +156,7 @@ export type AlgoliaSinglePostApiResponse = {
 	parent_id: unknown;
 	points: number;
 	story_id: number;
-	text: unknown;
+	text: string | null;
 	title: string;
 	type: string;
 	url: string;

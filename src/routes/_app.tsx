@@ -26,27 +26,36 @@ const searchSchema = z.object({
 export const Route = createFileRoute("/_app")({
 	loader: async ({ location, context: { queryClient } }) => {
 		const category = location.pathname.split("/")[1] || "top";
+		const isDetailPath = location.pathname.split("/").length > 2;
+
+		if (isDetailPath) {
+			return {
+				category,
+				posts: [],
+				page: 0,
+				nbPages: 1,
+				hasMore: false,
+				deferPosts: true,
+			};
+		}
+
 		const postsData = await queryClient.ensureQueryData({
 			queryKey: ["posts", category],
 			queryFn: async ({ signal }) => {
-				const { first10, remainingItems } = await fetchPosts(category, {
-					signal,
-				});
+				const result = await fetchPosts(category, 0, { signal });
 
-				for (const post of first10) {
+				for (const post of result.posts) {
 					queryClient.setQueryData(
 						["post", `${lowerCaseTitle(post.title)}-${post.id}`],
 						{
 							post,
-							initialComments: [],
-							remainingCommentSlices: [],
+							topLevelComments: [],
 						}
 					);
 				}
 
 				return {
-					first10,
-					remainingItems,
+					...result,
 					category,
 				};
 			},
@@ -54,6 +63,7 @@ export const Route = createFileRoute("/_app")({
 
 		return {
 			...postsData,
+			deferPosts: false,
 		};
 	},
 	validateSearch: (search) => searchSchema.parse(search),
@@ -76,6 +86,7 @@ function RouteComponent() {
 
 	// Use loader data as initial data only if it matches current category
 	const shouldUseLoaderData = loaderData.category === category;
+	const shouldDeferPosts = shouldUseLoaderData && loaderData.deferPosts;
 
 	const {
 		posts,
@@ -86,8 +97,10 @@ function RouteComponent() {
 		error,
 	} = useInfinitePosts({
 		category,
-		initialPosts: shouldUseLoaderData ? loaderData.first10 : [],
-		remainingItems: shouldUseLoaderData ? loaderData.remainingItems : [],
+		initialPosts: shouldUseLoaderData ? loaderData.posts : [],
+		initialPage: shouldUseLoaderData ? loaderData.page : 0,
+		totalPages: shouldUseLoaderData ? loaderData.nbPages : 1,
+		enabled: !shouldDeferPosts || typeof window !== "undefined",
 	});
 	const [isMobilePostsOpen, setIsMobilePostsOpen] = useState(false);
 	const navigate = useNavigate();
